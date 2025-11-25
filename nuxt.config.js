@@ -15,7 +15,7 @@ export default defineNuxtConfig({
       charset: "utf-8",
       viewport:
         "width=device-width, initial-scale=1, user-scalable=no,viewport-fit=cover",
-      title: "Money System",
+      title: "Play System",
       script: [
         {
           src: "https://cdn.lordicon.com/lordicon.js",
@@ -100,16 +100,19 @@ export default defineNuxtConfig({
 
   i18n: {
     locales: [
-      { code: "en", name: "English", iso: "en-US", file: "en.json" },
+      {
+        code: "en",
+        name: "English",
+        file: "en.json",
+      },
       {
         code: "zh",
         name: "Chinese",
-        iso: "zh",
         file: "zh.json",
       },
     ],
     defaultLocale: "en",
-    langDir: "locales/",
+    langDir: "locales",
     lazy: false,
     detectBrowserLanguage: false,
     strategy: "prefix_except_default",

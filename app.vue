@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import { useI18n } from "vue-i18n";
 import devtools from "devtools-detect";
 const { get, post, publicGet } = useApiEndpoint();
-const i18n = useI18n();
+const { t, locale } = useI18n();
 const isMainLoading = useState("isMainLoading", () => true);
 const isMainLoadingSuccess = useState("isMainLoadingSuccess", () => false);
 const adminUserData = useState("adminUserData");
@@ -30,8 +30,8 @@ let isWorkerRunning = false;
 
 if (process.client) {
   window.Swal = Swal;
-  window.$t = i18n.t;
-  window.$locale = i18n.locale;
+  window.$t = t;
+  window.$locale = locale;
 }
 
 const preventF12 = () => {
