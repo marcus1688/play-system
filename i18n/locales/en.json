@@ -1506,5 +1506,16 @@
   "no_bonus": "No Bonus",
   "loyalty_manual_run_warning": "This will calculate loyalty bonus for the previous period. Continue?",
   "claim_loyalty_bonus_confirmation": "Confirm claim this loyalty bonus?",
-  "points": "Points"
+  "points": "Points",
+  "select_kiosk": "Select Kiosk",
+  "confirm_deposit": "Confirm Deposit",
+  "please_enter_valid_amount": "Please enter a valid amount",
+  "please_select_kiosk": "Please select a kiosk",
+  "kiosk_transfer_failed": "Kiosk transfer failed",
+  "userid": "User ID",
+  "user_kiosk_id": "User Kiosk ID",
+  "user_not_registered_kiosk": "User is not registered in this kiosk",
+  "refresh_all": "Refresh All",
+  "not_registered": "Not Registered",
+  "no_kiosk_available": "No kiosk available"
 }

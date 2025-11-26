@@ -1,5 +1,10 @@
 <template>
   <div>
+    <DepositModal
+      v-model:show="showDepositModal"
+      :user-data="selectedDepositUser"
+      @success="handleDepositSuccess"
+    />
     <PageLoading v-if="isPageLoading" />
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-6 max-md:mb-4">
@@ -250,6 +255,8 @@ import { formatDate } from "~/utils/dateFormatter";
 import { formatAmount } from "~/utils/amountFormatter";
 import moment from "moment-timezone";
 
+const showDepositModal = ref(false);
+const selectedDepositUser = ref(null);
 const { isExporting, exportToExcel } = useExportExcel();
 const { getCompanyId } = useCompany();
 const adminUserData = useState("adminUserData");
@@ -668,10 +675,6 @@ const handleExport = async () => {
   }
 };
 
-const handleDeposit = (user) => {
-  console.log("Deposit for user:", user.username);
-};
-
 const handleWithdraw = (user) => {
   console.log("Withdraw for user:", user.username);
 };
@@ -694,6 +697,15 @@ const paginatedUsers = computed(() => {
 const totalPages = computed(() =>
   Math.ceil(totalItems.value / itemsPerPage.value)
 );
+
+const handleDeposit = (user) => {
+  selectedDepositUser.value = user;
+  showDepositModal.value = true;
+};
+
+const handleDepositSuccess = async () => {
+  await fetchAllUsers();
+};
 
 watch(searchQuery, (newValue) => {
   currentPage.value = 1;

@@ -1506,5 +1506,16 @@
   "no_bonus": "无奖金",
   "loyalty_manual_run_warning": "这将计算上一周期的忠实奖金。继续？",
   "claim_loyalty_bonus_confirmation": "确认领取此忠实奖金？",
-  "points": "积分"
+  "points": "积分",
+  "select_kiosk": "选择游戏平台",
+  "confirm_deposit": "确认存款",
+  "please_enter_valid_amount": "请输入有效金额",
+  "please_select_kiosk": "请选择游戏平台",
+  "kiosk_transfer_failed": "游戏平台转账失败",
+  "userid": "用户 ID",
+  "user_kiosk_id": "用户平台ID",
+  "user_not_registered_kiosk": "用户未在此平台注册",
+  "refresh_all": "刷新全部",
+  "not_registered": "未注册",
+  "no_kiosk_available": "没有可用的游戏平台"
 }
