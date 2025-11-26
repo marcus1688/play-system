@@ -245,6 +245,34 @@
                   {{ formatAmount(settingsData?.maxWithdraw || 0) }}
                 </td>
               </tr>
+              <tr class="max-md:flex max-md:flex-col max-md:gap-2">
+                <td
+                  class="py-4 text-sm font-medium text-gray-700 max-md:py-2 max-md:text-xs max-md:w-full"
+                >
+                  {{ $t("user_id_start") }}
+                </td>
+                <td
+                  class="py-4 text-sm text-gray-600 max-md:py-2 max-md:text-xs"
+                >
+                  {{ settingsData?.userIdStart || 10000 }}
+                </td>
+              </tr>
+              <tr class="max-md:flex max-md:flex-col max-md:gap-2">
+                <td
+                  class="py-4 text-sm font-medium text-gray-700 max-md:py-2 max-md:text-xs max-md:w-full"
+                >
+                  {{ $t("current_user_id_counter") }}
+                </td>
+                <td
+                  class="py-4 text-sm text-gray-600 max-md:py-2 max-md:text-xs"
+                >
+                  {{ settingsData?.userIdCounter || 10000 }}
+                  <span class="text-gray-400 ml-2"
+                    >({{ $t("next") }}:
+                    {{ (settingsData?.userIdCounter || 10000) + 1 }})</span
+                  >
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -479,6 +507,8 @@ const settingsData = ref({
   instagram: "",
   livechat: "",
   gmail: "",
+  userIdStart: 10000,
+  userIdCounter: 10000,
 });
 
 const socialPlatforms = computed(() => [

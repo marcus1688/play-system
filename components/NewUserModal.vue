@@ -11,11 +11,13 @@
       >
         <!-- Modal Header -->
         <div class="p-6 border-b max-md:p-4">
-          <div class="flex items-center gap-4 max-md:gap-3">
-            <div class="w-2 h-8 bg-indigo-600 rounded-full max-md:h-6"></div>
-            <h2 class="text-xl font-semibold max-md:text-lg">
-              {{ $t("create_new_user") }}
-            </h2>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4 max-md:gap-3">
+              <div class="w-2 h-8 bg-indigo-600 rounded-full max-md:h-6"></div>
+              <h2 class="text-xl font-semibold max-md:text-lg">
+                {{ $t("create_new_user") }}
+              </h2>
+            </div>
           </div>
         </div>
 
@@ -25,8 +27,21 @@
             @submit.prevent="handleSubmit"
             class="space-y-4 max-md:space-y-3"
           >
+            <!-- Next User ID Preview -->
+            <div
+              v-if="nextUserId"
+              class="bg-indigo-50 border border-indigo-200 rounded-lg p-3 flex items-center justify-between max-md:p-2"
+            >
+              <span class="text-sm text-gray-600 max-md:text-xs">{{
+                $t("next_user_id")
+              }}</span>
+              <span
+                class="text-lg font-bold text-indigo-600 max-md:text-base"
+                >{{ nextUserId }}</span
+              >
+            </div>
             <!-- Username -->
-            <div>
+            <div class="hidden">
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
@@ -50,13 +65,14 @@
               <input
                 v-model="formData.fullname"
                 type="text"
+                :placeholder="$t('fullname')"
                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-sm"
                 required
               />
             </div>
 
             <!-- Email -->
-            <div>
+            <div class="hidden">
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
@@ -71,7 +87,7 @@
             </div>
 
             <!-- Date of Birth -->
-            <div>
+            <div class="hidden">
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
@@ -84,7 +100,7 @@
             </div>
 
             <!-- Password -->
-            <div>
+            <div class="hidden">
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
@@ -130,6 +146,51 @@
                 {{ $t("include_country_code") }}
               </div>
             </div>
+
+            <!-- Bank Name -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("bank_name") }}
+              </label>
+              <input
+                v-model="formData.bankName"
+                type="text"
+                :placeholder="$t('bank_name_placeholder')"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-sm"
+              />
+            </div>
+
+            <!-- Bank Code -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("bank_code") }}
+              </label>
+              <input
+                v-model="formData.bankCode"
+                type="text"
+                :placeholder="$t('bank_code_placeholder')"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-sm"
+              />
+            </div>
+
+            <!-- Bank Account Number -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("bank_account_number") }}
+              </label>
+              <input
+                v-model="formData.bankNumber"
+                type="text"
+                :placeholder="$t('bank_account_placeholder')"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-sm"
+              />
+            </div>
           </form>
         </div>
 
@@ -152,8 +213,8 @@
           </LoadingButton>
         </div>
       </div>
-    </div></Teleport
-  >
+    </div>
+  </Teleport>
 </template>
 
 <script setup>
@@ -171,8 +232,11 @@ const emit = defineEmits(["update:show", "submit"]);
 const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
   emit("update:show", false);
 });
+const { get, post } = useApiEndpoint();
 const isCreateUserLoading = ref(false);
 const showPassword = ref(false);
+const nextUserId = ref(null);
+
 const formData = ref({
   username: "",
   fullname: "",
@@ -180,12 +244,39 @@ const formData = ref({
   dob: "",
   password: "",
   phoneNumber: "",
+  bankName: "",
+  bankCode: "",
+  bankNumber: "",
 });
+
+const fetchNextUserId = async () => {
+  try {
+    const { data } = await get("preview-next-userid");
+    console.log(data);
+    if (data.success) {
+      nextUserId.value = data.nextUserId;
+    }
+  } catch (error) {
+    console.error("Error fetching next user ID:", error);
+  }
+};
 
 const handleSubmit = async () => {
   try {
     isCreateUserLoading.value = true;
-    const { post } = useApiEndpoint();
+    const bankAccounts = [];
+    if (
+      formData.value.bankName ||
+      formData.value.bankCode ||
+      formData.value.bankNumber
+    ) {
+      bankAccounts.push({
+        name: formData.value.fullname,
+        bankname: formData.value.bankName,
+        bankcode: formData.value.bankCode,
+        banknumber: formData.value.bankNumber,
+      });
+    }
     const submitData = {
       username: formData.value.username,
       fullname: formData.value.fullname,
@@ -193,14 +284,17 @@ const handleSubmit = async () => {
       dob: formData.value.dob,
       password: formData.value.password,
       phonenumber: Number(formData.value.phoneNumber),
+      bankAccounts,
     };
     const { data } = await post("registeruser", submitData);
     if (data.success) {
       await Swal.fire({
         icon: "success",
         title: $t("success"),
-        text: data.message[$locale.value] || data.message.en,
-        timer: 1500,
+        html: `
+          <p>${data.message[$locale.value] || data.message.en}</p>
+        `,
+        timer: 3000,
       });
       emit("update:show", false);
       formData.value = {
@@ -210,6 +304,9 @@ const handleSubmit = async () => {
         dob: "",
         password: "",
         phoneNumber: "",
+        bankName: "",
+        bankCode: "",
+        bankNumber: "",
       };
       emit("submit");
     } else {
@@ -233,4 +330,13 @@ const handleSubmit = async () => {
     isCreateUserLoading.value = false;
   }
 };
+
+watch(
+  () => props.show,
+  (newShow) => {
+    if (newShow) {
+      fetchNextUserId();
+    }
+  }
+);
 </script>

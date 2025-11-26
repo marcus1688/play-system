@@ -139,14 +139,11 @@ export const menuItems = [
         path: "/website/setting",
         permission: "website.generalsetting",
       },
-      { name: "popup", path: "/website/popup", permission: "website.popup" },
-      { name: "review", path: "/website/review", permission: "website.review" },
       {
         name: "announcements",
         path: "/website/announcements",
         permission: "website.announcements",
       },
-      { name: "faq", path: "/website/faq", permission: "website.faq" },
     ],
   },
   {

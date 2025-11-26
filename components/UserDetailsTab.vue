@@ -43,13 +43,23 @@
       <div
         class="p-6 grid grid-cols-3 gap-6 text-left max-md:p-3 max-md:grid-cols-2 max-md:gap-3"
       >
+        <!-- User ID -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
+            >{{ $t("user_id") }}</label
+          >
+          <div class="text-sm font-semibold text-indigo-600 max-md:text-xs">
+            {{ user.userid || "-" }}
+          </div>
+        </div>
         <!-- Username -->
         <div>
           <label
             class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
             >{{ $t("username") }}</label
           >
-          <div class="text-sm max-md:text-xs">{{ user.username }}</div>
+          <div class="text-sm max-md:text-xs">{{ user.username || "-" }}</div>
         </div>
 
         <!-- Full Name -->

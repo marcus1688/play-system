@@ -92,68 +92,34 @@
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
               >
-                {{ user.no }}
+                <button
+                  @click="openUserDetails(user)"
+                  class="px-3 py-1 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
+                >
+                  <Icon
+                    icon="material-symbols:visibility"
+                    class="w-4 h-4 max-md:w-3 max-md:h-3"
+                  />
+                  <span>{{ $t("view") }}</span>
+                </button>
               </td>
-
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
               >
-                <div class="flex items-center justify-center flex-col gap-1">
-                  <div class="flex items-center justify-center gap-1">
-                    <Icon
-                      v-if="user.duplicateIP"
-                      icon="material-symbols:warning-rounded"
-                      class="text-amber-500 max-md:w-3 max-md:h-3"
-                    />
-                    <Icon
-                      v-if="user.duplicateBank"
-                      icon="material-symbols:error"
-                      class="text-red-500 max-md:w-3 max-md:h-3"
-                    />
-                    {{ user.username }}
-                  </div>
-                  <button
-                    @click="openUserDetails(user)"
-                    class="px-3 py-1 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
-                  >
-                    <Icon
-                      icon="material-symbols:visibility"
-                      class="w-4 h-4 max-md:w-3 max-md:h-3"
-                    />
-                    <span>{{ $t("view") }}</span>
-                  </button>
-                </div>
+                {{ user.no }}
               </td>
+              <td
+                class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                {{ user.userid || "-" }}
+              </td>
+
               <td
                 class="px-6 py-4 text-sm text-wrap max-md:px-3 max-md:py-3 max-md:text-xs"
               >
                 {{ user.fullname }}
               </td>
-              <td
-                class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
-              >
-                {{ currency }} {{ Number(user.wallet).toFixed(2) }}
-              </td>
-              <td
-                v-if="['localhost', 'ezwin9'].includes(getCompanyId())"
-                class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
-              >
-                {{ currency }} {{ Number(user.wallettwo || 0).toFixed(2) }}
-              </td>
-              <td class="px-6 py-4 text-sm max-md:px-3 max-md:py-3">
-                <div class="flex justify-center">
-                  <Icon
-                    v-if="user.isPhoneVerified || user.isEmailVerified"
-                    icon="material-symbols:check-circle"
-                    class="w-5 h-5 text-teal-500 max-md:w-4 max-md:h-4"
-                  />
-                  <Icon
-                    v-else
-                    icon="material-symbols:cancel"
-                    class="w-5 h-5 text-red-500 max-md:w-4 max-md:h-4"
-                  />
-                </div>
-              </td>
+
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
               >
@@ -281,17 +247,10 @@ const isPageLoading = ref(true);
 const allusers = ref([]);
 const { get, publicGet } = useApiEndpoint();
 const tableHeaders = [
+  { key: "view", label: "View", labelCN: "查看", sortable: false },
   { key: "no", label: "No", labelCN: "编号", sortable: false },
-  { key: "username", label: "Username", labelCN: "用户名", sortable: true },
+  { key: "userid", label: "User ID", labelCN: "用户ID", sortable: true },
   { key: "fullname", label: "Fullname", labelCN: "全名", sortable: true },
-  { key: "wallet", label: "Wallet", labelCN: "钱包", sortable: true },
-  {
-    key: "wallettwo",
-    label: "Rebate Wallet",
-    labelCN: "返水钱包",
-    sortable: true,
-  },
-  { key: "verified", label: "Verified", labelCN: "验证状态", sortable: true },
   {
     key: "phoneNumber",
     label: "Phone Number",
@@ -615,6 +574,7 @@ const handleExport = async () => {
     }
     const exportData = data.data.map((user, index) => ({
       no: index + 1,
+      userid: user.userid || "-",
       username: user.username || "-",
       fullname: user.fullname || "-",
       phonenumber: user.phonenumber || "-",
@@ -649,6 +609,7 @@ const handleExport = async () => {
       sheetName: "User List",
       columns: {
         no: { header: "No", width: 8 },
+        userid: { header: "User ID", width: 12 },
         username: { header: "Username", width: 15 },
         fullname: { header: "Fullname", width: 20 },
         phonenumber: { header: "Phone", width: 15 },

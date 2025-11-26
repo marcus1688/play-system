@@ -1478,5 +1478,14 @@
   "deposit_minus_withdraw": "存款 - 取款",
   "approved_transactions": "已批准交易",
   "daily_amount": "每日金额",
-  "total_txn": "笔交易"
+  "total_txn": "笔交易",
+  "user_id_settings": "用户ID设置",
+  "user_id_start": "用户ID起始值",
+  "user_id_start_hint": "新用户将从此号码开始分配ID",
+  "current_user_id_counter": "当前用户ID计数器",
+  "next_user_id": "下一个用户ID",
+  "bank_account_number": "银行账号",
+  "bank_name_placeholder": "例如：汇丰银行、中国银行",
+  "bank_code_placeholder": "例如：004、012",
+  "bank_account_placeholder": "请输入银行账号"
 }

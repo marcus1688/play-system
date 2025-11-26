@@ -443,6 +443,56 @@
               </div>
             </div>
 
+            <!-- User ID Settings -->
+            <div class="space-y-4 max-md:space-y-3">
+              <div class="flex items-center gap-4 max-md:gap-3">
+                <div
+                  class="w-2 h-8 bg-indigo-400 rounded-full max-md:h-6"
+                ></div>
+                <h3 class="text-lg font-semibold max-md:text-base">
+                  {{ $t("user_id_settings") }}
+                </h3>
+              </div>
+
+              <div
+                class="grid grid-cols-2 gap-4 max-md:grid-cols-1 max-md:gap-3"
+              >
+                <div>
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+                  >
+                    {{ $t("user_id_start") }}
+                  </label>
+                  <input
+                    v-model.number="formData.userIdStart"
+                    type="number"
+                    min="1"
+                    class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
+                  />
+                  <p class="text-xs text-gray-500 mt-1 max-md:text-[10px]">
+                    {{ $t("user_id_start_hint") }}
+                  </p>
+                </div>
+
+                <div v-if="props.initialData.userIdCounter">
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+                  >
+                    {{ $t("current_user_id_counter") }}
+                  </label>
+                  <div
+                    class="px-3 py-2 bg-gray-100 border rounded-lg text-gray-600 max-md:px-2 max-md:py-1.5 max-md:text-sm"
+                  >
+                    {{ props.initialData.userIdCounter }}
+                  </div>
+                  <p class="text-xs text-gray-500 mt-1 max-md:text-[10px]">
+                    {{ $t("next_user_id") }}:
+                    {{ props.initialData.userIdCounter + 1 }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <!-- Social Media -->
             <div class="space-y-4 max-md:space-y-3">
               <div class="flex items-center gap-4 max-md:gap-3">
@@ -567,6 +617,7 @@ const formData = ref({
   maxDeposit: 0,
   minWithdraw: 0,
   maxWithdraw: 0,
+  userIdStart: 10000,
 });
 
 const fileInputs = ref({

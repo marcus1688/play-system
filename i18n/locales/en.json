@@ -1478,5 +1478,14 @@
   "deposit_minus_withdraw": "Deposits - Withdrawals",
   "approved_transactions": "Approved transactions",
   "daily_amount": "Daily Amount",
-  "total_txn": "total txn"
+  "total_txn": "total txn",
+  "user_id_settings": "User ID Settings",
+  "user_id_start": "User ID Start",
+  "user_id_start_hint": "New users will get IDs starting from this number",
+  "current_user_id_counter": "Current User ID Counter",
+  "next_user_id": "Next User ID",
+  "bank_account_number": "Account Number",
+  "bank_name_placeholder": "e.g. HSBC, Bank of China",
+  "bank_code_placeholder": "e.g. 004, 012",
+  "bank_account_placeholder": "Enter account number"
 }
