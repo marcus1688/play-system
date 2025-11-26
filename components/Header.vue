@@ -438,65 +438,6 @@ const companyLogo = computed(() => {
   return COMPANIES[companyId]?.logo || "/images/logo/emtech88.png";
 });
 
-const fetchSMSBalance = async () => {
-  try {
-    const { get } = useApiEndpoint();
-    const { data } = await get("sms-balance");
-    if (data.success) {
-      smsBalance.value = data.data.balance;
-      smsStatus.value = data.data.status;
-      if (smsStatus.value && data.data.balance < data.data.minBalance) {
-        await Swal.fire({
-          title: $t("low_sms_balance_alert"),
-          text: $t("current_sms_balance_below", {
-            balance: data.data.balance.toFixed(2),
-            minBalance: data.data.minBalance.toFixed(2),
-          }),
-          icon: "warning",
-          confirmButtonText: $t("ok"),
-        });
-      }
-    }
-  } catch (error) {
-    console.error("Error fetching SMS balance:", error);
-  }
-};
-
-const refreshSMSBalance = async () => {
-  try {
-    const { get } = useApiEndpoint();
-    const { data } = await get("sms-balance");
-    if (data.success) {
-      smsBalance.value = data.data.balance;
-      smsStatus.value = data.data.status;
-      await Swal.fire({
-        icon: "success",
-        title:
-          data.message[$locale.value] ||
-          data.message.en ||
-          $t("balance_updated"),
-        timer: 1500,
-      });
-    } else {
-      await Swal.fire({
-        icon: "info",
-        title: $t("info"),
-        text: data.message[$locale.value] || data.message.en,
-      });
-    }
-  } catch (error) {
-    console.error("Error refreshing SMS balance:", error);
-    await Swal.fire({
-      icon: "error",
-      title: $t("error"),
-      text:
-        error.response?.data?.message?.[$locale.value] ||
-        error.response?.data?.message?.en ||
-        $t("failed_refresh_sms_balance"),
-    });
-  }
-};
-
 const fetchEmailBalance = async () => {
   try {
     const { get } = useApiEndpoint();
@@ -620,7 +561,6 @@ onMounted(async () => {
   const interval = setInterval(updateTime, 1000);
   onUnmounted(() => clearInterval(interval));
   if (adminUserData.value?._id) {
-    await fetchSMSBalance();
     await fetchEmailBalance();
     await fetchKioskBalance();
   }

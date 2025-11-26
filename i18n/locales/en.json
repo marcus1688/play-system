@@ -1472,5 +1472,11 @@
   "user_bank_info": "User Bank Information",
   "withdraw_below_minimum": "Withdraw amount is below the minimum limit ({min})",
   "withdraw_above_maximum": "Withdraw amount exceeds the maximum limit ({max})",
-  "withdraw_limit": "Withdraw Limit"
+  "withdraw_limit": "Withdraw Limit",
+  "net_profit": "Net Profit",
+  "transactions": "transactions",
+  "deposit_minus_withdraw": "Deposits - Withdrawals",
+  "approved_transactions": "Approved transactions",
+  "daily_amount": "Daily Amount",
+  "total_txn": "total txn"
 }

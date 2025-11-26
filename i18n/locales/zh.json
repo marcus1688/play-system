@@ -1472,5 +1472,11 @@
   "user_bank_info": "用户银行信息",
   "withdraw_below_minimum": "出款金额低于最低限额 ({min})",
   "withdraw_above_maximum": "出款金额超过最高限额 ({max})",
-  "withdraw_limit": "出款限额"
+  "withdraw_limit": "出款限额",
+  "net_profit": "净利润",
+  "transactions": "笔交易",
+  "deposit_minus_withdraw": "存款 - 取款",
+  "approved_transactions": "已批准交易",
+  "daily_amount": "每日金额",
+  "total_txn": "笔交易"
 }

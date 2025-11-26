@@ -152,19 +152,6 @@ const logoutUser = async () => {
   }
 };
 
-const fetchTransactions = async () => {
-  try {
-    const { data } = await get("fallback-latest-transactions");
-    if (data.success) {
-      pendingDeposits.value = data.data.deposits;
-      pendingWithdraws.value = data.data.withdraws;
-      pendingBonuses.value = data.data.bonuses;
-    }
-  } catch (error) {
-    console.error("Error fetching transactions:", error);
-  }
-};
-
 const playNotificationSound = () => {
   if (notificationSound.value && !isSoundMuted.value) {
     notificationSound.value.play().catch((error) => {
@@ -217,56 +204,6 @@ watch(
   { deep: true }
 );
 
-const startCountdown = () => {
-  // countdown.value = 15;
-  const { getCompanyId } = useCompany();
-  if (getCompanyId() === "demo") {
-    return;
-  }
-  if (countdownTimer) clearInterval(countdownTimer);
-  fetchTransactions();
-  if (window.Worker && !transactionWorker && !isWorkerRunning) {
-    try {
-      transactionWorker = new Worker("/transactionWorker.js");
-      isWorkerRunning = true;
-      transactionWorker.onmessage = (e) => {
-        if (e.data.type === "countdown") {
-          countdown.value = e.data.value;
-        } else if (e.data.type === "fetch") {
-          fetchTransactions();
-        }
-      };
-      transactionWorker.onerror = (error) => {
-        console.error("Worker error:", error);
-        isWorkerRunning = false;
-        transactionWorker = null;
-        fallbackTimer();
-      };
-
-      transactionWorker.postMessage("start");
-      // console.log("Using Web Worker for transaction timer");
-    } catch (error) {
-      console.error("Failed to create worker:", error);
-      isWorkerRunning = false;
-      transactionWorker = null;
-      fallbackTimer();
-    }
-  } else if (!window.Worker) {
-    fallbackTimer();
-  }
-};
-
-const fallbackTimer = () => {
-  console.log("Using fallback setInterval timer");
-  countdownTimer = setInterval(() => {
-    countdown.value--;
-    if (countdown.value <= 0) {
-      fetchTransactions();
-      countdown.value = 15;
-    }
-  }, 1000);
-};
-
 watch(
   () => route.path,
   () => {
@@ -282,7 +219,6 @@ onMounted(() => {
       notificationSound.value = new Audio(
         "/sound/deposit_notification_sound.mp3"
       );
-      startCountdown();
       socketIO.connectSocketIO();
       socketIO.startRefreshCycle();
       if (adminUserData.value.role !== "superadmin") {
