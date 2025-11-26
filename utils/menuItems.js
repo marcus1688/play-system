@@ -67,33 +67,22 @@ export const menuItems = [
     ],
   },
   {
-    name: "oc7",
+    name: "hkwin88",
     iconSolid: TrophyIcon,
-    requiredFeature: "oc7",
+    requiredFeature: "hkwin88",
     children: [
       {
-        name: "leaderboard",
-        path: "/oc7/leaderboard",
-        permission: "oc7.leaderboard",
+        name: "attendance",
+        path: "/hkwin88/attendance",
+        permission: "hkwin88.attendance",
       },
       {
-        name: "user",
-        path: "/oc7/user",
-        permission: "oc7.user",
-      },
-      {
-        name: "checkin",
-        path: "/oc7/checkin",
-        permission: "oc7.checkin",
-      },
-      {
-        name: "lucky_draw",
-        path: "/oc7/luckydraw",
-        permission: "oc7.luckydraw",
+        name: "loyalty",
+        path: "/hkwin88/loyalty",
+        permission: "hkwin88.loyalty",
       },
     ],
   },
-
   {
     name: "agent",
     iconSolid: UserCircleIcon,
