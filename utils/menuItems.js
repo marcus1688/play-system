@@ -47,11 +47,6 @@ export const menuItems = [
     requiredFeature: "transaction",
     children: [
       {
-        name: "transaction_list",
-        path: "/transaction/list",
-        permission: "transaction.transactionlist",
-      },
-      {
         name: "transaction_log",
         path: "/transaction/log",
         permission: "transaction.transactionlog",
@@ -98,85 +93,6 @@ export const menuItems = [
       },
     ],
   },
-  {
-    name: "ae96",
-    iconSolid: TrophyIcon,
-    requiredFeature: "ae96",
-    children: [
-      {
-        name: "leaderboard",
-        path: "/ae96/leaderboard",
-        permission: "ae96.leaderboard",
-      },
-      {
-        name: "about_us",
-        path: "/ae96/aboutus",
-        permission: "ae96.aboutus",
-      },
-      {
-        name: "squid_game",
-        path: "/ae96/squidgame",
-        permission: "ae96.squidgame",
-      },
-    ],
-  },
-  {
-    name: "bm8my",
-    iconSolid: TrophyIcon,
-    requiredFeature: "bm8my",
-    children: [
-      {
-        name: "rescue_setting",
-        path: "/bm8my/rescue-setting",
-        permission: "bm8my.rescuesetting",
-      },
-      {
-        name: "rescue_report",
-        path: "/bm8my/rescue-report",
-        permission: "bm8my.rescuereport",
-      },
-      {
-        name: "leaderboard",
-        path: "/bm8my/leaderboard",
-        permission: "bm8my.leaderboard",
-      },
-      {
-        name: "live_transaction",
-        path: "/bm8my/live-transaction",
-        permission: "bm8my.livetransaction",
-      },
-      {
-        name: "lucky_draw",
-        path: "/bm8my/lucky-draw",
-        permission: "bm8my.luckydraw",
-      },
-      {
-        name: "check_in_report",
-        path: "/bm8my/check-in-report",
-        permission: "bm8my.checkinreport",
-      },
-      {
-        name: "promo_code",
-        path: "/bm8my/promo-code",
-        permission: "bm8my.promocode",
-      },
-      {
-        name: "promo_code_report",
-        path: "/bm8my/promo-code-report",
-        permission: "bm8my.promocodereport",
-      },
-      {
-        name: "mission",
-        path: "/bm8my/mission",
-        permission: "bm8my.mission",
-      },
-      {
-        name: "mission_report",
-        path: "/bm8my/mission-report",
-        permission: "bm8my.missionreport",
-      },
-    ],
-  },
 
   {
     name: "agent",
@@ -212,33 +128,7 @@ export const menuItems = [
       },
     ],
   },
-  {
-    name: "affiliate",
-    iconSolid: ArrowTrendingUpIcon,
-    requiredFeature: "affiliate",
-    children: [
-      {
-        name: "affiliate_list",
-        path: "/affiliate/list",
-        permission: "affiliate.affiliatelist",
-      },
-      {
-        name: "affiliate_log",
-        path: "/affiliate/log",
-        permission: "affiliate.affiliatelog",
-      },
-      {
-        name: "affiliate_report",
-        path: "/affiliate/report",
-        permission: "affiliate.affiliatereport",
-      },
-      {
-        name: "affiliate_setting",
-        path: "/affiliate/setting",
-        permission: "affiliate.affiliatesetting",
-      },
-    ],
-  },
+
   {
     name: "website",
     iconSolid: WindowIconSolid,
@@ -276,22 +166,7 @@ export const menuItems = [
       },
     ],
   },
-  {
-    name: "blog",
-    iconSolid: BookOpenIcon,
-    requiredFeature: "blog",
-    children: [
-      { name: "blog_list", path: "/blog/list", permission: "blog.bloglist" },
-    ],
-  },
-  {
-    name: "mail",
-    iconSolid: InboxIcon,
-    requiredFeature: "mail",
-    children: [
-      { name: "mail_list", path: "/mail/list", permission: "mail.maillist" },
-    ],
-  },
+
   {
     name: "feedback",
     iconSolid: ChatBubbleBottomCenterTextIcon,
@@ -304,24 +179,7 @@ export const menuItems = [
       },
     ],
   },
-  {
-    name: "promo_code",
-    iconSolid: TicketIcon,
-    requiredFeature: "promocode",
-    children: [
-      {
-        name: "promo_code_list",
-        path: "/promocode/list",
-        permission: "promocode.promocodelist",
-      },
 
-      {
-        name: "promo_code_report",
-        path: "/promocode/report",
-        permission: "promocode.promocodereport",
-      },
-    ],
-  },
   {
     name: "kiosk",
     iconSolid: ComputerDesktopIconSolid,
@@ -389,18 +247,7 @@ export const menuItems = [
       },
     ],
   },
-  {
-    name: "crypto_bank",
-    iconSolid: ShieldCheckIcon,
-    requiredFeature: "crypto",
-    children: [
-      {
-        name: "usdt",
-        path: "/crypto/usdt",
-        permission: "crypto.usdt",
-      },
-    ],
-  },
+
   {
     name: "carousel",
     iconSolid: PhotoIconSolid,
@@ -463,29 +310,7 @@ export const menuItems = [
       { name: "vip_list", path: "/vip/list", permission: "vip.viplist" },
     ],
   },
-  {
-    name: "seo",
-    iconSolid: ArrowTrendingUpIcon,
-    requiredFeature: "seo",
-    children: [{ name: "pages", path: "/seo", permission: "seo.pages" }],
-  },
-  {
-    name: "verification",
-    iconSolid: CheckBadgeIcon,
-    requiredFeature: "verification",
-    children: [
-      {
-        name: "sms",
-        path: "/verification/sms",
-        permission: "verification.sms",
-      },
-      {
-        name: "email",
-        path: "/verification/email",
-        permission: "verification.email",
-      },
-    ],
-  },
+
   {
     name: "payment_gateway",
     iconSolid: CircleStackIcon,
@@ -547,28 +372,7 @@ export const menuItems = [
       },
     ],
   },
-  {
-    name: "tools",
-    iconSolid: WrenchScrewdriverIcon,
-    requiredFeature: "tools",
-    children: [
-      {
-        name: "contacts",
-        path: "/tools/contacts",
-        permission: "tools.contacts",
-      },
-      {
-        name: "fingerprint",
-        path: "/tools/fingerprint",
-        permission: "tools.fingerprint",
-      },
-      {
-        name: "unlimitedrebate",
-        path: "/tools/unlimitedrebate",
-        permission: "tools.unlimitedrebate",
-      },
-    ],
-  },
+
   {
     name: "setting",
     iconSolid: Cog6ToothIcon,
