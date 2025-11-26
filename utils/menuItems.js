@@ -63,7 +63,6 @@ export const menuItems = [
         path: "/user/list",
         permission: "user.userlist",
       },
-      { name: "user_log", path: "/user/log", permission: "user.userlog" },
     ],
   },
   {
@@ -211,11 +210,6 @@ export const menuItems = [
     requiredFeature: "bank",
     children: [
       { name: "bank_list", path: "/bank/list", permission: "bank.banklist" },
-      {
-        name: "user_bank_list",
-        path: "/bank/user-list",
-        permission: "bank.userbanklist",
-      },
       {
         name: "bank_balance",
         path: "/bank/balance",
