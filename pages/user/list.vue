@@ -94,7 +94,7 @@
               >
                 <button
                   @click="openUserDetails(user)"
-                  class="px-3 py-1 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
+                  class="px-3 py-2 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
                 >
                   <Icon
                     icon="material-symbols:visibility"
@@ -160,16 +160,28 @@
               </td>
               <!-- <td class="px-6 py-4 text-sm">{{ user.lastLoginIp }}</td> -->
               <td class="px-6 py-4 text-sm max-md:px-3 max-md:py-3">
-                <span
-                  :class="[
-                    'px-2 py-1 rounded max-md:px-1.5 max-md:py-2 max-md:text-xs',
-                    user.status
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800',
-                  ]"
-                >
-                  {{ user.status ? $t("active") : $t("inactive") }}
-                </span>
+                <div class="flex gap-1 justify-center">
+                  <button
+                    @click="handleDeposit(user)"
+                    class="px-3 py-2 text-white bg-green-600 rounded lg:hover:bg-green-700 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
+                  >
+                    <Icon
+                      icon="material-symbols:add-circle"
+                      class="w-4 h-4 max-md:w-3 max-md:h-3"
+                    />
+                    {{ $t("deposit") }}
+                  </button>
+                  <button
+                    @click="handleWithdraw(user)"
+                    class="px-3 py-2 text-white bg-orange-600 rounded lg:hover:bg-orange-700 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
+                  >
+                    <Icon
+                      icon="material-symbols:do-not-disturb-on"
+                      class="w-4 h-4 max-md:w-3 max-md:h-3"
+                    />
+                    {{ $t("withdraw") }}
+                  </button>
+                </div>
               </td>
               <td
                 v-if="
@@ -181,7 +193,7 @@
                 <div class="flex gap-1 justify-center">
                   <button
                     @click="deleteUser(user)"
-                    class="px-3 py-1 text-white bg-red-600 rounded lg:hover:bg-red-700 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
+                    class="px-3 py-2 text-white bg-red-600 rounded lg:hover:bg-red-700 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
                   >
                     <Icon
                       icon="material-symbols:delete"
@@ -293,8 +305,8 @@ const tableHeaders = [
   //   labelCN: "上次登录IP",
   //   sortable: false,
   // },
-  { key: "status", label: "Status", labelCN: "状态", sortable: true },
   { key: "actions", label: "Actions", labelCN: "操作", sortable: false },
+  { key: "delete", label: "Delete", labelCN: "删除", sortable: false },
 ];
 
 const sortConfig = ref({
@@ -654,6 +666,14 @@ const handleExport = async () => {
   } finally {
     isPageLoading.value = false;
   }
+};
+
+const handleDeposit = (user) => {
+  console.log("Deposit for user:", user.username);
+};
+
+const handleWithdraw = (user) => {
+  console.log("Withdraw for user:", user.username);
 };
 
 watch(currentPage, () => {
