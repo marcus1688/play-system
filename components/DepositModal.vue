@@ -107,14 +107,26 @@
                     </div>
                   </div>
                   <div>
-                    <div class="text-gray-500">{{ $t("user_kiosk_id") }}</div>
+                    <div class="text-gray-500">{{ $t("gameid") }}</div>
                     <div
-                      class="font-bold"
+                      class="font-bold flex items-center gap-1"
                       :class="
                         kiosk.userKioskId ? 'text-gray-800' : 'text-red-500'
                       "
                     >
-                      {{ kiosk.userKioskId || $t("not_registered") }}
+                      <span>{{
+                        kiosk.userKioskId || $t("not_registered")
+                      }}</span>
+                      <button
+                        v-if="kiosk.userKioskId"
+                        @click.stop="copyToClipboard(kiosk.userKioskId)"
+                        class="text-gray-400 lg:hover:text-indigo-600 transition-colors"
+                      >
+                        <Icon
+                          icon="mdi:content-copy"
+                          class="w-4 h-4 max-md:w-3 max-md:h-3"
+                        />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -379,6 +391,21 @@ const handleSubmit = async () => {
     });
   } finally {
     isLoading.value = false;
+  }
+};
+
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    await Swal.fire({
+      icon: "success",
+      title: $t("copied"),
+      text: text,
+      timer: 1000,
+      showConfirmButton: false,
+    });
+  } catch (error) {
+    console.error("Failed to copy:", error);
   }
 };
 
