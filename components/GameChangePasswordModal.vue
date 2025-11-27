@@ -9,7 +9,7 @@
       <div class="bg-white rounded-lg w-[400px] lg:min-w-[600px]">
         <div class="p-6 border-b max-md:p-4">
           <div class="flex items-center gap-4 max-md:gap-3">
-            <div class="w-2 h-8 bg-orange-600 rounded-full max-md:h-6"></div>
+            <div class="w-2 h-8 bg-indigo-600 rounded-full max-md:h-6"></div>
             <h2 class="text-xl font-semibold max-md:text-lg">
               {{ $t("change_password") }}
             </h2>
@@ -113,7 +113,7 @@
             :loading="isLoading"
             @click="handleSubmit"
             :disabled="!isFormValid"
-            class="px-4 py-2 bg-orange-600 text-white rounded-lg lg:hover:bg-orange-500 disabled:opacity-50 disabled:cursor-not-allowed max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:w-full"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-lg lg:hover:bg-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:w-full"
           >
             {{ $t("confirm") }}
           </LoadingButton>

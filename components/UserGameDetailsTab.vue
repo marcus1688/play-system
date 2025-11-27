@@ -2,11 +2,6 @@
   <div
     class="space-y-6 min-w-[500px] overflow-x-auto max-md:min-w-0 max-md:space-y-4"
   >
-    <GameChangePasswordModal
-      v-model:show="showChangePasswordModal"
-      :game="selectedGameForPassword"
-      :user-id="userData._id"
-    />
     <PageLoading v-if="isPageLoading" />
     <!-- Quick Actions -->
 
@@ -453,17 +448,17 @@
                   class="flex justify-center gap-2 max-md:flex-col max-md:gap-1"
                 >
                   <button
-                    @click="handleTransferOut(game)"
-                    class="px-3 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-1 max-md:text-[10px]"
-                  >
-                    {{ $t("transfer_out") }}
-                  </button>
-                  <button
                     v-if="game.isManualGame"
                     @click="handleShowAccount(game)"
                     class="px-3 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-1 max-md:text-[10px]"
                   >
                     {{ $t("account") }}
+                  </button>
+                  <button
+                    @click="handleTransferOut(game)"
+                    class="px-3 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-1 max-md:text-[10px]"
+                  >
+                    {{ $t("transfer_out") }}
                   </button>
                   <button
                     v-if="game.changePasswordApi"
@@ -595,6 +590,12 @@
       :userData="userData"
       @refresh="handleAccountModalRefresh"
       v-if="selectedGameForAccount"
+    />
+
+    <GameChangePasswordModal
+      v-model:show="showChangePasswordModal"
+      :game="selectedGameForPassword"
+      :user-id="userData._id"
     />
   </div>
 </template>
