@@ -1536,5 +1536,7 @@
   "cashout_failed": "Failed to process cashout",
   "transfer_out_amount": "Transfer Out Amount",
   "cashout_remaining_balance": "CashOut remaining balance",
-  "withdraw_exceeds_balance": "Withdraw amount exceeds kiosk balance"
+  "withdraw_exceeds_balance": "Withdraw amount exceeds kiosk balance",
+  "confirm_transfer_out": "Confirm Transfer Out",
+  "transfer_out_success": "Transfer out successful"
 }

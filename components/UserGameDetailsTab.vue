@@ -584,7 +584,9 @@
     <GameTransferOutModal
       v-model:show="showTransferOutModal"
       :balance="gameBalances[selectedGame?._id] || 0"
-      @submit="handleTransferOutSubmit"
+      :game="selectedGame"
+      :user-id="userData._id"
+      @success="handleTransferOutSuccess"
     />
 
     <GameAccountModal
@@ -731,35 +733,9 @@ const handleTransferOut = (game) => {
   showTransferOutModal.value = true;
 };
 
-const handleTransferOutSubmit = async ({ transferAmount }) => {
-  try {
-    if (!selectedGame.value.transferBalanceAPI) {
-      console.error($t("missing_api_endpoint"));
-      return;
-    }
-    const endpoint = selectedGame.value.transferBalanceAPI.replace(
-      ":userId",
-      props.userData._id
-    );
-    const { data } = await post(endpoint, { transferAmount });
-    if (data.success) {
-      await Swal.fire({
-        icon: "success",
-        title: $t("transfer_successful"),
-        text: $t("transfer_success_message"),
-        timer: 1500,
-      });
-      await checkGameBalance(selectedGame.value);
-    } else {
-      throw new Error(data.message || "Transfer failed");
-    }
-  } catch (error) {
-    console.error("Error transferring balance:", error);
-    await Swal.fire({
-      icon: "error",
-      title: $t("transfer_failed"),
-      text: error.message || $t("transfer_failed_message"),
-    });
+const handleTransferOutSuccess = async () => {
+  if (selectedGame.value) {
+    await checkGameBalance(selectedGame.value);
   }
 };
 

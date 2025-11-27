@@ -1536,5 +1536,7 @@
   "cashout_failed": "扣除处理失败",
   "transfer_out_amount": "下分金额",
   "cashout_remaining_balance": "扣除剩余余额",
-  "withdraw_exceeds_balance": "提款金额超过平台余额"
+  "withdraw_exceeds_balance": "提款金额超过平台余额",
+  "confirm_transfer_out": "确认下分",
+  "transfer_out_success": "下分成功"
 }
