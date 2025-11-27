@@ -15,6 +15,11 @@
       :user-data="selectedBonusUser"
       @success="handleBonusSuccess"
     />
+    <TransferModal
+      v-model:show="showTransferModal"
+      :user-data="selectedTransferUser"
+      @success="handleTransferSuccess"
+    />
     <PageLoading v-if="isPageLoading" />
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-6 max-md:mb-4">
@@ -201,10 +206,20 @@
                     class="px-3 py-2 text-white bg-purple-600 rounded lg:hover:bg-purple-700 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
                   >
                     <Icon
-                      icon="material-symbols:redeem"
+                      icon="mdi:gift"
                       class="w-4 h-4 max-md:w-3 max-md:h-3"
                     />
                     {{ $t("bonus") }}
+                  </button>
+                  <button
+                    @click="handleTransfer(user)"
+                    class="px-3 py-2 text-white bg-blue-600 rounded lg:hover:bg-blue-700 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
+                  >
+                    <Icon
+                      icon="material-symbols:swap-horiz"
+                      class="w-4 h-4 max-md:w-3 max-md:h-3"
+                    />
+                    {{ $t("transfer") }}
                   </button>
                 </div>
               </td>
@@ -275,6 +290,8 @@ import { formatDate } from "~/utils/dateFormatter";
 import { formatAmount } from "~/utils/amountFormatter";
 import moment from "moment-timezone";
 
+const showTransferModal = ref(false);
+const selectedTransferUser = ref(null);
 const showBonusModal = ref(false);
 const selectedBonusUser = ref(null);
 const showDepositModal = ref(false);
@@ -730,6 +747,15 @@ const handleBonus = (user) => {
 };
 
 const handleBonusSuccess = async () => {
+  await fetchAllUsers();
+};
+
+const handleTransfer = (user) => {
+  selectedTransferUser.value = user;
+  showTransferModal.value = true;
+};
+
+const handleTransferSuccess = async () => {
   await fetchAllUsers();
 };
 

@@ -1538,5 +1538,21 @@
   "cashout_remaining_balance": "扣除剩余余额",
   "withdraw_exceeds_balance": "提款金额超过平台余额",
   "confirm_transfer_out": "确认下分",
-  "transfer_out_success": "下分成功"
+  "transfer_out_success": "下分成功",
+  "transfer_between_kiosk": "平台间转账",
+  "from_kiosk": "从平台",
+  "to_kiosk": "到平台",
+  "from_gameid": "来源游戏ID",
+  "to_gameid": "目标游戏ID",
+  "from": "从",
+  "please_select_from_kiosk": "请选择来源平台",
+  "please_select_to_kiosk": "请选择目标平台",
+  "cannot_transfer_same_kiosk": "不能转到同一平台",
+  "user_not_registered_from_kiosk": "用户未在来源平台注册",
+  "user_not_registered_to_kiosk": "用户未在目标平台注册",
+  "transfer_exceeds_balance": "转账金额超过平台余额",
+  "transfer_out_failed": "下分失败",
+  "transfer_in_failed": "上分失败",
+  "transfer_success": "转账成功",
+  "transfer_amount": "转账数额"
 }

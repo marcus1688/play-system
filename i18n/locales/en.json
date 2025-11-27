@@ -1538,5 +1538,21 @@
   "cashout_remaining_balance": "CashOut remaining balance",
   "withdraw_exceeds_balance": "Withdraw amount exceeds kiosk balance",
   "confirm_transfer_out": "Confirm Transfer Out",
-  "transfer_out_success": "Transfer out successful"
+  "transfer_out_success": "Transfer out successful",
+  "transfer_between_kiosk": "Transfer Between Kiosk",
+  "from_kiosk": "From Kiosk",
+  "to_kiosk": "To Kiosk",
+  "from_gameid": "From Game ID",
+  "to_gameid": "To Game ID",
+  "from": "From",
+  "please_select_from_kiosk": "Please select source kiosk",
+  "please_select_to_kiosk": "Please select destination kiosk",
+  "cannot_transfer_same_kiosk": "Cannot transfer to same kiosk",
+  "user_not_registered_from_kiosk": "User not registered in source kiosk",
+  "user_not_registered_to_kiosk": "User not registered in destination kiosk",
+  "transfer_exceeds_balance": "Transfer amount exceeds kiosk balance",
+  "transfer_out_failed": "Transfer out failed",
+  "transfer_in_failed": "Transfer in failed",
+  "transfer_success": "Transfer successful",
+  "transfer_amount": "Transfer Amount"
 }
