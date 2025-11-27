@@ -3,248 +3,6 @@
     class="space-y-6 min-w-[500px] overflow-x-auto max-md:min-w-0 max-md:space-y-4"
   >
     <PageLoading v-if="isPageLoading" />
-    <!-- Quick Actions -->
-
-    <div class="flex gap-4 max-md:flex-col max-md:gap-2">
-      <Transition
-        enter-active-class="transition-all duration-300 ease-out"
-        leave-active-class="transition-all duration-200 ease-in"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-if="showActiveGamesModal"
-          class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4 max-md:p-2"
-          @click.self="showActiveGamesModal = false"
-        >
-          <div
-            v-if="showActiveGamesModal"
-            class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[85vh] overflow-hidden animate-popupIn"
-          >
-            <div
-              class="border-b border-gray-200 px-6 py-4 max-md:px-4 max-md:py-3"
-            >
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3 max-md:gap-2">
-                  <div
-                    class="w-2 h-6 bg-indigo-600 rounded-full max-md:h-5"
-                  ></div>
-                  <h3 class="text-xl font-semibold max-md:text-base">
-                    {{ $t("active_games") }}
-                  </h3>
-                  <span
-                    class="bg-gray-100 text-gray-600 text-sm px-2 py-1 rounded-full max-md:text-xs max-md:px-1.5 max-md:py-2"
-                  >
-                    {{ activeGamesData.length }}
-                  </span>
-                </div>
-                <button
-                  @click="showActiveGamesModal = false"
-                  class="text-gray-400 lg:hover:text-gray-600 transition-colors"
-                >
-                  <Icon
-                    icon="material-symbols:close"
-                    class="w-5 h-5 max-md:w-4 max-md:h-4"
-                  />
-                </button>
-              </div>
-            </div>
-
-            <div class="p-6 max-md:p-4">
-              <div
-                v-if="activeGamesData.length === 0"
-                class="text-center py-12 max-md:py-8"
-              >
-                <div
-                  class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center max-md:w-12 max-md:h-12 max-md:mb-3"
-                >
-                  <Icon
-                    icon="material-symbols:check"
-                    class="w-8 h-8 text-gray-400 max-md:w-6 max-md:h-6"
-                  />
-                </div>
-                <h4
-                  class="text-lg font-medium text-gray-900 mb-2 max-md:text-base max-md:mb-1"
-                >
-                  {{ $t("no_active_games") }}
-                </h4>
-                <p class="text-gray-500 text-sm max-md:text-xs">
-                  {{ $t("no_active_games_message") }}
-                </p>
-              </div>
-
-              <div
-                v-else
-                class="space-y-3 max-h-96 overflow-y-auto max-md:space-y-2 max-md:max-h-80"
-              >
-                <TransitionGroup
-                  enter-active-class="transition-all duration-500 ease-out"
-                  leave-active-class="transition-all duration-200 ease-in"
-                  enter-from-class="opacity-0 scale-95 translate-y-4"
-                  enter-to-class="opacity-100 scale-100 translate-y-0"
-                  leave-from-class="opacity-100 scale-100 translate-y-0"
-                  leave-to-class="opacity-0 scale-95 -translate-y-4"
-                >
-                  <div
-                    v-for="(game, index) in activeGamesData"
-                    :key="game.betId || index"
-                    class="border border-gray-200 rounded-lg p-4 lg:hover:bg-gray-50 transition-colors max-md:p-3"
-                    :style="{ transitionDelay: `${index * 80}ms` }"
-                  >
-                    <div
-                      class="flex items-center justify-between mb-3 max-md:mb-2"
-                    >
-                      <h5
-                        class="font-medium text-gray-900 truncate pr-4 max-md:text-sm"
-                      >
-                        {{ game.gameName || $t("unknown_game") }}
-                      </h5>
-                    </div>
-
-                    <div
-                      class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm max-md:gap-3 max-md:text-xs"
-                    >
-                      <div>
-                        <span class="text-gray-500 block mb-1">{{
-                          $t("bet_id")
-                        }}</span>
-                        <span class="font-mono text-gray-900 break-all">{{
-                          game.betId || "-"
-                        }}</span>
-                      </div>
-                      <div>
-                        <span class="text-gray-500 block mb-1">{{
-                          $t("created_at")
-                        }}</span>
-                        <div>
-                          <span class="text-gray-900">{{
-                            formatDateTime(game.createdAt) || "-"
-                          }}</span>
-                          <div
-                            class="text-xs text-gray-400 mt-1 max-md:text-[10px]"
-                          >
-                            {{ getTimeAgo(game.createdAt) }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      class="mt-4 pt-3 border-t border-gray-100 max-md:mt-3 max-md:pt-2"
-                    >
-                      <div class="flex gap-2 justify-end">
-                        <button
-                          @click="handleManualUpdate(game, 'settle')"
-                          :disabled="isUpdatingGame[game.betId]"
-                          class="px-3 py-1.5 text-xs bg-green-600 text-white rounded lg:hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 max-md:px-2 max-md:py-1 max-md:text-[10px]"
-                        >
-                          <Icon
-                            icon="material-symbols:check"
-                            class="w-3 h-3 max-md:w-2.5 max-md:h-2.5"
-                            :class="{
-                              'animate-spin':
-                                isUpdatingGame[game.betId] === 'settle',
-                            }"
-                          />
-                          {{ $t("settle") }}
-                        </button>
-                        <button
-                          @click="handleManualUpdate(game, 'cancel')"
-                          :disabled="isUpdatingGame[game.betId]"
-                          class="px-3 py-1.5 text-xs bg-red-600 text-white rounded lg:hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-all duration-200 border border-red-700 shadow-sm lg:hover:shadow-md max-md:px-2 max-md:py-1 max-md:text-[10px]"
-                        >
-                          <Icon
-                            icon="material-symbols:cancel-outline"
-                            class="w-3 h-3 max-md:w-2.5 max-md:h-2.5"
-                            :class="{
-                              'animate-spin':
-                                isUpdatingGame[game.betId] === 'cancel',
-                            }"
-                          />
-                          {{ $t("void_bet") }}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </TransitionGroup>
-              </div>
-            </div>
-
-            <!-- Footer -->
-            <div
-              class="border-t border-gray-200 px-6 py-4 bg-gray-50 max-md:px-4 max-md:py-3"
-            >
-              <div class="flex gap-3 justify-end max-md:gap-2 max-md:flex-col">
-                <button
-                  @click="handleRefreshActiveGames"
-                  :disabled="isFetchActiveGamesLoading"
-                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md lg:hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all max-md:px-3 max-md:py-1.5 max-md:text-xs max-md:justify-center"
-                >
-                  <Icon
-                    icon="material-symbols:refresh"
-                    class="w-4 h-4 transition-transform max-md:w-3 max-md:h-3"
-                    :class="{ 'animate-spin': isFetchActiveGamesLoading }"
-                  />
-                  {{ $t("refresh") }}
-                </button>
-                <button
-                  @click="showActiveGamesModal = false"
-                  class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md lg:hover:bg-indigo-500 transition-colors max-md:px-3 max-md:py-1.5 max-md:text-xs"
-                >
-                  {{ $t("close") }}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Transition>
-      <LoadingButton
-        :loading="isCheckBalanceButtonLoading"
-        @click="handleCheckAllBalances"
-        class="px-4 py-2 bg-indigo-600 text-white rounded-lg lg:hover:bg-indigo-500 flex items-center gap-2 max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:justify-center"
-      >
-        <div class="flex justify-center items-center gap-2">
-          <Icon
-            icon="material-symbols:account-balance"
-            class="max-md:w-4 max-md:h-4"
-          />
-          <span class="max-md:text-xs">{{
-            $t("check_all_game_balances")
-          }}</span>
-        </div>
-      </LoadingButton>
-      <LoadingButton
-        :loading="isTransferAllButtonLoading"
-        @click="handleTransferAllToMain"
-        class="px-4 py-2 bg-indigo-600 text-white rounded-lg lg:hover:bg-indigo-500 flex items-center gap-2 max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:justify-center"
-      >
-        <div class="flex justify-center items-center gap-2">
-          <Icon
-            icon="material-symbols:move-to-inbox"
-            class="max-md:w-4 max-md:h-4"
-          />
-          <span class="max-md:text-xs">{{
-            $t("transfer_all_to_main_wallet")
-          }}</span>
-        </div>
-      </LoadingButton>
-      <LoadingButton
-        :loading="isFetchActiveGamesLoading"
-        @click="handleFetchActiveGames"
-        class="px-4 py-2 bg-indigo-600 text-white rounded-lg lg:hover:bg-indigo-500 flex items-center gap-2 max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:justify-center"
-      >
-        <div class="flex justify-center items-center gap-2">
-          <Icon
-            icon="material-symbols:sports-esports"
-            class="max-md:w-4 max-md:h-4"
-          />
-          <span class="max-md:text-xs">{{ $t("fetch_active_games") }}</span>
-        </div>
-      </LoadingButton>
-    </div>
-
     <!-- Games Table -->
     <div class="bg-white rounded-lg shadow">
       <div class="p-4 border-b max-md:p-3">
@@ -298,6 +56,11 @@
                 class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
               >
                 {{ $t("wallet_balance") }}
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
+              >
+                {{ $t("game_id") }}
               </th>
               <th
                 class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
@@ -357,6 +120,7 @@
                   </span>
                 </div>
               </td>
+
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
               >
@@ -382,6 +146,26 @@
                   <div v-else>
                     <span class="text-gray-500">Seamless</span>
                   </div>
+                </div>
+              </td>
+              <td
+                class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
+              >
+                <div class="flex justify-center items-center gap-1">
+                  <span v-if="userData[game.databaseGameID]" class="font-mono">
+                    {{ userData[game.databaseGameID] }}
+                  </span>
+                  <span v-else class="text-gray-400">-</span>
+                  <button
+                    v-if="userData[game.databaseGameID]"
+                    @click="copyToClipboard(userData[game.databaseGameID])"
+                    class="text-gray-400 lg:hover:text-indigo-600"
+                  >
+                    <Icon
+                      icon="mdi:content-copy"
+                      class="w-4 h-4 max-md:w-3 max-md:h-3"
+                    />
+                  </button>
                 </div>
               </td>
               <td class="px-6 py-4 max-md:px-3 max-md:py-2">
@@ -473,7 +257,7 @@
             </tr>
             <tr v-if="games.length === 0" class="h-[400px] max-md:h-[300px]">
               <td
-                colspan="8"
+                colspan="9"
                 class="px-6 py-4 text-center text-gray-500 max-md:px-3 max-md:py-3"
               >
                 <div class="flex flex-col gap-8 items-center max-md:gap-4">
@@ -493,7 +277,7 @@
             <tr>
               <td
                 class="px-6 py-4 text-sm font-bold text-right max-md:px-3 max-md:py-2 max-md:text-xs"
-                colspan="5"
+                colspan="6"
               >
                 {{ $t("total") }}:
               </td>
@@ -512,67 +296,6 @@
             </tr>
           </tfoot>
         </table>
-      </div>
-      <div
-        class="bg-white rounded-lg shadow mt-6 max-md:mt-4"
-        v-if="Object.keys(categoryTotals).length > 0"
-      >
-        <div class="p-4 border-b max-md:p-3">
-          <div class="flex items-center gap-4 max-md:gap-2">
-            <div class="w-2 h-8 bg-indigo-600 rounded-full max-md:h-6"></div>
-            <h3 class="text-lg font-semibold max-md:text-base">
-              {{ $t("category_summary") }}
-            </h3>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full whitespace-nowrap text-center">
-            <thead class="bg-gray-50">
-              <tr>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("game_category") }}
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("turnover") }}
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("win_loss") }}
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-              <tr
-                v-for="(totals, categoryName) in categoryTotals"
-                :key="categoryName"
-                class="lg:hover:bg-gray-50"
-              >
-                <td
-                  class="px-6 py-4 text-sm font-medium max-md:px-3 max-md:py-2 max-md:text-xs"
-                >
-                  {{ categoryName }}
-                </td>
-                <td
-                  class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
-                >
-                  {{ currency }} {{ totals.turnover }}
-                </td>
-                <td
-                  class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
-                  :class="getWinLossClass(totals.winloss)"
-                >
-                  {{ currency }} {{ totals.winloss }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
 
@@ -1037,6 +760,21 @@ const calculateTotals = () => {
       turnover: categoryTurnover[categoryName].turnover.toFixed(2),
       winloss: categoryTurnover[categoryName].winloss.toFixed(2),
     };
+  }
+};
+
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    await Swal.fire({
+      icon: "success",
+      title: $t("copied"),
+      text: text,
+      timer: 1000,
+      showConfirmButton: false,
+    });
+  } catch (error) {
+    console.error("Failed to copy:", error);
   }
 };
 

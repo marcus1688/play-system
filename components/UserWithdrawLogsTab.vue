@@ -119,9 +119,6 @@
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
               >
                 <span class="block">{{ log.processBy }}</span>
-                <span class="block text-xs max-md:text-[10px]"
-                  >( {{ log.processtime }} )</span
-                >
               </td>
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"

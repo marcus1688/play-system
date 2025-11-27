@@ -96,20 +96,6 @@
           />
         </div>
 
-        <!-- Password with Update Button -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-            >{{ $t("password") }}</label
-          >
-          <button
-            @click="showUpdatePasswordModal = true"
-            class="px-3 py-1 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-2 max-md:text-[10px]"
-          >
-            {{ $t("update_password") }}
-          </button>
-        </div>
-
         <!-- Phone Number -->
         <div>
           <label
@@ -144,78 +130,6 @@
           />
         </div>
 
-        <!-- Referral Code -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-            >{{ $t("referral_code") }}</label
-          >
-          <div class="text-sm max-md:text-xs">
-            {{ user.referralCode || "-" }}
-          </div>
-        </div>
-
-        <!-- Referral By -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-            >{{ $t("referral_by") }}</label
-          >
-          <div v-if="!isEditing" class="text-sm max-md:text-xs">
-            {{ user && user.referralBy ? user.referralBy.username : "-" }}
-          </div>
-          <div v-else class="flex flex-col gap-1">
-            <input
-              v-model="editedUser.referralByUsername"
-              type="text"
-              placeholder="Enter referrer username"
-              class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-xs"
-            />
-          </div>
-        </div>
-
-        <!-- Position Taking -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-            >{{ $t("position_taking") }}</label
-          >
-          <div v-if="!isEditing" class="text-sm max-md:text-xs">
-            <div class="text-sm max-md:text-xs">
-              {{ user.positionTaking || "0" }} %
-            </div>
-          </div>
-          <input
-            v-else
-            v-model="editedUser.positionTaking"
-            type="text"
-            class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-xs"
-          />
-        </div>
-
-        <!-- VIP Level -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-            >{{ $t("vip_level") }}</label
-          >
-          <div v-if="!isEditing" class="text-sm max-md:text-xs">
-            {{ user.viplevel }}
-          </div>
-          <CustomSelect v-else v-model="editedUser.viplevel">
-            <option v-if="['ae96'].includes(getCompanyId())" value="member">
-              member
-            </option>
-            <option
-              v-for="level in vipLevels"
-              :key="level._id"
-              :value="level.name"
-            >
-              {{ level.name }}
-            </option>
-          </CustomSelect>
-        </div>
-
         <!-- Total Turnover -->
         <div>
           <label
@@ -230,81 +144,6 @@
             v-model="editedUser.totalturnover"
             type="number"
             class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-xs"
-          />
-        </div>
-
-        <!-- Status with Toggle -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-            >{{ $t("status") }}</label
-          >
-
-          <div class="flex items-center gap-2">
-            <BaseToggleSwitch
-              :model-value="props.user.status"
-              @update:model-value="toggleStatus"
-            />
-            <div
-              :class="[
-                'px-3 py-1 text-xs rounded max-md:px-2 max-md:py-2 max-md:text-[10px]',
-                user.status
-                  ? 'bg-green-100 text-green-800'
-                  : 'bg-red-100 text-red-800',
-              ]"
-            >
-              {{ user.status ? $t("active") : $t("inactive") }}
-            </div>
-          </div>
-        </div>
-
-        <!-- Lucky Spin -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-            >{{ $t("lucky_spin") }}</label
-          >
-
-          <div class="flex items-center gap-2">
-            <div v-if="!isEditing" class="text-sm max-md:text-xs">
-              {{ user.luckySpinCount }} {{ $t("spins") }}
-              <button
-                @click="handleManageLuckySpin"
-                class="px-3 py-1 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-2 max-md:text-[10px]"
-              >
-                {{ $t("manage") }}
-              </button>
-            </div>
-            <input
-              v-else
-              v-model="editedUser.luckySpinCount"
-              type="text"
-              class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-xs"
-            />
-          </div>
-        </div>
-
-        <!-- Withdraw Lock -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-            >{{ $t("withdraw_lock") }}</label
-          >
-          <BaseToggleSwitch
-            :model-value="props.user.withdrawlock"
-            @update:model-value="toggleWithdrawLock"
-          />
-        </div>
-
-        <!-- Duplicate IP -->
-        <div>
-          <label
-            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-            >{{ $t("duplicate_ip") }}</label
-          >
-          <BaseToggleSwitch
-            :model-value="props.user.duplicateIP"
-            @update:model-value="toggleDuplicateIP"
           />
         </div>
 
@@ -334,47 +173,6 @@
           </NuxtLinkLocale>
         </div>
 
-        <!-- Magic Link -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 max-md:text-xs">
-            {{ $t("admin_access") }}
-          </label>
-          <button
-            @click="generateMagicLink"
-            :disabled="magicLinkLoading"
-            :class="[
-              'px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 max-md:px-3 max-md:py-1.5 max-md:text-xs',
-              magicLinkLoading
-                ? 'bg-gray-400 text-white cursor-not-allowed'
-                : 'bg-indigo-600 text-white lg:hover:bg-indigo-700 lg:hover:shadow-md',
-            ]"
-          >
-            <span v-if="magicLinkLoading" class="flex items-center gap-2">
-              <svg
-                class="animate-spin h-4 w-4 max-md:h-3 max-md:w-3"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                  fill="none"
-                />
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-              {{ $t("generating") }}
-            </span>
-            <span v-else>{{ $t("generate_magic_link") }} </span>
-          </button>
-        </div>
-
         <!-- Game ID -->
         <div v-if="user.gameId">
           <label
@@ -382,6 +180,17 @@
             >{{ $t("gameid") }}</label
           >
           <div class="text-sm max-md:text-xs">{{ user.gameId }}</div>
+        </div>
+
+        <!-- User Register Date -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
+            >{{ $t("register_date") }}</label
+          >
+          <div class="text-sm uppercase max-md:text-xs">
+            {{ formatDate(user.createdAt) }}
+          </div>
         </div>
 
         <!-- 918kaya Transfer Game ID -->
@@ -435,52 +244,6 @@
           >
             {{ $t("update") }}
           </button>
-        </div>
-
-        <!-- Login Information -->
-        <div class="grid grid-cols-2 gap-6 max-md:grid-cols-1 max-md:gap-3">
-          <div>
-            <label
-              class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-              >{{ $t("last_login_date") }}</label
-            >
-            <div class="text-sm max-md:text-xs">
-              {{ user.lastLogin ? formatDate(user.lastLogin) : "-" }}
-            </div>
-          </div>
-          <div>
-            <label
-              class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-              >{{ $t("register_date") }}</label
-            >
-            <div class="text-sm uppercase max-md:text-xs">
-              {{ formatDate(user.createdAt) }}
-            </div>
-          </div>
-          <div>
-            <label
-              class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-              >{{ $t("last_login_ip") }}</label
-            >
-            <div
-              class="text-sm cursor-pointer text-indigo-600 lg:hover:text-indigo-500 max-md:text-xs"
-              @click="handleIPClick(user.lastLoginIp)"
-            >
-              {{ user.lastLoginIp }}
-            </div>
-          </div>
-          <div>
-            <label
-              class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-              >{{ $t("register_ip") }}</label
-            >
-            <div
-              class="text-sm cursor-pointer text-indigo-600 lg:hover:text-indigo-500 max-md:text-xs"
-              @click="handleIPClick(user.registerIp)"
-            >
-              {{ user.registerIp }}
-            </div>
-          </div>
         </div>
       </div>
     </div>

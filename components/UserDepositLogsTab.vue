@@ -135,9 +135,6 @@
               >
                 <div>
                   <span class="block">{{ log.processBy }}</span>
-                  <span class="block text-xs max-md:text-[10px]"
-                    >( {{ log.processtime }} )</span
-                  >
                 </div>
               </td>
               <td
