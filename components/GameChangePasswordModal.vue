@@ -16,7 +16,7 @@
           </div>
         </div>
 
-        <div class="p-6 max-md:p-4">
+        <div class="p-4">
           <!-- Game Info -->
           <div
             class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4 max-md:p-3 max-md:mb-3"
