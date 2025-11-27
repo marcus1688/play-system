@@ -1525,5 +1525,11 @@
   "please_select_user_bank": "请选择用户银行",
   "user_no_bank_account": "用户没有银行账户",
   "please_select_promotion": "请选择优惠活动",
-  "confirm_bonus": "确认奖金"
+  "confirm_bonus": "确认奖金",
+  "enter_new_password": "输入新密码",
+  "password_min_length": "密码至少需要6个字符",
+  "confirm_change_password": "确认修改密码",
+  "confirm_change_password_message": "确定要修改密码吗？",
+  "password_changed_successfully": "密码修改成功",
+  "change_password_failed": "密码修改失败"
 }

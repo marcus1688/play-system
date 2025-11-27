@@ -1525,5 +1525,11 @@
   "please_select_user_bank": "Please select user bank",
   "user_no_bank_account": "User has no bank account",
   "please_select_promotion": "Please select a promotion",
-  "confirm_bonus": "Confirm Bonus"
+  "confirm_bonus": "Confirm Bonus",
+  "enter_new_password": "Enter new password",
+  "password_min_length": "Password must be at least 6 characters",
+  "confirm_change_password": "Confirm Change Password",
+  "confirm_change_password_message": "Are you sure you want to change the password?",
+  "password_changed_successfully": "Password changed successfully",
+  "change_password_failed": "Failed to change password"
 }

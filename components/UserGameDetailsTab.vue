@@ -2,6 +2,11 @@
   <div
     class="space-y-6 min-w-[500px] overflow-x-auto max-md:min-w-0 max-md:space-y-4"
   >
+    <GameChangePasswordModal
+      v-model:show="showChangePasswordModal"
+      :game="selectedGameForPassword"
+      :user-id="userData._id"
+    />
     <PageLoading v-if="isPageLoading" />
     <!-- Quick Actions -->
 
@@ -447,13 +452,6 @@
                   v-if="game.isHTMLGame || game.isManualGame"
                   class="flex justify-center gap-2 max-md:flex-col max-md:gap-1"
                 >
-                  <LoadingButton
-                    :loading="isTransferToMainButtonLoading[game._id]"
-                    @click="handleTransferToMain(game)"
-                    class="px-3 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-1 max-md:text-[10px]"
-                  >
-                    {{ $t("transfer_to_main") }}
-                  </LoadingButton>
                   <button
                     @click="handleTransferOut(game)"
                     class="px-3 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-1 max-md:text-[10px]"
@@ -466,6 +464,13 @@
                     class="px-3 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-1 max-md:text-[10px]"
                   >
                     {{ $t("account") }}
+                  </button>
+                  <button
+                    v-if="game.changePasswordApi"
+                    @click="handleChangePassword(game)"
+                    class="px-3 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-1 max-md:text-[10px]"
+                  >
+                    {{ $t("change_password") }}
                   </button>
                 </div>
                 <div v-else class="text-gray-500 max-md:text-xs">Seamless</div>
@@ -1211,6 +1216,14 @@ watch(
   },
   { deep: true }
 );
+
+const showChangePasswordModal = ref(false);
+const selectedGameForPassword = ref(null);
+
+const handleChangePassword = (game) => {
+  selectedGameForPassword.value = game;
+  showChangePasswordModal.value = true;
+};
 
 onMounted(async () => {
   const now = moment().tz("Asia/Kuala_Lumpur");
