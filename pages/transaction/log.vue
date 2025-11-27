@@ -190,9 +190,8 @@
                     icon="material-symbols:error"
                     class="text-red-500 max-md:w-3 max-md:h-3"
                   />
-                  {{ $t("username") }}: {{ item.username }}
+                  {{ item.fullname }}
                 </div>
-                <div>{{ $t("fullname") }}: {{ item.fullname }}</div>
               </td>
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
@@ -220,11 +219,7 @@
                   </div>
                 </div>
               </td>
-              <td
-                class="px-6 py-4 text-sm uppercase max-md:px-3 max-md:py-3 max-md:text-xs"
-              >
-                {{ item.method }}
-              </td>
+
               <td
                 class="px-6 py-4 text-sm uppercase max-md:px-3 max-md:py-3 max-md:text-xs"
               >
@@ -241,6 +236,11 @@
                 <span :class="getStatusStyle(item.status)">{{
                   item.status
                 }}</span>
+              </td>
+              <td
+                class="px-6 py-4 text-sm break-words max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                <div class="text-wrap">{{ item.game || "-" }}</div>
               </td>
               <td
                 class="px-6 py-4 text-sm break-words max-md:px-3 max-md:py-3 max-md:text-xs"
@@ -314,7 +314,6 @@
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
               >
                 <div>{{ item.processBy }}</div>
-                <div class="text-gray-500 text-xs">{{ item.processtime }}</div>
               </td>
             </tr>
             <tr
@@ -382,7 +381,6 @@ const tableHeaders = [
     labelCN: "银行详情",
     sortable: false,
   },
-  { key: "method", label: "Method", labelCN: "方式", sortable: false },
   {
     key: "transactionType",
     label: "Transaction Type",
@@ -391,6 +389,7 @@ const tableHeaders = [
   },
   { key: "amount", label: "Amount", labelCN: "金额", sortable: true },
   { key: "status", label: "Status", labelCN: "状态", sortable: true },
+  { key: "game", label: "Game", labelCN: "游戏", sortable: false },
   { key: "remark", label: "Remark", labelCN: "备注", sortable: false },
   { key: "receipt", label: "Receipt", labelCN: "收据", sortable: false },
   { key: "action", label: "Action", labelCN: "操作", sortable: false },

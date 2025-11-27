@@ -1517,5 +1517,9 @@
   "user_not_registered_kiosk": "用户未在此平台注册",
   "refresh_all": "刷新全部",
   "not_registered": "未注册",
-  "no_kiosk_available": "没有可用的游戏平台"
+  "no_kiosk_available": "没有可用的游戏平台",
+  "please_select_bank": "请选择银行",
+  "bonus_type": "奖金类型",
+  "estimated_bonus": "预计奖金",
+  "promotion_check_failed": "检查优惠资格失败"
 }

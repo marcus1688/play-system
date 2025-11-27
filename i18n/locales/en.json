@@ -1517,5 +1517,9 @@
   "user_not_registered_kiosk": "User is not registered in this kiosk",
   "refresh_all": "Refresh All",
   "not_registered": "Not Registered",
-  "no_kiosk_available": "No kiosk available"
+  "no_kiosk_available": "No kiosk available",
+  "please_select_bank": "Please select a bank",
+  "bonus_type": "Bonus Type",
+  "estimated_bonus": "Estimated Bonus",
+  "promotion_check_failed": "Failed to check promotion eligibility"
 }

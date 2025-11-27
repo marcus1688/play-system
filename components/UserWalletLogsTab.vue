@@ -78,6 +78,11 @@
               <th
                 class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
               >
+                {{ $t("game") }}
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
+              >
                 {{ $t("remark") }}
               </th>
               <th
@@ -116,6 +121,11 @@
                 <span :class="getStatusClass(log.status)">
                   {{ log.status }}
                 </span>
+              </td>
+              <td
+                class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
+              >
+                {{ log.game || "-" }}
               </td>
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
