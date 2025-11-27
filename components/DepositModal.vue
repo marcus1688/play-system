@@ -572,10 +572,13 @@ const handleSubmit = async () => {
     }
 
     // Step 2: Call Kiosk Transfer In API
+    const totalTransferAmount =
+      Number(formData.value.amount) + calculatedBonus.value;
+
     const transferResponse = await post(
       `${selectedKiosk.transferInAPI}/${props.userData?._id}`,
       {
-        transferAmount: Number(formData.value.amount),
+        transferAmount: totalTransferAmount,
       }
     );
 
