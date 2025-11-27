@@ -5,6 +5,16 @@
       :user-data="selectedDepositUser"
       @success="handleDepositSuccess"
     />
+    <WithdrawModal
+      v-model:show="showWithdrawModal"
+      :user-data="selectedWithdrawUser"
+      @success="handleWithdrawSuccess"
+    />
+    <BonusModal
+      v-model:show="showBonusModal"
+      :user-data="selectedBonusUser"
+      @success="handleBonusSuccess"
+    />
     <PageLoading v-if="isPageLoading" />
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-6 max-md:mb-4">
@@ -186,6 +196,16 @@
                     />
                     {{ $t("withdraw") }}
                   </button>
+                  <button
+                    @click="handleBonus(user)"
+                    class="px-3 py-2 text-white bg-purple-600 rounded lg:hover:bg-purple-700 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
+                  >
+                    <Icon
+                      icon="material-symbols:redeem"
+                      class="w-4 h-4 max-md:w-3 max-md:h-3"
+                    />
+                    {{ $t("bonus") }}
+                  </button>
                 </div>
               </td>
               <td
@@ -255,8 +275,12 @@ import { formatDate } from "~/utils/dateFormatter";
 import { formatAmount } from "~/utils/amountFormatter";
 import moment from "moment-timezone";
 
+const showBonusModal = ref(false);
+const selectedBonusUser = ref(null);
 const showDepositModal = ref(false);
 const selectedDepositUser = ref(null);
+const showWithdrawModal = ref(false);
+const selectedWithdrawUser = ref(null);
 const { isExporting, exportToExcel } = useExportExcel();
 const { getCompanyId } = useCompany();
 const adminUserData = useState("adminUserData");
@@ -300,18 +324,6 @@ const tableHeaders = [
     labelCN: "用户创建日期",
     sortable: true,
   },
-  // {
-  //   key: "lastLoginDate",
-  //   label: "Last Login Date",
-  //   labelCN: "上次登录日期",
-  //   sortable: true,
-  // },
-  // {
-  //   key: "lastLoginIP",
-  //   label: "Last Login IP",
-  //   labelCN: "上次登录IP",
-  //   sortable: false,
-  // },
   { key: "actions", label: "Actions", labelCN: "操作", sortable: false },
   { key: "delete", label: "Delete", labelCN: "删除", sortable: false },
 ];
@@ -675,10 +687,6 @@ const handleExport = async () => {
   }
 };
 
-const handleWithdraw = (user) => {
-  console.log("Withdraw for user:", user.username);
-};
-
 watch(currentPage, () => {
   fetchAllUsers();
 });
@@ -704,6 +712,24 @@ const handleDeposit = (user) => {
 };
 
 const handleDepositSuccess = async () => {
+  await fetchAllUsers();
+};
+
+const handleWithdraw = (user) => {
+  selectedWithdrawUser.value = user;
+  showWithdrawModal.value = true;
+};
+
+const handleWithdrawSuccess = async () => {
+  await fetchAllUsers();
+};
+
+const handleBonus = (user) => {
+  selectedBonusUser.value = user;
+  showBonusModal.value = true;
+};
+
+const handleBonusSuccess = async () => {
   await fetchAllUsers();
 };
 

@@ -7,14 +7,14 @@
       @pointerup.self="onBackdropUp"
     >
       <div
-        class="bg-white rounded-lg w-[700px] max-h-[90vh] overflow-y-auto max-w-full"
+        class="bg-white rounded-lg w-[500px] max-h-[90vh] overflow-y-auto max-w-full"
       >
         <div class="p-6 border-b max-md:p-4">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-4 max-md:gap-3">
-              <div class="w-2 h-8 bg-green-600 rounded-full max-md:h-6"></div>
+              <div class="w-2 h-8 bg-purple-600 rounded-full max-md:h-6"></div>
               <h2 class="text-xl font-semibold max-md:text-lg">
-                {{ $t("deposit") }}
+                {{ $t("bonus") }}
               </h2>
             </div>
             <button
@@ -138,12 +138,56 @@
             @submit.prevent="handleSubmit"
             class="space-y-4 max-md:space-y-3"
           >
-            <!-- Amount -->
+            <!-- Promotion Select -->
             <div>
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
-                {{ $t("deposit_amount") }} <span class="text-red-500">*</span>
+                {{ $t("promotion") }} <span class="text-red-500">*</span>
+              </label>
+              <CustomSelect v-model="formData.promotionId" required>
+                <option value="" disabled>{{ $t("select_promotion") }}</option>
+                <option
+                  v-for="promo in promotionList"
+                  :key="promo._id"
+                  :value="promo._id"
+                >
+                  {{
+                    $i18n.locale === "zh" ? promo.maintitle : promo.maintitleEN
+                  }}
+                  - {{ currency }} {{ formatAmount(promo.bonusexact) }}
+                </option>
+              </CustomSelect>
+
+              <!-- Selected Promotion Info -->
+              <div
+                v-if="selectedPromotion"
+                class="mt-2 p-3 bg-purple-50 border border-purple-200 rounded-lg max-md:p-2"
+              >
+                <div class="text-sm max-md:text-xs">
+                  <div class="flex justify-between mb-1">
+                    <span class="text-gray-600">{{ $t("bonus_type") }}:</span>
+                    <span class="font-semibold text-purple-600">
+                      {{ selectedPromotion.claimtype }}
+                    </span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">{{ $t("bonus_amount") }}:</span>
+                    <span class="font-bold text-purple-600">
+                      {{ currency }}
+                      {{ formatAmount(selectedPromotion.bonusexact) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Amount (Auto-filled, editable) -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("bonus_amount") }} <span class="text-red-500">*</span>
               </label>
               <input
                 v-model="formData.amount"
@@ -154,117 +198,6 @@
                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
                 required
               />
-            </div>
-
-            <!-- Bank Select -->
-            <div>
-              <label
-                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
-              >
-                {{ $t("bank_name") }} <span class="text-red-500">*</span>
-              </label>
-              <CustomSelect v-model="formData.bankId" required>
-                <option value="" disabled>{{ $t("select_bank") }}</option>
-                <option
-                  v-for="bank in bankList"
-                  :key="bank._id"
-                  :value="bank._id"
-                >
-                  {{ bank.bankname }} - {{ bank.ownername }} -
-                  {{ bank.bankaccount }}
-                </option>
-              </CustomSelect>
-            </div>
-
-            <!-- Promotion Select (Optional) -->
-            <div>
-              <label
-                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
-              >
-                {{ $t("promotion_optional") }}
-              </label>
-              <CustomSelect v-model="formData.promotionId">
-                <option value="">{{ $t("without_promotion") }}</option>
-                <option
-                  v-for="promo in promotionList"
-                  :key="promo._id"
-                  :value="promo._id"
-                >
-                  {{
-                    $i18n.locale === "zh" ? promo.maintitle : promo.maintitleEN
-                  }}
-                </option>
-              </CustomSelect>
-              <!-- Promotion Info -->
-              <div
-                v-if="selectedPromotion"
-                class="mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg max-md:p-2 max-md:mt-1.5"
-              >
-                <div class="text-sm max-md:text-xs">
-                  <div class="flex justify-between mb-1">
-                    <span class="text-gray-600">{{ $t("bonus_type") }}:</span>
-                    <span class="font-semibold text-indigo-600">
-                      {{ selectedPromotion.claimtype }}
-                    </span>
-                  </div>
-                  <div
-                    v-if="selectedPromotion.claimtype === 'Percentage'"
-                    class="flex justify-between mb-1"
-                  >
-                    <span class="text-gray-600"
-                      >{{ $t("bonus_percentage") }}:</span
-                    >
-                    <span class="font-semibold text-indigo-600">
-                      {{ selectedPromotion.bonuspercentage }}%
-                    </span>
-                  </div>
-                  <div
-                    v-if="selectedPromotion.claimtype === 'Exact'"
-                    class="flex justify-between mb-1"
-                  >
-                    <span class="text-gray-600">{{ $t("bonus_amount") }}:</span>
-                    <span class="font-semibold text-indigo-600">
-                      {{ currency }}
-                      {{ formatAmount(selectedPromotion.bonusexact) }}
-                    </span>
-                  </div>
-                  <div
-                    v-if="selectedPromotion.maxbonus > 0"
-                    class="flex justify-between mb-1"
-                  >
-                    <span class="text-gray-600">{{ $t("max_bonus") }}:</span>
-                    <span class="font-semibold text-indigo-600">
-                      {{ currency }}
-                      {{ formatAmount(selectedPromotion.maxbonus) }}
-                    </span>
-                  </div>
-                  <div
-                    v-if="calculatedBonus > 0"
-                    class="flex justify-between pt-2 border-t border-indigo-200 mt-2"
-                  >
-                    <span class="text-gray-700 font-medium"
-                      >{{ $t("estimated_bonus") }}:</span
-                    >
-                    <span class="font-bold text-green-600">
-                      {{ currency }} {{ formatAmount(calculatedBonus) }}
-                    </span>
-                  </div>
-                  <div
-                    v-if="calculatedBonus > 0 && formData.amount"
-                    class="flex justify-between mt-1"
-                  >
-                    <span class="text-gray-700 font-medium"
-                      >{{ $t("total_deposit") }}:</span
-                    >
-                    <span class="font-bold text-indigo-600">
-                      {{ currency }}
-                      {{
-                        formatAmount(Number(formData.amount) + calculatedBonus)
-                      }}
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <!-- Remark (Optional) -->
@@ -297,9 +230,9 @@
           <LoadingButton
             :loading="isLoading"
             @click="handleSubmit"
-            class="px-4 py-2 bg-green-600 text-white rounded-lg lg:hover:bg-green-500 max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:w-full"
+            class="px-4 py-2 bg-purple-600 text-white rounded-lg lg:hover:bg-purple-500 max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:w-full"
           >
-            {{ $t("confirm_deposit") }}
+            {{ $t("confirm_bonus") }}
           </LoadingButton>
         </div>
       </div>
@@ -333,14 +266,12 @@ const currency = useCurrency();
 const isLoading = ref(false);
 const isLoadingBalances = ref(false);
 const kioskListWithBalances = ref([]);
-const bankList = ref([]);
 const promotionList = ref([]);
 
 const formData = ref({
-  amount: "",
   kioskId: "",
-  bankId: "",
   promotionId: "",
+  amount: "",
   remark: "",
 });
 
@@ -364,34 +295,6 @@ const selectedPromotion = computed(() => {
   return promotionList.value.find((p) => p._id === formData.value.promotionId);
 });
 
-const calculatedBonus = computed(() => {
-  if (!selectedPromotion.value || !formData.value.amount) return 0;
-
-  const amount = Number(formData.value.amount);
-  let bonus = 0;
-
-  if (selectedPromotion.value.claimtype === "Percentage") {
-    bonus =
-      (amount * parseFloat(selectedPromotion.value.bonuspercentage)) / 100;
-    if (
-      selectedPromotion.value.maxbonus > 0 &&
-      bonus > selectedPromotion.value.maxbonus
-    ) {
-      bonus = selectedPromotion.value.maxbonus;
-    }
-  } else if (selectedPromotion.value.claimtype === "Exact") {
-    bonus = parseFloat(selectedPromotion.value.bonusexact);
-    if (
-      selectedPromotion.value.maxbonus > 0 &&
-      bonus > selectedPromotion.value.maxbonus
-    ) {
-      bonus = selectedPromotion.value.maxbonus;
-    }
-  }
-
-  return bonus;
-});
-
 const copyToClipboard = async (text) => {
   try {
     await navigator.clipboard.writeText(text);
@@ -413,7 +316,6 @@ const fetchAllKioskBalances = async () => {
     const { data } = await post("kiosk/check-all-balances", {
       userId: props.userData?._id,
     });
-    console.log(data);
     if (data.success) {
       kioskListWithBalances.value = data.data.map((kiosk) => ({
         ...kiosk,
@@ -427,20 +329,9 @@ const fetchAllKioskBalances = async () => {
   }
 };
 
-const fetchBankList = async () => {
-  try {
-    const { data } = await get("banklist");
-    if (data.success) {
-      bankList.value = data.data;
-    }
-  } catch (error) {
-    console.error("Error fetching bank list:", error);
-  }
-};
-
 const fetchPromotionList = async () => {
   try {
-    const { data } = await get("getdepositpromotion");
+    const { data } = await get("getexactpromotion");
     if (data.success) {
       promotionList.value = data.data;
     }
@@ -450,15 +341,6 @@ const fetchPromotionList = async () => {
 };
 
 const handleSubmit = async () => {
-  if (!formData.value.amount || formData.value.amount <= 0) {
-    await Swal.fire({
-      icon: "warning",
-      title: $t("warning"),
-      text: $t("please_enter_valid_amount"),
-    });
-    return;
-  }
-
   if (!formData.value.kioskId) {
     await Swal.fire({
       icon: "warning",
@@ -468,11 +350,20 @@ const handleSubmit = async () => {
     return;
   }
 
-  if (!formData.value.bankId) {
+  if (!formData.value.promotionId) {
     await Swal.fire({
       icon: "warning",
       title: $t("warning"),
-      text: $t("please_select_bank"),
+      text: $t("please_select_promotion"),
+    });
+    return;
+  }
+
+  if (!formData.value.amount || formData.value.amount <= 0) {
+    await Swal.fire({
+      icon: "warning",
+      title: $t("warning"),
+      text: $t("please_enter_valid_amount"),
     });
     return;
   }
@@ -488,43 +379,27 @@ const handleSubmit = async () => {
     return;
   }
 
-  const selectedBank = bankList.value.find(
-    (b) => b._id === formData.value.bankId
-  );
-
   try {
     const result = await Swal.fire({
-      title: $t("confirm_deposit"),
+      title: $t("confirm_bonus"),
       html: `
         <div class="text-left">
           <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
           <p><strong>${$t("gameid")}:</strong> ${selectedKiosk.userKioskId}</p>
-          <p><strong>${$t("amount")}:</strong> ${currency.value} ${formatAmount(
-        formData.value.amount
-      )}</p>
           <p><strong>${$t("kiosk")}:</strong> ${selectedKiosk.name}</p>
-          <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname}</p>
-          ${
-            selectedPromotion.value
-              ? `<p><strong>${$t("promotion")}:</strong> ${
-                  $locale.value === "zh"
-                    ? selectedPromotion.value.maintitle
-                    : selectedPromotion.value.maintitleEN
-                }</p>`
-              : ""
-          }
-          ${
-            calculatedBonus.value > 0
-              ? `<p><strong>${$t("bonus")}:</strong> ${
-                  currency.value
-                } ${formatAmount(calculatedBonus.value)}</p>`
-              : ""
-          }
+          <p><strong>${$t("promotion")}:</strong> ${
+        $locale.value === "zh"
+          ? selectedPromotion.value.maintitle
+          : selectedPromotion.value.maintitleEN
+      }</p>
+          <p><strong>${$t("bonus_amount")}:</strong> ${
+        currency.value
+      } ${formatAmount(formData.value.amount)}</p>
         </div>
       `,
       icon: "question",
       showCancelButton: true,
-      confirmButtonColor: "#16a34a",
+      confirmButtonColor: "#9333ea",
       cancelButtonColor: "#d33",
       confirmButtonText: $t("confirm"),
       cancelButtonText: $t("cancel"),
@@ -534,47 +409,11 @@ const handleSubmit = async () => {
 
     isLoading.value = true;
 
-    // Step 1: Check promotion eligibility (if selected)
-    if (formData.value.promotionId) {
-      try {
-        const checkResponse = await post("checkpromotion", {
-          promotionId: formData.value.promotionId,
-          depositAmount: Number(formData.value.amount),
-          userid: props.userData?._id,
-          username: props.userData?.username,
-        });
-
-        if (!checkResponse.data.success) {
-          await Swal.fire({
-            icon: "info",
-            title: $t("info"),
-            text:
-              checkResponse.data.message?.[$locale.value] ||
-              checkResponse.data.message?.en,
-          });
-          isLoading.value = false;
-          return;
-        }
-      } catch (error) {
-        console.error("Error checking promotion:", error);
-        await Swal.fire({
-          icon: "error",
-          title: $t("error"),
-          text: $t("promotion_check_failed"),
-        });
-        isLoading.value = false;
-        return;
-      }
-    }
-
-    // Step 2: Call Kiosk Transfer In API
-    const totalTransferAmount =
-      Number(formData.value.amount) + calculatedBonus.value;
-
+    // Step 1: Call Kiosk Transfer In API
     const transferResponse = await post(
       `${selectedKiosk.transferInAPI}/${props.userData?._id}`,
       {
-        transferAmount: totalTransferAmount,
+        transferAmount: Number(formData.value.amount),
       }
     );
 
@@ -591,37 +430,18 @@ const handleSubmit = async () => {
       return;
     }
 
-    // Step 3: Submit and auto-approve deposit
-    const { data } = await post("admin-direct-deposit", {
+    // Step 2: Submit and auto-approve bonus
+    const { data } = await post("admin-direct-bonus", {
       userId: props.userData?._id,
       username: props.userData?.username,
-      amount: Number(formData.value.amount),
       kioskId: formData.value.kioskId,
       kioskName: selectedKiosk.name,
-      userKioskId: selectedKiosk.userKioskId,
-      bankId: formData.value.bankId,
-      promotionId: formData.value.promotionId || null,
-      bonusAmount: calculatedBonus.value || 0,
+      promotionId: formData.value.promotionId,
+      amount: Number(formData.value.amount),
       remark: formData.value.remark,
     });
 
     if (data.success) {
-      // Step 4: Submit bonus if promotion selected
-      if (formData.value.promotionId && calculatedBonus.value > 0) {
-        try {
-          await post("submitdepositbonus", {
-            userid: props.userData?._id,
-            username: props.userData?.username,
-            promotionId: formData.value.promotionId,
-            depositId: data.depositId,
-            depositAmount: Number(formData.value.amount),
-            kioskName: selectedKiosk.name,
-          });
-        } catch (bonusError) {
-          console.error("Error submitting bonus:", bonusError);
-        }
-      }
-
       await Swal.fire({
         icon: "success",
         title: $t("success"),
@@ -638,7 +458,7 @@ const handleSubmit = async () => {
       });
     }
   } catch (error) {
-    console.error("Error processing deposit:", error);
+    console.error("Error processing bonus:", error);
     await Swal.fire({
       icon: "error",
       title: $t("error"),
@@ -654,22 +474,35 @@ const handleSubmit = async () => {
 
 const closeModal = () => {
   formData.value = {
-    amount: "",
     kioskId: "",
-    bankId: "",
     promotionId: "",
+    amount: "",
     remark: "",
   };
   kioskListWithBalances.value = [];
   emit("update:show", false);
 };
 
+// Auto-fill amount when promotion selected
+watch(
+  () => formData.value.promotionId,
+  (newPromotionId) => {
+    if (newPromotionId) {
+      const promo = promotionList.value.find((p) => p._id === newPromotionId);
+      if (promo && promo.bonusexact) {
+        formData.value.amount = promo.bonusexact;
+      }
+    } else {
+      formData.value.amount = "";
+    }
+  }
+);
+
 watch(
   () => props.show,
   (newShow) => {
     if (newShow) {
       fetchAllKioskBalances();
-      fetchBankList();
       fetchPromotionList();
     }
   }

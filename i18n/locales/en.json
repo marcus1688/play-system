@@ -1521,5 +1521,9 @@
   "please_select_bank": "Please select a bank",
   "bonus_type": "Bonus Type",
   "estimated_bonus": "Estimated Bonus",
-  "promotion_check_failed": "Failed to check promotion eligibility"
+  "promotion_check_failed": "Failed to check promotion eligibility",
+  "please_select_user_bank": "Please select user bank",
+  "user_no_bank_account": "User has no bank account",
+  "please_select_promotion": "Please select a promotion",
+  "confirm_bonus": "Confirm Bonus"
 }

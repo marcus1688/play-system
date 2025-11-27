@@ -1521,5 +1521,9 @@
   "please_select_bank": "请选择银行",
   "bonus_type": "奖金类型",
   "estimated_bonus": "预计奖金",
-  "promotion_check_failed": "检查优惠资格失败"
+  "promotion_check_failed": "检查优惠资格失败",
+  "please_select_user_bank": "请选择用户银行",
+  "user_no_bank_account": "用户没有银行账户",
+  "please_select_promotion": "请选择优惠活动",
+  "confirm_bonus": "确认奖金"
 }
