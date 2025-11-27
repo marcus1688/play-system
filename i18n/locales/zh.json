@@ -1531,5 +1531,10 @@
   "confirm_change_password": "确认修改密码",
   "confirm_change_password_message": "确定要修改密码吗？",
   "password_changed_successfully": "密码修改成功",
-  "change_password_failed": "密码修改失败"
+  "change_password_failed": "密码修改失败",
+  "copied": "复制",
+  "cashout_failed": "扣除处理失败",
+  "transfer_out_amount": "下分金额",
+  "cashout_remaining_balance": "扣除剩余余额",
+  "withdraw_exceeds_balance": "提款金额超过平台余额"
 }

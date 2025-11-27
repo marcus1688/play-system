@@ -209,7 +209,7 @@ const handleSubmit = async () => {
 
     const endpoint = `${props.game.changePasswordApi}/${props.userId}`;
     const { data } = await post(endpoint, {
-      newPassword: formData.value.newPassword,
+      newpassword: formData.value.newPassword,
     });
 
     if (data.success) {

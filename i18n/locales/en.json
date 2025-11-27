@@ -1531,5 +1531,10 @@
   "confirm_change_password": "Confirm Change Password",
   "confirm_change_password_message": "Are you sure you want to change the password?",
   "password_changed_successfully": "Password changed successfully",
-  "change_password_failed": "Failed to change password"
+  "change_password_failed": "Failed to change password",
+  "copied": "Copied",
+  "cashout_failed": "Failed to process cashout",
+  "transfer_out_amount": "Transfer Out Amount",
+  "cashout_remaining_balance": "CashOut remaining balance",
+  "withdraw_exceeds_balance": "Withdraw amount exceeds kiosk balance"
 }

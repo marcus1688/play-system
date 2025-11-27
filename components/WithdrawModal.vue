@@ -135,6 +135,122 @@
               />
             </div>
 
+            <!-- CashOut Remaining Balance Checkbox -->
+            <div class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="cashoutRemaining"
+                v-model="formData.cashoutRemaining"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              />
+              <label
+                for="cashoutRemaining"
+                class="text-sm text-gray-700 max-md:text-xs"
+              >
+                {{ $t("cashout_remaining_balance") }}
+              </label>
+            </div>
+
+            <!-- CashOut Info (Show if cashoutRemaining checked and has kiosk balance) -->
+            <div
+              v-if="
+                formData.cashoutRemaining &&
+                selectedKioskInfo &&
+                cashoutAmount > 0
+              "
+              class="p-3 bg-orange-50 border border-orange-200 rounded-lg max-md:p-2"
+            >
+              <div class="text-sm max-md:text-xs">
+                <div class="flex justify-between mb-1">
+                  <span class="text-gray-600">{{ $t("kiosk_balance") }}:</span>
+                  <span class="font-semibold text-gray-800">
+                    {{ currency }} {{ formatAmount(selectedKioskInfo.balance) }}
+                  </span>
+                </div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-gray-600"
+                    >{{ $t("withdraw_amount") }}:</span
+                  >
+                  <span class="font-semibold text-gray-800">
+                    {{ currency }} {{ formatAmount(formData.amount) }}
+                  </span>
+                </div>
+                <div
+                  class="flex justify-between pt-2 border-t border-orange-200 mt-2"
+                >
+                  <span class="text-gray-700 font-medium"
+                    >{{ $t("cashout_amount") }}:</span
+                  >
+                  <span class="font-bold text-red-600">
+                    {{ currency }} {{ formatAmount(cashoutAmount) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CashOut Remark (Show if cashoutRemaining checked and has cashout) -->
+            <div v-if="formData.cashoutRemaining && cashoutAmount > 0">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("cashout_remark") }}
+              </label>
+              <input
+                v-model="formData.cashoutRemark"
+                type="text"
+                :placeholder="$t('enter_cashout_remark')"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
+              />
+            </div>
+
+            <!-- CashOut Remark (Show if cashoutAmount > 0) -->
+            <div v-if="formData.cashoutAmount > 0">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("cashout_remark") }}
+              </label>
+              <input
+                v-model="formData.cashoutRemark"
+                type="text"
+                :placeholder="$t('enter_cashout_remark')"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
+              />
+            </div>
+
+            <!-- Actual Withdraw Info (Show if cashoutAmount > 0) -->
+            <div
+              v-if="formData.cashoutAmount > 0 && formData.amount"
+              class="p-3 bg-orange-50 border border-orange-200 rounded-lg max-md:p-2"
+            >
+              <div class="text-sm max-md:text-xs">
+                <div class="flex justify-between mb-1">
+                  <span class="text-gray-600"
+                    >{{ $t("withdraw_amount") }}:</span
+                  >
+                  <span class="font-semibold text-gray-800">
+                    {{ currency }} {{ formatAmount(formData.amount) }}
+                  </span>
+                </div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-gray-600">{{ $t("cashout_amount") }}:</span>
+                  <span class="font-semibold text-red-600">
+                    - {{ currency }} {{ formatAmount(formData.cashoutAmount) }}
+                  </span>
+                </div>
+                <div
+                  class="flex justify-between pt-2 border-t border-orange-200 mt-2"
+                >
+                  <span class="text-gray-700 font-medium"
+                    >{{ $t("actual_withdraw_amount") }}:</span
+                  >
+                  <span class="font-bold text-orange-600">
+                    {{ currency }} {{ formatAmount(actualWithdrawAmount) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <!-- Bank Select -->
             <div>
               <label
@@ -216,7 +332,7 @@ const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
   }
 });
 
-const { get, post } = useApiEndpoint();
+const { get, post, patch } = useApiEndpoint();
 const currency = useCurrency();
 const isLoading = ref(false);
 const isLoadingBalances = ref(false);
@@ -229,7 +345,37 @@ const formData = ref({
   kioskId: "",
   bankId: "",
   remark: "",
+  cashoutRemaining: false,
+  cashoutRemark: "",
 });
+
+const cashoutAmount = computed(() => {
+  if (!formData.value.cashoutRemaining || !selectedKioskInfo.value) return 0;
+  const kioskBalance = Number(selectedKioskInfo.value.balance) || 0;
+  const withdrawAmount = Number(formData.value.amount) || 0;
+  return Math.max(0, kioskBalance - withdrawAmount);
+});
+
+const actualWithdrawAmount = computed(() => {
+  const amount = Number(formData.value.amount) || 0;
+  const cashout = Number(formData.value.cashoutAmount) || 0;
+  return Math.max(0, amount - cashout);
+});
+
+const processCashout = async () => {
+  if (cashoutAmount.value <= 0) return { success: true };
+  try {
+    const { data } = await patch(`user/cashout/${props.userData?._id}`, {
+      amount: cashoutAmount.value,
+      remark: formData.value.cashoutRemark,
+      kioskName: selectedKioskInfo.value?.name,
+    });
+    return data;
+  } catch (error) {
+    console.error("Error processing cashout:", error);
+    return { success: false, error };
+  }
+};
 
 const formatAmount = (amount) => {
   if (amount === null || amount === undefined) return "0.00";
@@ -336,6 +482,21 @@ const handleSubmit = async () => {
     return;
   }
 
+  // Validate withdraw amount <= kiosk balance
+  if (Number(formData.value.amount) > Number(selectedKiosk.balance)) {
+    await Swal.fire({
+      icon: "warning",
+      title: $t("warning"),
+      text: $t("withdraw_exceeds_balance"),
+    });
+    return;
+  }
+
+  // Calculate transfer out amount (full balance if cashout, else just withdraw amount)
+  const transferOutAmount = formData.value.cashoutRemaining
+    ? Number(selectedKiosk.balance)
+    : Number(formData.value.amount);
+
   try {
     const result = await Swal.fire({
       title: $t("confirm_withdraw"),
@@ -343,9 +504,22 @@ const handleSubmit = async () => {
       <div class="text-left">
         <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
         <p><strong>${$t("gameid")}:</strong> ${selectedKiosk.userKioskId}</p>
+        <p><strong>${$t("kiosk_balance")}:</strong> ${
+        currency.value
+      } ${formatAmount(selectedKiosk.balance)}</p>
+        <p><strong>${$t("transfer_out_amount")}:</strong> ${
+        currency.value
+      } ${formatAmount(transferOutAmount)}</p>
         <p><strong>${$t("withdraw_amount")}:</strong> ${
         currency.value
       } ${formatAmount(formData.value.amount)}</p>
+        ${
+          cashoutAmount.value > 0
+            ? `<p><strong>${$t("cashout_amount")}:</strong> ${
+                currency.value
+              } ${formatAmount(cashoutAmount.value)}</p>`
+            : ""
+        }
         <p><strong>${$t("kiosk")}:</strong> ${selectedKiosk.name}</p>
         <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname} - ${
         selectedBank?.ownername
@@ -364,11 +538,11 @@ const handleSubmit = async () => {
 
     isLoading.value = true;
 
-    // Step 1: Call Kiosk Transfer Out API
+    // Step 1: Call Kiosk Transfer Out API (full balance if cashout remaining)
     const transferResponse = await post(
       `${selectedKiosk.transferOutAPI}/${props.userData?._id}`,
       {
-        transferAmount: Number(formData.value.amount),
+        transferAmount: transferOutAmount,
       }
     );
 
@@ -385,7 +559,24 @@ const handleSubmit = async () => {
       return;
     }
 
-    // Step 2: Submit and auto-approve withdraw
+    // Step 2: Process CashOut if any
+    if (cashoutAmount.value > 0) {
+      const cashoutResult = await processCashout();
+      if (!cashoutResult.success) {
+        await Swal.fire({
+          icon: "error",
+          title: $t("error"),
+          text:
+            cashoutResult.message?.[$locale.value] ||
+            cashoutResult.message?.en ||
+            $t("cashout_failed"),
+        });
+        isLoading.value = false;
+        return;
+      }
+    }
+
+    // Step 3: Submit and auto-approve withdraw (only withdraw amount)
     const { data } = await post("admin-direct-withdraw", {
       userId: props.userData?._id,
       username: props.userData?.username,
@@ -434,6 +625,8 @@ const closeModal = () => {
     kioskId: "",
     bankId: "",
     remark: "",
+    cashoutRemaining: false,
+    cashoutRemark: "",
   };
   kioskListWithBalances.value = [];
   bankList.value = [];

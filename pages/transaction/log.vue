@@ -240,7 +240,7 @@
               <td
                 class="px-6 py-4 text-sm break-words max-md:px-3 max-md:py-3 max-md:text-xs"
               >
-                <div class="text-wrap">{{ item.game || "-" }}</div>
+                <div class="text-nowrap">{{ item.game || "-" }}</div>
               </td>
               <td
                 class="px-6 py-4 text-sm break-words max-md:px-3 max-md:py-3 max-md:text-xs"
