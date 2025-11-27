@@ -255,6 +255,20 @@
                       {{ currency }} {{ formatAmount(calculatedBonus) }}
                     </span>
                   </div>
+                  <div
+                    v-if="calculatedBonus > 0 && formData.amount"
+                    class="flex justify-between mt-1"
+                  >
+                    <span class="text-gray-700 font-medium"
+                      >{{ $t("total_deposit") }}:</span
+                    >
+                    <span class="font-bold text-indigo-600">
+                      {{ currency }}
+                      {{
+                        formatAmount(Number(formData.amount) + calculatedBonus)
+                      }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -619,6 +633,7 @@ const handleSubmit = async () => {
             promotionId: formData.value.promotionId,
             depositId: data.depositId,
             depositAmount: Number(formData.value.amount),
+            kioskName: selectedKiosk.name,
           });
         } catch (bonusError) {
           console.error("Error submitting bonus:", bonusError);
