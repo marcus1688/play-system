@@ -343,6 +343,7 @@
 
 <script setup>
 import { formatDate } from "~/utils/dateFormatter";
+import { Icon } from "@iconify/vue";
 
 const props = defineProps({
   user: {

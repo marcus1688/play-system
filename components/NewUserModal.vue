@@ -279,7 +279,6 @@ const removePhoneNumber = (index) => {
 const fetchNextUserId = async () => {
   try {
     const { data } = await get("preview-next-userid");
-    console.log(data);
     if (data.success) {
       nextUserId.value = data.nextUserId;
     }

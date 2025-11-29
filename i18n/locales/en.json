@@ -1568,5 +1568,6 @@
   "actual_cashout": "Actual Cashout",
   "add_phone_number": "Add Phone Number",
   "primary": "Primary",
-  "attendancebonus": "Attendance Bonus"
+  "attendancebonus": "Attendance Bonus",
+  "loyaltybonus": "Loyalty Bonus"
 }

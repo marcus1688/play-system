@@ -1568,5 +1568,6 @@
   "actual_cashout": "实际扣除",
   "add_phone_number": "添加电话号码",
   "primary": "主号码",
-  "attendancebonus": "签到奖金"
+  "attendancebonus": "签到奖金",
+  "loyaltybonus": "忠实奖金"
 }
