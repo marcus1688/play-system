@@ -93,6 +93,12 @@
                       {{ currency }}
                       {{ formatAmount(selectedFromKiosk.balance) }}
                     </span>
+                    <span
+                      v-if="fromKioskMultiplier > 1"
+                      class="text-gray-500 ml-1"
+                    >
+                      (x{{ fromKioskMultiplier }})
+                    </span>
                   </div>
                   <div class="flex items-center gap-2">
                     <span class="text-gray-600">{{ $t("gameid") }}:</span>
@@ -154,6 +160,12 @@
                     <span class="font-bold text-green-600 ml-1">
                       {{ currency }} {{ formatAmount(selectedToKiosk.balance) }}
                     </span>
+                    <span
+                      v-if="toKioskMultiplier > 1"
+                      class="text-gray-500 ml-1"
+                    >
+                      (x{{ toKioskMultiplier }})
+                    </span>
                   </div>
                   <div class="flex items-center gap-2">
                     <span class="text-gray-600">{{ $t("gameid") }}:</span>
@@ -201,14 +213,23 @@
                   <span class="text-gray-600">{{ $t("from") }}:</span>
                   <span class="font-semibold text-red-600">
                     {{ selectedFromKiosk.name }} (-{{ currency }}
-                    {{ formatAmount(formData.amount) }})
+                    {{ formatAmount(actualTransferOutAmount) }})
                   </span>
                 </div>
-                <div class="flex justify-between">
+                <div class="flex justify-between mb-1">
                   <span class="text-gray-600">{{ $t("to") }}:</span>
                   <span class="font-semibold text-green-600">
                     {{ selectedToKiosk.name }} (+{{ currency }}
-                    {{ formatAmount(formData.amount) }})
+                    {{ formatAmount(actualTransferInAmount) }})
+                  </span>
+                </div>
+                <div
+                  v-if="fromKioskMultiplier !== toKioskMultiplier"
+                  class="flex justify-between pt-2 border-t border-blue-200 mt-2"
+                >
+                  <span class="text-gray-600">{{ $t("actual_value") }}:</span>
+                  <span class="font-bold text-blue-600">
+                    {{ currency }} {{ formatAmount(actualTransferValue) }}
                   </span>
                 </div>
               </div>
@@ -340,6 +361,34 @@ const fetchAllKioskBalances = async () => {
   }
 };
 
+const fromKioskMultiplier = computed(() => {
+  if (!selectedFromKiosk.value) return 1;
+  const kioskName = selectedFromKiosk.value.name?.toLowerCase() || "";
+  if (kioskName.includes("x5")) return 5;
+  if (kioskName.includes("x2")) return 2;
+  return 1;
+});
+
+const toKioskMultiplier = computed(() => {
+  if (!selectedToKiosk.value) return 1;
+  const kioskName = selectedToKiosk.value.name?.toLowerCase() || "";
+  if (kioskName.includes("x5")) return 5;
+  if (kioskName.includes("x2")) return 2;
+  return 1;
+});
+
+const actualTransferOutAmount = computed(() => {
+  return Number(formData.value.amount || 0);
+});
+
+const actualTransferInAmount = computed(() => {
+  const baseAmount = actualTransferOutAmount.value * fromKioskMultiplier.value;
+  return baseAmount / toKioskMultiplier.value;
+});
+
+const actualTransferValue = computed(() => {
+  return actualTransferOutAmount.value * fromKioskMultiplier.value;
+});
 const handleSubmit = async () => {
   if (!formData.value.amount || formData.value.amount <= 0) {
     await Swal.fire({
@@ -411,17 +460,27 @@ const handleSubmit = async () => {
     const result = await Swal.fire({
       title: $t("confirm_transfer"),
       html: `
-      <div class="text-left">
-        <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
-        <p><strong>${$t("from_kiosk")}:</strong> ${fromKiosk.name}</p>
-        <p><strong>${$t("from_gameid")}:</strong> ${fromKiosk.userKioskId}</p>
-        <p><strong>${$t("to_kiosk")}:</strong> ${toKiosk.name}</p>
-        <p><strong>${$t("to_gameid")}:</strong> ${toKiosk.userKioskId}</p>
-        <p><strong>${$t("transfer_amount")}:</strong> ${
-        currency.value
-      } ${formatAmount(formData.value.amount)}</p>
-      </div>
-      `,
+  <div class="text-left">
+    <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
+    <p><strong>${$t("from_kiosk")}:</strong> ${fromKiosk.name}${
+        fromKioskMultiplier.value > 1 ? ` (x${fromKioskMultiplier.value})` : ""
+      }</p>
+    <p><strong>${$t("from_gameid")}:</strong> ${fromKiosk.userKioskId}</p>
+    <p><strong>${$t("transfer_out")}:</strong> ${currency.value} ${formatAmount(
+        actualTransferOutAmount.value
+      )}</p>
+    <p><strong>${$t("to_kiosk")}:</strong> ${toKiosk.name}${
+        toKioskMultiplier.value > 1 ? ` (x${toKioskMultiplier.value})` : ""
+      }</p>
+    <p><strong>${$t("to_gameid")}:</strong> ${toKiosk.userKioskId}</p>
+    <p><strong>${$t("transfer_in")}:</strong> ${currency.value} ${formatAmount(
+        actualTransferInAmount.value
+      )}</p>
+    <p><strong>${$t("actual_value")}:</strong> ${currency.value} ${formatAmount(
+        actualTransferValue.value
+      )}</p>
+  </div>
+  `,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#2563eb",
@@ -429,7 +488,6 @@ const handleSubmit = async () => {
       confirmButtonText: $t("confirm"),
       cancelButtonText: $t("cancel"),
     });
-
     if (!result.isConfirmed) return;
 
     isLoading.value = true;
@@ -459,7 +517,7 @@ const handleSubmit = async () => {
     const transferInResponse = await post(
       `${toKiosk.transferInAPI}/${props.userData?._id}`,
       {
-        transferAmount: Number(formData.value.amount),
+        transferAmount: Number(actualTransferInAmount.value),
       }
     );
 
@@ -485,16 +543,19 @@ const handleSubmit = async () => {
     const { data } = await post("admin-kiosk-transfer", {
       userId: props.userData?._id,
       username: props.userData?.username,
-      amount: Number(formData.value.amount),
+      amount: Number(actualTransferValue.value),
+      transferOutAmount: Number(actualTransferOutAmount.value),
+      transferInAmount: Number(actualTransferInAmount.value),
       fromKioskId: formData.value.fromKioskId,
       fromKioskName: fromKiosk.name,
       fromUserKioskId: fromKiosk.userKioskId,
+      fromMultiplier: fromKioskMultiplier.value,
       toKioskId: formData.value.toKioskId,
       toKioskName: toKiosk.name,
       toUserKioskId: toKiosk.userKioskId,
+      toMultiplier: toKioskMultiplier.value,
       remark: formData.value.remark,
     });
-
     if (data.success) {
       await Swal.fire({
         icon: "success",

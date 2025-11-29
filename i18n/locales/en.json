@@ -1562,5 +1562,8 @@
   "claim_vip_monthly_bonus_confirmation": "Are you sure you want to claim this VIP monthly bonus?",
   "claim_vip_monthly_bonus": "Claim VIP Monthly Bonus",
   "multiplier": "Multiplier",
-  "actual_withdraw": "Actual Withdraw"
+  "actual_withdraw": "Actual Withdraw",
+  "actual_value": "Actual Value",
+  "transfer_in": "Transfer In",
+  "actual_cashout": "Actual Cashout"
 }

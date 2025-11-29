@@ -1562,5 +1562,8 @@
   "claim_vip_monthly_bonus_confirmation": "确定要领取这个VIP月度奖金吗？",
   "claim_vip_monthly_bonus": "领取VIP月度奖金",
   "multiplier": "倍场",
-  "actual_withdraw": "实际提款"
+  "actual_withdraw": "实际提款",
+  "actual_value": "实际价值",
+  "transfer_in": "转入",
+  "actual_cashout": "实际扣除"
 }

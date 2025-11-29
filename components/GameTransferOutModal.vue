@@ -34,6 +34,19 @@
             <p class="text-sm text-gray-500 mt-1 max-md:text-xs max-md:mt-0.5">
               {{ $t("available_balance") }}: {{ currency }}
               {{ formatAmount(balance) }}
+              <span
+                v-if="transferMultiplier > 1"
+                class="text-indigo-600 font-medium"
+              >
+                (x{{ transferMultiplier }})
+              </span>
+            </p>
+            <p
+              v-if="transferMultiplier > 1 && formData.amount"
+              class="text-sm text-green-600 mt-1 max-md:text-xs max-md:mt-0.5"
+            >
+              {{ $t("actual_cashout") }}: {{ currency }}
+              {{ formatAmount(actualCashoutAmount) }}
             </p>
           </div>
 
@@ -108,6 +121,18 @@ const formData = ref({
   remark: "",
 });
 
+const transferMultiplier = computed(() => {
+  if (!props.game) return 1;
+  const kioskName = props.game.name?.toLowerCase() || "";
+  if (kioskName.includes("x5")) return 5;
+  if (kioskName.includes("x2")) return 2;
+  return 1;
+});
+
+const actualCashoutAmount = computed(() => {
+  return Number(formData.value.amount || 0) * transferMultiplier.value;
+});
+
 const handleSubmit = async () => {
   if (Number(formData.value.amount) > props.balance) {
     await Swal.fire({
@@ -131,13 +156,22 @@ const handleSubmit = async () => {
     const result = await Swal.fire({
       title: $t("confirm_transfer_out"),
       html: `
-        <div class="text-left">
-          <p><strong>${$t("game")}:</strong> ${props.game?.name}</p>
-          <p><strong>${$t("amount")}:</strong> ${currency.value} ${formatAmount(
-        formData.value.amount
-      )}</p>
-        </div>
-      `,
+    <div class="text-left">
+      <p><strong>${$t("game")}:</strong> ${props.game?.name}</p>
+      <p><strong>${$t("transfer_out_amount")}:</strong> ${
+        currency.value
+      } ${formatAmount(formData.value.amount)}</p>
+      ${
+        transferMultiplier.value > 1
+          ? `<p><strong>${$t("actual_cashout")}:</strong> ${
+              currency.value
+            } ${formatAmount(actualCashoutAmount.value)} (x${
+              transferMultiplier.value
+            })</p>`
+          : ""
+      }
+    </div>
+  `,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#4f46e5",
@@ -171,7 +205,7 @@ const handleSubmit = async () => {
 
     // Step 2: Record CashOut
     const cashoutResponse = await patch(`user/cashout/${props.userId}`, {
-      amount: Number(formData.value.amount),
+      amount: Number(actualCashoutAmount.value),
       remark: formData.value.remark,
       kioskName: props.game?.name,
     });
