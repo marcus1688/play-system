@@ -110,6 +110,23 @@
                   </button>
                 </div>
               </div>
+
+              <!-- Multiplier Info (for x2/x5) -->
+              <div
+                v-if="transferMultiplier > 1 && formData.amount"
+                class="mt-2 pt-2 border-t border-indigo-200"
+              >
+                <div class="flex justify-between text-sm max-md:text-xs">
+                  <span class="text-gray-600">
+                    {{ $t("actual_withdraw") }} (x{{ transferMultiplier }}
+                    {{ $t("multiplier") }}):
+                  </span>
+                  <span class="font-bold text-orange-600">
+                    {{ currency }}
+                    {{ formatAmount(actualWithdrawAmountWithMultiplier) }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -353,7 +370,8 @@ const cashoutAmount = computed(() => {
   if (!formData.value.cashoutRemaining || !selectedKioskInfo.value) return 0;
   const kioskBalance = Number(selectedKioskInfo.value.balance) || 0;
   const withdrawAmount = Number(formData.value.amount) || 0;
-  return Math.max(0, kioskBalance - withdrawAmount);
+  const remainingBalance = Math.max(0, kioskBalance - withdrawAmount);
+  return remainingBalance * transferMultiplier.value;
 });
 
 const actualWithdrawAmount = computed(() => {
@@ -440,6 +458,18 @@ const fetchBankList = async () => {
   }
 };
 
+const transferMultiplier = computed(() => {
+  if (!selectedKioskInfo.value) return 1;
+  const kioskName = selectedKioskInfo.value.name?.toLowerCase() || "";
+  if (kioskName.includes("x5")) return 5;
+  if (kioskName.includes("x2")) return 2;
+  return 1;
+});
+
+const actualWithdrawAmountWithMultiplier = computed(() => {
+  return Number(formData.value.amount || 0) * transferMultiplier.value;
+});
+
 const handleSubmit = async () => {
   if (!formData.value.amount || formData.value.amount <= 0) {
     await Swal.fire({
@@ -501,31 +531,38 @@ const handleSubmit = async () => {
     const result = await Swal.fire({
       title: $t("confirm_withdraw"),
       html: `
-      <div class="text-left">
-        <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
-        <p><strong>${$t("gameid")}:</strong> ${selectedKiosk.userKioskId}</p>
-        <p><strong>${$t("kiosk_balance")}:</strong> ${
+  <div class="text-left">
+    <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
+    <p><strong>${$t("gameid")}:</strong> ${selectedKiosk.userKioskId}</p>
+    <p><strong>${$t("kiosk_balance")}:</strong> ${
         currency.value
       } ${formatAmount(selectedKiosk.balance)}</p>
-        <p><strong>${$t("transfer_out_amount")}:</strong> ${
+    <p><strong>${$t("transfer_out_amount")}:</strong> ${
         currency.value
       } ${formatAmount(transferOutAmount)}</p>
-        <p><strong>${$t("withdraw_amount")}:</strong> ${
+    <p><strong>${$t("withdraw_amount")}:</strong> ${
         currency.value
-      } ${formatAmount(formData.value.amount)}</p>
-        ${
-          cashoutAmount.value > 0
-            ? `<p><strong>${$t("cashout_amount")}:</strong> ${
-                currency.value
-              } ${formatAmount(cashoutAmount.value)}</p>`
-            : ""
-        }
-        <p><strong>${$t("kiosk")}:</strong> ${selectedKiosk.name}</p>
-        <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname} - ${
+      } ${formatAmount(actualWithdrawAmountWithMultiplier.value)}</p>
+    ${
+      transferMultiplier.value > 1
+        ? `<p><strong>${$t("multiplier")}:</strong> x${
+            transferMultiplier.value
+          }</p>`
+        : ""
+    }
+    ${
+      cashoutAmount.value > 0
+        ? `<p><strong>${$t("cashout_amount")}:</strong> ${
+            currency.value
+          } ${formatAmount(cashoutAmount.value)}</p>`
+        : ""
+    }
+    <p><strong>${$t("kiosk")}:</strong> ${selectedKiosk.name}</p>
+    <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname} - ${
         selectedBank?.ownername
       }</p>
-      </div>
-      `,
+  </div>
+  `,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#ea580c",
@@ -580,7 +617,7 @@ const handleSubmit = async () => {
     const { data } = await post("admin-direct-withdraw", {
       userId: props.userData?._id,
       username: props.userData?.username,
-      amount: Number(formData.value.amount),
+      amount: Number(actualWithdrawAmountWithMultiplier.value),
       kioskId: formData.value.kioskId,
       kioskName: selectedKiosk.name,
       userKioskId: selectedKiosk.userKioskId,
@@ -599,8 +636,8 @@ const handleSubmit = async () => {
       closeModal();
     } else {
       await Swal.fire({
-        icon: "error",
-        title: $t("error"),
+        icon: "info",
+        title: $t("info"),
         text: data.message?.[$locale.value] || data.message?.en,
       });
     }

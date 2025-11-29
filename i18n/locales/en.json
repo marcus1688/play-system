@@ -1561,5 +1561,6 @@
   "vip_monthly_bonus_manual_run_warning": "This will check VIP demotion and distribute monthly bonus. Continue?",
   "claim_vip_monthly_bonus_confirmation": "Are you sure you want to claim this VIP monthly bonus?",
   "claim_vip_monthly_bonus": "Claim VIP Monthly Bonus",
-  "multiplier": "Multiplier"
+  "multiplier": "Multiplier",
+  "actual_withdraw": "Actual Withdraw"
 }

@@ -123,6 +123,22 @@
                     </button>
                   </div>
                 </div>
+
+                <!-- Transfer Amount Info (for x2/x5) -->
+                <div
+                  v-if="transferMultiplier > 1 && formData.amount"
+                  class="mt-2 pt-2 border-t border-indigo-200"
+                >
+                  <div class="flex justify-between text-sm max-md:text-xs">
+                    <span class="text-gray-600">
+                      {{ $t("transfer_amount") }} (x{{ transferMultiplier }}
+                      {{ $t("multiplier") }}):
+                    </span>
+                    <span class="font-bold text-green-600">
+                      {{ currency }} {{ formatAmount(actualTransferAmount) }}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <div
@@ -449,6 +465,20 @@ const fetchPromotionList = async () => {
   }
 };
 
+const transferMultiplier = computed(() => {
+  if (!selectedKioskInfo.value) return 1;
+  const kioskName = selectedKioskInfo.value.name?.toLowerCase() || "";
+  if (kioskName.includes("x5")) return 5;
+  if (kioskName.includes("x2")) return 2;
+  return 1;
+});
+
+const actualTransferAmount = computed(() => {
+  const totalAmount =
+    Number(formData.value.amount || 0) + calculatedBonus.value;
+  return totalAmount / transferMultiplier.value;
+});
+
 const handleSubmit = async () => {
   if (!formData.value.amount || formData.value.amount <= 0) {
     await Swal.fire({
@@ -496,32 +526,41 @@ const handleSubmit = async () => {
     const result = await Swal.fire({
       title: $t("confirm_deposit"),
       html: `
-        <div class="text-left">
-          <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
-          <p><strong>${$t("gameid")}:</strong> ${selectedKiosk.userKioskId}</p>
-          <p><strong>${$t("amount")}:</strong> ${currency.value} ${formatAmount(
+    <div class="text-left">
+      <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
+      <p><strong>${$t("gameid")}:</strong> ${selectedKiosk.userKioskId}</p>
+      <p><strong>${$t("amount")}:</strong> ${currency.value} ${formatAmount(
         formData.value.amount
       )}</p>
-          <p><strong>${$t("kiosk")}:</strong> ${selectedKiosk.name}</p>
-          <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname}</p>
-          ${
-            selectedPromotion.value
-              ? `<p><strong>${$t("promotion")}:</strong> ${
-                  $locale.value === "zh"
-                    ? selectedPromotion.value.maintitle
-                    : selectedPromotion.value.maintitleEN
-                }</p>`
-              : ""
-          }
-          ${
-            calculatedBonus.value > 0
-              ? `<p><strong>${$t("bonus")}:</strong> ${
-                  currency.value
-                } ${formatAmount(calculatedBonus.value)}</p>`
-              : ""
-          }
-        </div>
-      `,
+      <p><strong>${$t("kiosk")}:</strong> ${selectedKiosk.name}</p>
+      <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname}</p>
+      ${
+        selectedPromotion.value
+          ? `<p><strong>${$t("promotion")}:</strong> ${
+              $locale.value === "zh"
+                ? selectedPromotion.value.maintitle
+                : selectedPromotion.value.maintitleEN
+            }</p>`
+          : ""
+      }
+      ${
+        calculatedBonus.value > 0
+          ? `<p><strong>${$t("bonus")}:</strong> ${
+              currency.value
+            } ${formatAmount(calculatedBonus.value)}</p>`
+          : ""
+      }
+      ${
+        transferMultiplier.value > 1
+          ? `<p><strong>${$t("transfer_amount")}:</strong> ${
+              currency.value
+            } ${formatAmount(actualTransferAmount.value)} (x${
+              transferMultiplier.value
+            })</p>`
+          : ""
+      }
+    </div>
+  `,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#16a34a",
@@ -568,13 +607,10 @@ const handleSubmit = async () => {
     }
 
     // Step 2: Call Kiosk Transfer In API
-    const totalTransferAmount =
-      Number(formData.value.amount) + calculatedBonus.value;
-
     const transferResponse = await post(
       `${selectedKiosk.transferInAPI}/${props.userData?._id}`,
       {
-        transferAmount: totalTransferAmount,
+        transferAmount: Number(actualTransferAmount.value),
       }
     );
 
