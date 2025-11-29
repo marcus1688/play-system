@@ -7,7 +7,6 @@
       :bonus-amount="selectedBonus?.bonusAmount || 0"
       :title="$t('vipmonthlybonus')"
       claim-api="vip-monthly-bonus/claim"
-      claim-id-field="vipMonthlyBonusId"
       @success="handleClaimSuccess"
     />
     <!-- Header Section -->

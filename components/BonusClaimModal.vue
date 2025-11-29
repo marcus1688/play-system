@@ -235,10 +235,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  claimIdField: {
-    type: String,
-    default: "bonusId",
-  },
 });
 
 const emit = defineEmits(["update:show", "success"]);
@@ -492,7 +488,7 @@ const handleClaim = async () => {
 
     // Step 2: Call Claim API (mark as claimed)
     const claimPayload = {
-      [props.claimIdField]: props.bonusData?._id,
+      vipMonthlyBonusId: props.bonusData?._id,
       kioskId: selectedKioskId.value,
       kioskName: selectedKiosk.name,
       bonusAmount: Number(props.bonusAmount),
