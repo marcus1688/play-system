@@ -137,7 +137,7 @@
             >{{ $t("vip_level") }}</label
           >
           <div v-if="!isEditing" class="text-sm max-md:text-xs">
-            {{ user.viplevel }}
+            {{ user.viplevel || "-" }}
           </div>
           <CustomSelect v-else v-model="editedUser.viplevel">
             <option
@@ -157,7 +157,7 @@
             >{{ $t("this_month_vip") }}</label
           >
           <div class="text-sm max-md:text-xs">
-            {{ user.thisMonthVip }}
+            {{ user.thisMonthVip || "-" }}
           </div>
         </div>
 

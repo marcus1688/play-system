@@ -80,6 +80,11 @@ export const menuItems = [
         path: "/hkwin88/loyalty",
         permission: "hkwin88.loyalty",
       },
+      {
+        name: "vipmonthlybonus",
+        path: "/hkwin88/vipmonthlybonus",
+        permission: "hkwin88.vipmonthlybonus",
+      },
     ],
   },
   {

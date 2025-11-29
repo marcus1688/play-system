@@ -1555,5 +1555,11 @@
   "transfer_in_failed": "上分失败",
   "transfer_success": "转账成功",
   "transfer_amount": "转账数额",
-  "this_month_vip": "今月VIP"
+  "this_month_vip": "今月VIP",
+  "vipmonthlybonus": "VIP 每月奖金",
+  "vip_monthly_bonus_report": "VIP月度奖金报告",
+  "vip_monthly_bonus_manual_run_warning": "这将检查VIP降级并派发月度奖金。是否继续？",
+  "claim_vip_monthly_bonus_confirmation": "确定要领取这个VIP月度奖金吗？",
+  "claim_vip_monthly_bonus": "领取VIP月度奖金",
+  "multiplier": "倍场"
 }

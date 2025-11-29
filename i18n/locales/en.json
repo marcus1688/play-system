@@ -1555,5 +1555,11 @@
   "transfer_in_failed": "Transfer in failed",
   "transfer_success": "Transfer successful",
   "transfer_amount": "Transfer Amount",
-  "this_month_vip": "This Month VIP"
+  "this_month_vip": "This Month VIP",
+  "vipmonthlybonus": "VIP Monthly Bonus",
+  "vip_monthly_bonus_report": "VIP Monthly Bonus Report",
+  "vip_monthly_bonus_manual_run_warning": "This will check VIP demotion and distribute monthly bonus. Continue?",
+  "claim_vip_monthly_bonus_confirmation": "Are you sure you want to claim this VIP monthly bonus?",
+  "claim_vip_monthly_bonus": "Claim VIP Monthly Bonus",
+  "multiplier": "Multiplier"
 }
