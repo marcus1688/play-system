@@ -605,24 +605,125 @@ const revertTransaction = async (id, transactionType) => {
       confirmButtonText: $t("confirm_delete"),
       cancelButtonText: $t("cancel"),
     });
-
     if (!result.isConfirmed) return;
+    const { post } = useApiEndpoint();
+    const transaction = transactions.value.find((t) => t._id === id);
+    if (!transaction) {
+      await Swal.fire({
+        icon: "error",
+        title: $t("error"),
+        text: "Transaction not found",
+      });
+      return;
+    }
+
+    // ============ Step 1: Transfer In/Out ============
+    if (
+      transaction.game &&
+      (transactionType === "deposit" ||
+        transactionType === "withdraw" ||
+        transactionType === "bonus")
+    ) {
+      const { data: kioskData } = await post("kiosk/check-all-balances", {
+        userId: transaction.userId,
+      });
+      if (!kioskData.success) {
+        await Swal.fire({
+          icon: "error",
+          title: $t("error"),
+          text: "Failed to fetch kiosk data",
+        });
+        return;
+      }
+      const kiosk = kioskData.data.find(
+        (k) => k.name.toLowerCase() === transaction.game.toLowerCase()
+      );
+      if (!kiosk) {
+        await Swal.fire({
+          icon: "error",
+          title: $t("error"),
+          text: "Kiosk not found",
+        });
+        return;
+      }
+      const getMultiplier = (gameName) => {
+        if (!gameName) return 1;
+        const name = gameName.toLowerCase();
+        if (name.includes("x5")) return 5;
+        if (name.includes("x2")) return 2;
+        return 1;
+      };
+      const multiplier = getMultiplier(transaction.game);
+      if (transactionType === "deposit" || transactionType === "bonus") {
+        if (!kiosk.transferOutAPI) {
+          await Swal.fire({
+            icon: "error",
+            title: $t("error"),
+            text: "Kiosk Transfer Out API not found",
+          });
+          return;
+        }
+        const totalAmount = transaction.amount + (transaction.bonusAmount || 0);
+        const kioskTransferAmount = totalAmount / multiplier;
+        const transferResponse = await post(
+          `${kiosk.transferOutAPI}/${transaction.userId}`,
+          { transferAmount: kioskTransferAmount }
+        );
+        if (!transferResponse.data.success) {
+          await Swal.fire({
+            icon: "error",
+            title: $t("error"),
+            text:
+              transferResponse.data.message?.[$locale.value] ||
+              $t("kiosk_transfer_failed"),
+          });
+          return;
+        }
+      } else if (transactionType === "withdraw") {
+        if (!kiosk.transferInAPI) {
+          await Swal.fire({
+            icon: "error",
+            title: $t("error"),
+            text: "Kiosk Transfer In API not found",
+          });
+          return;
+        }
+        const kioskTransferAmount = transaction.amount / multiplier;
+        const transferResponse = await post(
+          `${kiosk.transferInAPI}/${transaction.userId}`,
+          { transferAmount: kioskTransferAmount }
+        );
+        if (!transferResponse.data.success) {
+          await Swal.fire({
+            icon: "error",
+            title: $t("error"),
+            text:
+              transferResponse.data.message?.[$locale.value] ||
+              $t("kiosk_transfer_failed"),
+          });
+          return;
+        }
+      }
+    }
+
+    // ============ Step 2: Update Logs ============
     let endpoint;
     switch (transactionType) {
       case "deposit":
-        endpoint = `revertdeposit`;
+        endpoint = "revertdeposit";
         break;
       case "withdraw":
-        endpoint = `revertwithdraw`;
+        endpoint = "revertwithdraw";
         break;
       case "bonus":
-        endpoint = `revertbonus`;
+        endpoint = "revertbonus";
         break;
       default:
         throw new Error("Unsupported transaction type");
     }
-    const { post } = useApiEndpoint();
+
     const { data } = await post(`${endpoint}/${id}`);
+
     if (data.success) {
       await Swal.fire({
         icon: "success",
