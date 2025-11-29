@@ -130,6 +130,37 @@
           />
         </div>
 
+        <!-- VIP Level -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
+            >{{ $t("vip_level") }}</label
+          >
+          <div v-if="!isEditing" class="text-sm max-md:text-xs">
+            {{ user.viplevel }}
+          </div>
+          <CustomSelect v-else v-model="editedUser.viplevel">
+            <option
+              v-for="level in vipLevels"
+              :key="level._id"
+              :value="level.name"
+            >
+              {{ level.name }}
+            </option>
+          </CustomSelect>
+        </div>
+
+        <!-- This Month VIP -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
+            >{{ $t("this_month_vip") }}</label
+          >
+          <div class="text-sm max-md:text-xs">
+            {{ user.thisMonthVip }}
+          </div>
+        </div>
+
         <!-- Total Turnover -->
         <div>
           <label

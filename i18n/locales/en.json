@@ -1554,5 +1554,6 @@
   "transfer_out_failed": "Transfer out failed",
   "transfer_in_failed": "Transfer in failed",
   "transfer_success": "Transfer successful",
-  "transfer_amount": "Transfer Amount"
+  "transfer_amount": "Transfer Amount",
+  "this_month_vip": "This Month VIP"
 }
