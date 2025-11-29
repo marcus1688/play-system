@@ -11,16 +11,6 @@
             {{ $t("wallet_logs") }}
           </h3>
         </div>
-        <div v-if="['localhost', 'bm8my', 'bm8sg'].includes(getCompanyId())">
-          <button
-            @click="clearTurnover"
-            :disabled="isClearingTurnover"
-            class="px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors max-md:px-3 max-md:py-1.5 max-md:text-xs"
-          >
-            <span v-if="isClearingTurnover">{{ $t("clearing") }}...</span>
-            <span v-else>{{ $t("clear_turnover") }}</span>
-          </button>
-        </div>
       </div>
     </div>
 
