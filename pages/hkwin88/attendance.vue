@@ -285,7 +285,7 @@
                   record.bonusPoints > 0 ? 'text-indigo-600' : 'text-gray-400'
                 "
               >
-                {{ record.bonusPoints }}
+                {{ currency }} {{ record.bonusPoints }}
               </td>
               <td class="px-6 py-4 max-md:px-3 max-md:py-3">
                 <div class="flex items-center justify-center gap-2">
@@ -357,6 +357,7 @@ import { formatDate } from "~/utils/dateFormatter";
 import { Icon } from "@iconify/vue";
 import moment from "moment-timezone";
 
+const currency = useCurrency();
 const isPageLoading = ref(true);
 const isManualRunning = ref(false);
 const isClaimingBonus = ref({});
@@ -394,7 +395,12 @@ const tableHeaders = [
   { key: "sunday", label: "Sun", labelCN: "周日", sortable: false },
   { key: "totalDaysDeposited", label: "Days", labelCN: "天数", sortable: true },
   { key: "isFullAttendance", label: "Full", labelCN: "全勤", sortable: true },
-  { key: "bonusPoints", label: "Points", labelCN: "积分", sortable: true },
+  {
+    key: "bonusAmount",
+    label: "Bonus Amount",
+    labelCN: "奖金金额",
+    sortable: true,
+  },
   { key: "action", label: "Action", labelCN: "操作", sortable: false },
   { key: "claimedBy", label: "Process By", labelCN: "处理人", sortable: true },
   {
