@@ -366,6 +366,10 @@ const autoSelectDefaultPromotion = () => {
     defaultPromo = promotionList.value.find((p) =>
       p.maintitleEN?.toLowerCase().includes("loyalty")
     );
+  } else if (titleLower.includes("rebate")) {
+    defaultPromo = promotionList.value.find((p) =>
+      p.maintitleEN?.toLowerCase().includes("rebate")
+    );
   }
 
   if (defaultPromo) {
