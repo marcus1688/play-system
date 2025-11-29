@@ -96,21 +96,62 @@
           />
         </div>
 
-        <!-- Phone Number -->
+        <!-- Phone Numbers -->
         <div>
           <label
             class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
             >{{ $t("phone_number") }}</label
           >
-          <div v-if="!isEditing" class="text-sm max-md:text-xs">
-            {{ formatPhoneNumber(user.phonenumber) }}
+
+          <div v-if="!isEditing">
+            <div
+              v-for="(phone, index) in user.phoneNumbers"
+              :key="index"
+              class="text-sm max-md:text-xs"
+              :class="{ 'text-indigo-600 font-semibold': index === 0 }"
+            >
+              {{ formatPhoneNumber(phone) }}
+              <span v-if="index === 0" class="text-xs text-gray-400"
+                >({{ $t("primary") }})</span
+              >
+            </div>
+            <div
+              v-if="!user.phoneNumbers?.length"
+              class="text-sm max-md:text-xs"
+            >
+              -
+            </div>
           </div>
-          <input
-            v-else
-            v-model="editedUser.phonenumber"
-            type="text"
-            class="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-xs"
-          />
+
+          <div v-else class="space-y-2">
+            <div
+              v-for="(phone, index) in editedUser.phoneNumbers"
+              :key="index"
+              class="flex items-center gap-2"
+            >
+              <input
+                v-model="editedUser.phoneNumbers[index]"
+                type="text"
+                class="flex-1 px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-xs"
+              />
+              <button
+                v-if="editedUser.phoneNumbers.length > 1"
+                type="button"
+                @click="removePhoneNumber(index)"
+                class="p-1 text-red-500 lg:hover:bg-red-50 rounded"
+              >
+                <Icon icon="mdi:close" class="w-4 h-4" />
+              </button>
+            </div>
+            <button
+              type="button"
+              @click="addPhoneNumber"
+              class="flex items-center gap-1 text-sm text-indigo-600 lg:hover:text-indigo-700"
+            >
+              <Icon icon="mdi:plus" class="w-4 h-4" />
+              {{ $t("add_phone_number") }}
+            </button>
+          </div>
         </div>
 
         <!-- Date of Birth -->
@@ -340,7 +381,9 @@ const startEditing = () => {
     );
   editedUser.value = {
     ...props.user,
-    phonenumber: hasPhonePermission ? props.user.phonenumber : "",
+    phoneNumbers: props.user.phoneNumbers?.length
+      ? [...props.user.phoneNumbers]
+      : [props.user.phonenumber || ""],
     referralByUsername: props.user.referralBy
       ? props.user.referralBy.username
       : "",
@@ -349,6 +392,17 @@ const startEditing = () => {
 const cancelEditing = () => {
   isEditing.value = false;
   editedUser.value = {};
+};
+
+const addPhoneNumber = () => {
+  if (!editedUser.value.phoneNumbers) {
+    editedUser.value.phoneNumbers = [];
+  }
+  editedUser.value.phoneNumbers.push("");
+};
+
+const removePhoneNumber = (index) => {
+  editedUser.value.phoneNumbers.splice(index, 1);
 };
 
 const updateUser = async () => {

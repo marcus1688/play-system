@@ -1565,5 +1565,7 @@
   "actual_withdraw": "实际提款",
   "actual_value": "实际价值",
   "transfer_in": "转入",
-  "actual_cashout": "实际扣除"
+  "actual_cashout": "实际扣除",
+  "add_phone_number": "添加电话号码",
+  "primary": "主号码"
 }

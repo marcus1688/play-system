@@ -126,25 +126,44 @@
               </div>
             </div>
 
-            <!-- Phone Number -->
+            <!-- Phone Numbers (Multiple) -->
             <div>
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
                 {{ $t("phone_number") }}<span class="text-red-500">*</span>
               </label>
-              <input
-                v-model="formData.phoneNumber"
-                type="tel"
-                :placeholder="$t('phone_placeholder')"
-                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-sm"
-                required
-              />
+
               <div
-                class="mt-1 text-sm text-gray-500 max-md:text-xs max-md:mt-0.5"
+                v-for="(phone, index) in formData.phoneNumbers"
+                :key="index"
+                class="flex items-center gap-2 mb-2"
               >
-                {{ $t("include_country_code") }}
+                <input
+                  v-model="formData.phoneNumbers[index]"
+                  type="tel"
+                  :placeholder="$t('phone_placeholder')"
+                  class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-sm"
+                  :required="index === 0"
+                />
+                <button
+                  v-if="formData.phoneNumbers.length > 1"
+                  type="button"
+                  @click="removePhoneNumber(index)"
+                  class="p-2 text-red-500 lg:hover:bg-red-50 rounded-lg"
+                >
+                  <Icon icon="mdi:close" class="w-5 h-5" />
+                </button>
               </div>
+
+              <button
+                type="button"
+                @click="addPhoneNumber"
+                class="mt-2 flex items-center gap-1 text-sm text-indigo-600 lg:hover:text-indigo-700"
+              >
+                <Icon icon="mdi:plus" class="w-4 h-4" />
+                {{ $t("add_phone_number") }}
+              </button>
             </div>
 
             <!-- Bank Name -->
@@ -243,11 +262,19 @@ const formData = ref({
   email: "",
   dob: "",
   password: "",
-  phoneNumber: "",
+  phoneNumbers: [""],
   bankName: "",
   bankCode: "",
   bankNumber: "",
 });
+
+const addPhoneNumber = () => {
+  formData.value.phoneNumbers.push("");
+};
+
+const removePhoneNumber = (index) => {
+  formData.value.phoneNumbers.splice(index, 1);
+};
 
 const fetchNextUserId = async () => {
   try {
@@ -277,13 +304,17 @@ const handleSubmit = async () => {
         banknumber: formData.value.bankNumber,
       });
     }
+    const phoneNumbers = formData.value.phoneNumbers.filter(
+      (p) => p.trim() !== ""
+    );
+
     const submitData = {
       username: formData.value.username,
       fullname: formData.value.fullname,
       email: formData.value.email,
       dob: formData.value.dob,
       password: formData.value.password,
-      phonenumber: Number(formData.value.phoneNumber),
+      phoneNumbers: phoneNumbers,
       bankAccounts,
     };
     const { data } = await post("registeruser", submitData);
@@ -303,7 +334,7 @@ const handleSubmit = async () => {
         email: "",
         dob: "",
         password: "",
-        phoneNumber: "",
+        phoneNumbers: [""],
         bankName: "",
         bankCode: "",
         bankNumber: "",

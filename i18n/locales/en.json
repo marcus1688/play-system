@@ -1565,5 +1565,7 @@
   "actual_withdraw": "Actual Withdraw",
   "actual_value": "Actual Value",
   "transfer_in": "Transfer In",
-  "actual_cashout": "Actual Cashout"
+  "actual_cashout": "Actual Cashout",
+  "add_phone_number": "Add Phone Number",
+  "primary": "Primary"
 }
