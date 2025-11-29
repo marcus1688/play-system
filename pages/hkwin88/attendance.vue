@@ -1,5 +1,14 @@
 <template>
   <div>
+    <BonusClaimModal
+      v-model:show="showClaimModal"
+      :bonus-data="selectedBonus"
+      :bonus-amount="selectedBonus?.bonusPoints || 0"
+      :title="$t('attendancebonus')"
+      claim-api="attendance-bonus/claim"
+      claim-id-field="attendanceBonusId"
+      @success="handleClaimSuccess"
+    />
     <PageLoading v-if="isPageLoading" />
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-6 max-md:mb-4">
@@ -131,6 +140,11 @@
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
                 {{ record.no }}
+              </td>
+              <td
+                class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                {{ record.userid }}
               </td>
               <td
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
@@ -277,16 +291,10 @@
                 <div class="flex items-center justify-center gap-2">
                   <button
                     v-if="!record.claimed && record.isFullAttendance"
-                    @click="claimBonus(record._id)"
-                    :disabled="isClaimingBonus[record._id]"
-                    class="px-3 py-1.5 text-sm bg-indigo-600 text-white lg:hover:bg-indigo-700 rounded-lg transition-all duration-200 font-medium shadow-sm lg:hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed max-md:px-2 max-md:py-1 max-md:text-xs"
+                    @click="openClaimModal(record)"
+                    class="px-3 py-1.5 text-sm bg-indigo-600 text-white lg:hover:bg-indigo-700 rounded-lg transition-all duration-200 font-medium shadow-sm lg:hover:shadow-md max-md:px-2 max-md:py-1 max-md:text-xs"
                   >
-                    <Icon
-                      v-if="isClaimingBonus[record._id]"
-                      icon="eos-icons:loading"
-                      class="w-4 h-4 max-md:w-3 max-md:h-3"
-                    />
-                    <span v-else>{{ $t("claim") }}</span>
+                    {{ $t("claim") }}
                   </button>
                   <span
                     v-else-if="record.claimed"
@@ -355,7 +363,8 @@ const isClaimingBonus = ref({});
 const { get, post } = useApiEndpoint();
 const { isExporting, exportToExcel } = useExportExcel();
 const adminUserData = useState("adminUserData");
-
+const showClaimModal = ref(false);
+const selectedBonus = ref(null);
 const records = ref([]);
 const searchQuery = ref("");
 const currentPage = ref(1);
@@ -373,6 +382,7 @@ const sortConfig = ref({
 
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "序号", sortable: false },
+  { key: "userid", label: "User ID", labelCN: "用户ID", sortable: true },
   { key: "username", label: "Username", labelCN: "用户名", sortable: true },
   { key: "weekLabel", label: "Week", labelCN: "周期", sortable: true },
   { key: "monday", label: "Mon", labelCN: "周一", sortable: false },
@@ -579,6 +589,15 @@ const claimBonus = async (attendanceBonusId) => {
   }
 };
 
+const openClaimModal = (record) => {
+  selectedBonus.value = record;
+  showClaimModal.value = true;
+};
+
+const handleClaimSuccess = () => {
+  fetchRecords();
+};
+
 const handleExport = async () => {
   try {
     const hasExportPermission =
@@ -605,6 +624,7 @@ const handleExport = async () => {
 
     const exportData = filteredRecords.value.map((record, index) => ({
       no: index + 1,
+      userid: record.userid || "-",
       username: record.username,
       weekLabel: record.weekLabel,
       monday: record.dailyDeposits?.monday ? "✓" : "✗",
@@ -624,6 +644,7 @@ const handleExport = async () => {
 
     const columns = {
       no: { header: "No", width: 8 },
+      userid: { header: "User ID", width: 12 },
       username: { header: "Username", width: 15 },
       weekLabel: { header: "Week", width: 25 },
       monday: { header: "Mon", width: 8 },
@@ -695,6 +716,11 @@ watch(searchQuery, () => {
 });
 
 onMounted(async () => {
+  const now = moment().tz("Asia/Kuala_Lumpur");
+  const lastMonday = now.clone().subtract(1, "week").startOf("isoWeek");
+  const lastSunday = now.clone().subtract(1, "week").endOf("isoWeek");
+  dateRange.value.startDate = lastMonday.toDate();
+  dateRange.value.endDate = lastSunday.toDate();
   await fetchRecords();
   isPageLoading.value = false;
 });

@@ -7,6 +7,7 @@
       :bonus-amount="selectedBonus?.bonusAmount || 0"
       :title="$t('vipmonthlybonus')"
       claim-api="vip-monthly-bonus/claim"
+      claim-id-field="vipMonthlyBonusId"
       @success="handleClaimSuccess"
     />
     <!-- Header Section -->
@@ -139,6 +140,11 @@
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
                 {{ record.no }}
+              </td>
+              <td
+                class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                {{ record.userid }}
               </td>
               <td
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
@@ -279,6 +285,7 @@ const sortConfig = ref({
 
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "序号", sortable: false },
+  { key: "userid", label: "User ID", labelCN: "用户ID", sortable: true },
   { key: "username", label: "Username", labelCN: "用户名", sortable: true },
   { key: "monthLabel", label: "Month", labelCN: "月份", sortable: true },
   { key: "viplevel", label: "VIP Level", labelCN: "VIP等级", sortable: true },

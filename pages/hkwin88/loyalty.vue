@@ -1,5 +1,14 @@
 <template>
   <div>
+    <BonusClaimModal
+      v-model:show="showClaimModal"
+      :bonus-data="selectedBonus"
+      :bonus-amount="selectedBonus?.bonusPoints || 0"
+      :title="$t('loyaltybonus')"
+      claim-api="loyalty-bonus/claim"
+      claim-id-field="loyaltyBonusId"
+      @success="handleClaimSuccess"
+    />
     <PageLoading v-if="isPageLoading" />
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-6 max-md:mb-4">
@@ -35,28 +44,28 @@
           <div class="text-sm font-semibold text-gray-700 max-md:text-xs">
             1,000 - 4,999
           </div>
-          <div class="text-indigo-600 font-bold">14 {{ $t("points") }}</div>
+          <div class="text-indigo-600 font-bold">{{ currency }} 28</div>
         </div>
         <div class="bg-gray-50 p-3 rounded-lg text-center max-md:p-2">
           <div class="text-xs text-gray-500 mb-1">Tier 2</div>
           <div class="text-sm font-semibold text-gray-700 max-md:text-xs">
             5,000 - 24,999
           </div>
-          <div class="text-indigo-600 font-bold">44 {{ $t("points") }}</div>
+          <div class="text-indigo-600 font-bold">{{ currency }} 88</div>
         </div>
         <div class="bg-gray-50 p-3 rounded-lg text-center max-md:p-2">
           <div class="text-xs text-gray-500 mb-1">Tier 3</div>
           <div class="text-sm font-semibold text-gray-700 max-md:text-xs">
             25,000 - 49,999
           </div>
-          <div class="text-indigo-600 font-bold">194 {{ $t("points") }}</div>
+          <div class="text-indigo-600 font-bold">{{ currency }} 388</div>
         </div>
         <div class="bg-gray-50 p-3 rounded-lg text-center max-md:p-2">
           <div class="text-xs text-gray-500 mb-1">Tier 4</div>
           <div class="text-sm font-semibold text-gray-700 max-md:text-xs">
             50,000+
           </div>
-          <div class="text-indigo-600 font-bold">294 {{ $t("points") }}</div>
+          <div class="text-indigo-600 font-bold">{{ currency }} 588</div>
         </div>
       </div>
     </div>
@@ -186,6 +195,11 @@
               <td
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
+                {{ record.userid || "-" }}
+              </td>
+              <td
+                class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
                 {{ record.username }}
               </td>
               <td
@@ -214,22 +228,16 @@
                   record.bonusPoints > 0 ? 'text-indigo-600' : 'text-gray-400'
                 "
               >
-                {{ record.bonusPoints }}
+                {{ currency }} {{ formatAmount(record.bonusPoints) }}
               </td>
               <td class="px-6 py-4 max-md:px-3 max-md:py-3">
                 <div class="flex items-center justify-center gap-2">
                   <button
                     v-if="!record.claimed && record.bonusPoints > 0"
-                    @click="claimBonus(record._id)"
-                    :disabled="isClaimingBonus[record._id]"
-                    class="px-3 py-1.5 text-sm bg-indigo-600 text-white lg:hover:bg-indigo-700 rounded-lg transition-all duration-200 font-medium shadow-sm lg:hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed max-md:px-2 max-md:py-1 max-md:text-xs"
+                    @click="openClaimModal(record)"
+                    class="px-3 py-1.5 text-sm bg-indigo-600 text-white lg:hover:bg-indigo-700 rounded-lg transition-all duration-200 font-medium shadow-sm lg:hover:shadow-md max-md:px-2 max-md:py-1 max-md:text-xs"
                   >
-                    <Icon
-                      v-if="isClaimingBonus[record._id]"
-                      icon="eos-icons:loading"
-                      class="w-4 h-4 max-md:w-3 max-md:h-3"
-                    />
-                    <span v-else>{{ $t("claim") }}</span>
+                    {{ $t("claim") }}
                   </button>
                   <span
                     v-else-if="record.claimed"
@@ -292,14 +300,14 @@ import { formatDate } from "~/utils/dateFormatter";
 import { Icon } from "@iconify/vue";
 import moment from "moment-timezone";
 
+const currency = useCurrency();
 const isPageLoading = ref(true);
 const isManualRunning = ref(false);
-const isClaimingBonus = ref({});
 const { get, post } = useApiEndpoint();
 const { isExporting, exportToExcel } = useExportExcel();
 const adminUserData = useState("adminUserData");
-const $locale = computed(() => $i18n.locale);
-
+const showClaimModal = ref(false);
+const selectedBonus = ref(null);
 const records = ref([]);
 const searchQuery = ref("");
 const selectedTier = ref("all");
@@ -317,6 +325,7 @@ const sortConfig = ref({
 
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "序号", sortable: false },
+  { key: "userid", label: "User ID", labelCN: "用户ID", sortable: true },
   { key: "username", label: "Username", labelCN: "用户名", sortable: true },
   { key: "periodLabel", label: "Period", labelCN: "周期", sortable: true },
   {
@@ -326,7 +335,12 @@ const tableHeaders = [
     sortable: true,
   },
   { key: "tier", label: "Tier", labelCN: "等级", sortable: true },
-  { key: "bonusPoints", label: "Points", labelCN: "积分", sortable: true },
+  {
+    key: "bonusAmount",
+    label: "Bonus Amount",
+    labelCN: "奖金金额",
+    sortable: true,
+  },
   { key: "action", label: "Action", labelCN: "操作", sortable: false },
   { key: "claimedBy", label: "Process By", labelCN: "处理人", sortable: true },
   {
@@ -506,49 +520,13 @@ const handleManualRun = async () => {
   }
 };
 
-const claimBonus = async (loyaltyBonusId) => {
-  try {
-    const result = await Swal.fire({
-      title: $t("confirm_claim"),
-      text: $t("claim_loyalty_bonus_confirmation"),
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#16a34a",
-      cancelButtonColor: "#d33",
-      confirmButtonText: $t("confirm"),
-      cancelButtonText: $t("cancel"),
-    });
+const openClaimModal = (record) => {
+  selectedBonus.value = record;
+  showClaimModal.value = true;
+};
 
-    if (!result.isConfirmed) return;
-
-    isClaimingBonus.value[loyaltyBonusId] = true;
-    const { data } = await post("loyalty-bonus/claim", { loyaltyBonusId });
-
-    if (data.success) {
-      await Swal.fire({
-        icon: "success",
-        title: $t("success"),
-        text: data.message[$locale.value] || data.message.en,
-        timer: 1500,
-      });
-      await fetchRecords();
-    } else {
-      await Swal.fire({
-        icon: "error",
-        title: $t("error"),
-        text: data.message[$locale.value] || data.message.en,
-      });
-    }
-  } catch (error) {
-    console.error("Error claiming bonus:", error);
-    await Swal.fire({
-      icon: "error",
-      title: $t("error"),
-      text: $t("claim_failed"),
-    });
-  } finally {
-    isClaimingBonus.value[loyaltyBonusId] = false;
-  }
+const handleClaimSuccess = () => {
+  fetchRecords();
 };
 
 const handleExport = async () => {
@@ -651,6 +629,25 @@ watch(searchQuery, () => {
 });
 
 onMounted(async () => {
+  const now = moment().tz("Asia/Kuala_Lumpur");
+  const dayOfMonth = now.date();
+  if (dayOfMonth >= 16) {
+    dateRange.value.startDate = now.clone().startOf("month").toDate();
+    dateRange.value.endDate = now.clone().date(15).endOf("day").toDate();
+  } else {
+    dateRange.value.startDate = now
+      .clone()
+      .subtract(1, "month")
+      .date(16)
+      .startOf("day")
+      .toDate();
+    dateRange.value.endDate = now
+      .clone()
+      .subtract(1, "month")
+      .endOf("month")
+      .toDate();
+  }
+
   await fetchRecords();
   isPageLoading.value = false;
 });

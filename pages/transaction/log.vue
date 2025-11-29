@@ -179,6 +179,11 @@
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
               >
+                {{ item.userid || "-" }}
+              </td>
+              <td
+                class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
                 <div class="flex items-center justify-center gap-1">
                   <Icon
                     v-if="item.duplicateIP"
@@ -321,7 +326,7 @@
               class="h-[400px] max-md:h-[300px]"
             >
               <td
-                colspan="11"
+                colspan="13"
                 class="px-6 py-4 text-center text-gray-500 max-md:px-3 max-md:text-sm"
               >
                 <div class="flex flex-col gap-8 items-center max-md:gap-4">
@@ -369,6 +374,7 @@ const currency = useCurrency();
 const dateFilterRef = ref(null);
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "序号", sortable: false },
+  { key: "userid", label: "User ID", labelCN: "用户ID", sortable: true },
   {
     key: "playerDetails",
     label: "Player Details",
@@ -461,6 +467,7 @@ const filteredTransactions = computed(() => {
     const searchTerm = searchQuery.value.toLowerCase();
     filtered = filtered.filter(
       (item) =>
+        (item.userid && item.userid.toLowerCase().includes(searchTerm)) ||
         item.username.toLowerCase().includes(searchTerm) ||
         item.fullname.toLowerCase().includes(searchTerm) ||
         (item.promotionnameEN &&
@@ -696,6 +703,7 @@ const handleExport = async () => {
             }`;
       return {
         no: index + 1,
+        userid: item.userid || "-",
         username: item.username,
         fullname: item.fullname,
         bankDetails: bankDetails,
@@ -735,6 +743,7 @@ const handleExport = async () => {
       sheetName: $t("transaction_log"),
       columns: {
         no: { header: $t("no"), width: 8 },
+        userid: { header: "User ID", width: 12 },
         username: { header: $t("username"), width: 15 },
         fullname: { header: $t("fullname"), width: 20 },
         bankDetails: { header: $t("bank_details"), width: 40 },

@@ -156,6 +156,9 @@
                   class="flex flex-col items-center justify-center gap-2 max-md:gap-1"
                 >
                   <div class="text-xs text-gray-500">
+                    {{ $t("userid") }}: {{ transaction.userid || "-" }}
+                  </div>
+                  <div class="text-xs text-gray-500">
                     {{ $t("username") }}: {{ transaction.playerusername }}
                   </div>
                   <div class="text-xs text-gray-500">
