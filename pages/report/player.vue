@@ -126,6 +126,11 @@
               <td
                 class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
+                {{ player.userid || "-" }}
+              </td>
+              <td
+                class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
                 {{ player.username }}
               </td>
               <td
@@ -215,6 +220,11 @@
               <td
                 class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
+                -
+              </td>
+              <td
+                class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
                 {{ totals.depositQty }}
               </td>
               <td
@@ -287,6 +297,7 @@ const currency = useCurrency();
 const { get } = useApiEndpoint();
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "序号" },
+  { key: "userid", label: "User ID", labelCN: "用户ID", sortable: true },
   { key: "username", label: "Username", labelCN: "用户名", sortable: false },
   {
     key: "depositQty",
@@ -376,8 +387,10 @@ const filteredPlayers = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
-    result = result.filter((player) =>
-      player.username.toLowerCase().includes(query)
+    result = result.filter(
+      (player) =>
+        player.username.toLowerCase().includes(query) ||
+        (player.userid && player.userid.toLowerCase().includes(query))
     );
   }
 
@@ -464,6 +477,7 @@ const handleExport = async () => {
     }
     const exportData = [...filteredPlayers.value];
     const totalRow = {
+      userid: "-",
       username: $t("total"),
       depositQty: totals.value.depositQty,
       totalDeposit: totals.value.totalDeposit,
@@ -492,6 +506,7 @@ const handleExport = async () => {
       filename,
       sheetName: "Player Report",
       columns: {
+        userid: { header: "User ID", width: 12 },
         username: { header: $t("username"), width: 15 },
         depositQty: { header: $t("deposit_qty"), width: 12 },
         totalDeposit: { header: $t("total_deposit"), width: 12 },
