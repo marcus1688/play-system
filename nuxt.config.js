@@ -82,12 +82,7 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "nuxt-marquee",
     "@nuxtjs/google-fonts",
-    "@nuxtjs/turnstile",
   ],
-
-  turnstile: {
-    siteKey: process.env.TURNSTILE_SITE_KEY,
-  },
 
   googleFonts: {
     families: {
