@@ -303,7 +303,7 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Dashboard",
+  title: "Play System | Dashboard",
   meta: [
     {
       name: "robots",

@@ -229,7 +229,7 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Weekly Turnover",
+  title: "Play System | Weekly Turnover",
 });
 </script>
 

@@ -604,7 +604,7 @@ const goBack = () => {
 };
 
 useHead({
-  title: "Money System | Create Payment Gateway",
+  title: "Play System | Create Payment Gateway",
 });
 </script>
 

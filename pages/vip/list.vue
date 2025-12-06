@@ -527,6 +527,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | VIP",
+  title: "Play System | VIP",
 });
 </script>

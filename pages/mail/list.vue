@@ -335,6 +335,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Mail",
+  title: "Play System | Mail",
 });
 </script>

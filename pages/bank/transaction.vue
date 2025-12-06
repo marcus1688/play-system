@@ -442,6 +442,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Bank Transaction",
+  title: "Play System | Bank Transaction",
 });
 </script>

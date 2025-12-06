@@ -1152,6 +1152,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Squid Game",
+  title: "Play System | Squid Game",
 });
 </script>

@@ -365,7 +365,7 @@ onMounted(() => {
 });
 
 useHead({
-  title: "Money System | Agent PT List",
+  title: "Play System | Agent PT List",
 });
 </script>
 ```

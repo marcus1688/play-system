@@ -323,6 +323,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Mission ",
+  title: "Play System | Mission ",
 });
 </script>

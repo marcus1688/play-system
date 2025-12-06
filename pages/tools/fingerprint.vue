@@ -397,6 +397,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Fingerprint List",
+  title: "Play System | Fingerprint List",
 });
 </script>

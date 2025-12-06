@@ -182,7 +182,7 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Promotion Category",
+  title: "Play System | Promotion Category",
 });
 </script>
 

@@ -408,7 +408,7 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Lucky Draw Management",
+  title: "Play System | Lucky Draw Management",
 });
 </script>
 

@@ -245,6 +245,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | About Us",
+  title: "Play System | About Us",
 });
 </script>

@@ -514,6 +514,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Memos",
+  title: "Play System | Memos",
 });
 </script>

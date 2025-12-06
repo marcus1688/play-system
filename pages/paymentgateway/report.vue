@@ -705,6 +705,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Payment Gateway Report",
+  title: "Play System | Payment Gateway Report",
 });
 </script>

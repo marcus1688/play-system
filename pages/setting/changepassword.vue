@@ -174,6 +174,6 @@ const handleSubmit = async () => {
 };
 
 useHead({
-  title: "Money System | Change Password",
+  title: "Play System | Change Password",
 });
 </script>

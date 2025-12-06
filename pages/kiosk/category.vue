@@ -183,7 +183,7 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Kiosk Category",
+  title: "Play System | Kiosk Category",
 });
 </script>
 

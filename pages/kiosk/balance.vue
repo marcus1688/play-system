@@ -606,6 +606,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Kiosk Balance",
+  title: "Play System | Kiosk Balance",
 });
 </script>

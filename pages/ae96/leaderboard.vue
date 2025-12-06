@@ -327,6 +327,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Leaderboard",
+  title: "Play System | Leaderboard",
 });
 </script>

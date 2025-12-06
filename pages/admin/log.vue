@@ -309,6 +309,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Admin Log",
+  title: "Play System | Admin Log",
 });
 </script>

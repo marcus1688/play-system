@@ -340,6 +340,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Lucky Spin Report",
+  title: "Play System | Lucky Spin Report",
 });
 </script>

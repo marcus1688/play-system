@@ -445,6 +445,6 @@ onMounted(() => {
 });
 
 useHead({
-  title: "Money System | Verification SMS",
+  title: "Play System | Verification SMS",
 });
 </script>

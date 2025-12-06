@@ -912,6 +912,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Transaction Log",
+  title: "Play System | Transaction Log",
 });
 </script>

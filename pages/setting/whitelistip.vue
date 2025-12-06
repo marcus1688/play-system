@@ -257,6 +257,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Whitelist IP",
+  title: "Play System | Whitelist IP",
 });
 </script>

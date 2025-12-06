@@ -665,7 +665,7 @@ onMounted(async () => {
 useHead({
   title: computed(
     () =>
-      `Money System | ${isEditMode.value ? "Edit" : "Create"} Payment Gateway`
+      `Play System | ${isEditMode.value ? "Edit" : "Create"} Payment Gateway`
   ),
 });
 </script>

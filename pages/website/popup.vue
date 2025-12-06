@@ -274,6 +274,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Popup",
+  title: "Play System | Popup",
 });
 </script>

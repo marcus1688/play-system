@@ -424,6 +424,6 @@ onMounted(() => {
 });
 
 useHead({
-  title: "Money System | Verification Email",
+  title: "Play System | Verification Email",
 });
 </script>

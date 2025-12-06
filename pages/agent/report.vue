@@ -1062,6 +1062,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Agent Report",
+  title: "Play System | Agent Report",
 });
 </script>

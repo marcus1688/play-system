@@ -280,6 +280,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Review",
+  title: "Play System | Review",
 });
 </script>

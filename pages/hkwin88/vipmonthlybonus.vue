@@ -630,6 +630,6 @@ onMounted(async () => {
   isPageLoading.value = false;
 });
 useHead({
-  title: "Money System | VIP Monthly Bonus Report",
+  title: "Play System | VIP Monthly Bonus Report",
 });
 </script>

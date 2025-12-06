@@ -651,6 +651,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Unlimited Rebate Report",
+  title: "Play System | Unlimited Rebate Report",
 });
 </script>

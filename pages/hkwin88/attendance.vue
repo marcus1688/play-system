@@ -732,6 +732,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Attendance Bonus Report",
+  title: "Play System | Attendance Bonus Report",
 });
 </script>

@@ -394,6 +394,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Feedback",
+  title: "Play System | Feedback",
 });
 </script>

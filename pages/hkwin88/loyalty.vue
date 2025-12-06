@@ -653,6 +653,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Loyalty Bonus Report",
+  title: "Play System | Loyalty Bonus Report",
 });
 </script>

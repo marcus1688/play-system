@@ -328,6 +328,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Bank Balance",
+  title: "Play System | Bank Balance",
 });
 </script>

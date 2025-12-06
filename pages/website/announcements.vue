@@ -509,6 +509,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Announcements",
+  title: "Play System | Announcements",
 });
 </script>

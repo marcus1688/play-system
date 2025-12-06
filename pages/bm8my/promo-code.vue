@@ -263,6 +263,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Promo Code",
+  title: "Play System | Promo Code",
 });
 </script>

@@ -373,6 +373,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Carousel",
+  title: "Play System | Carousel",
 });
 </script>

@@ -17,7 +17,7 @@
           </div>
         </div>
         <!-- <h2 class="text-2xl font-bold text-zinc-800 tracking-normal mb-1 max-md:text-xl">
-          Money System
+          Play System
         </h2> -->
         <p class="text-gray-800 font-bold max-md:text-sm">
           Sign in to your account
@@ -247,7 +247,7 @@ onMounted(() => {
 });
 
 useHead({
-  title: "Money System | Login",
+  title: "Play System | Login",
   meta: [
     {
       name: "robots",

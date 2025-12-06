@@ -1445,6 +1445,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Crypto Bank",
+  title: "Play System | Crypto Bank",
 });
 </script>

@@ -274,6 +274,6 @@ onMounted(async () => {
 });
 
 useHead({
-  title: "Money System | Rebate Setting",
+  title: "Play System | Rebate Setting",
 });
 </script>
