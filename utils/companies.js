@@ -45,7 +45,7 @@ export const COMPANIES = {
     id: "hkwin88",
     name: "hkwin88",
     apiUrl: "https://api.hkwin88.com/admin/api/",
-    publicApiUrl: "https://api.mysteryclub88.co/admin/api/",
+    publicApiUrl: "https://api.mysteryclub77.com/admin/api/",
     socketUrl: "https://api.hkwin88.com",
     logo: "/images/logo/hkwin88.png",
     currency: "HKD",
