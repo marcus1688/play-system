@@ -279,6 +279,17 @@
           </div>
         </div>
 
+        <!-- User Register Date -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
+            >{{ $t("last_deposit_date") }}</label
+          >
+          <div class="text-sm uppercase max-md:text-xs">
+            {{ formatDate(user.lastdepositdate) }}
+          </div>
+        </div>
+
         <!-- 918kaya Transfer Game ID -->
         <div v-if="user.kaya918ID">
           <label
