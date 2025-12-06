@@ -210,6 +210,20 @@
                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-2 max-md:py-1.5 max-md:text-sm"
               />
             </div>
+
+            <!-- Free Credit Apply -->
+            <div class="mt-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  v-model="formData.freeCreditApply"
+                  type="checkbox"
+                  class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                />
+                <span class="text-sm font-medium text-gray-700 max-md:text-xs">
+                  {{ $t("free_credit_apply") }}
+                </span>
+              </label>
+            </div>
           </form>
         </div>
 
@@ -248,6 +262,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:show", "submit"]);
+
 const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
   emit("update:show", false);
 });
@@ -266,6 +281,7 @@ const formData = ref({
   bankName: "",
   bankCode: "",
   bankNumber: "",
+  freeCreditApply: false,
 });
 
 const addPhoneNumber = () => {
@@ -315,6 +331,7 @@ const handleSubmit = async () => {
       password: formData.value.password,
       phoneNumbers: phoneNumbers,
       bankAccounts,
+      freeCreditApply: formData.value.freeCreditApply,
     };
     const { data } = await post("registeruser", submitData);
     if (data.success) {
@@ -337,6 +354,7 @@ const handleSubmit = async () => {
         bankName: "",
         bankCode: "",
         bankNumber: "",
+        freeCreditApply: false,
       };
       emit("submit");
     } else {
