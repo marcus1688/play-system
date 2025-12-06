@@ -442,6 +442,19 @@ const handleSubmit = async () => {
         text: data.message[$locale.value] || data.message.en,
         timer: 1500,
       });
+      formData.value = {
+        username: "",
+        fullname: "",
+        password: "",
+        role: "",
+        status: true,
+      };
+      copyFromUser.value = "";
+      Object.keys(selectedPermissions.value).forEach((moduleKey) => {
+        Object.keys(selectedPermissions.value[moduleKey]).forEach((permKey) => {
+          selectedPermissions.value[moduleKey][permKey] = false;
+        });
+      });
       emit("success");
       emit("update:show", false);
     } else {
