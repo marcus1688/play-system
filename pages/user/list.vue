@@ -1,5 +1,9 @@
 <template>
   <div>
+    <GameIdModal
+      v-model:show="showGameIdModal"
+      :user-data="selectedGameIdUser"
+    />
     <DepositModal
       v-model:show="showDepositModal"
       :user-data="selectedDepositUser"
@@ -129,9 +133,15 @@
                 {{ user.no }}
               </td>
               <td
-                class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
+                class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs flex flex-col gap-1"
               >
                 {{ user.userid || "-" }}
+                <button
+                  @click="openGameIdModal(user)"
+                  class="px-3 py-1 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
+                >
+                  <span>{{ $t("gameid") }}</span>
+                </button>
               </td>
 
               <td
@@ -145,6 +155,7 @@
               >
                 {{ formatPhoneNumber(user.phonenumber) }}
               </td>
+
               <td
                 class="px-6 py-4 text-sm text-green-600 font-semibold max-md:px-3 max-md:py-3 max-md:text-xs"
               >
@@ -322,6 +333,7 @@ const tableHeaders = [
     labelCN: "手机号",
     sortable: false,
   },
+
   {
     key: "totalDeposit",
     label: "Total Deposit",
@@ -401,6 +413,13 @@ const handleNewUser = async () => {
 
 const showUserDetails = ref(false);
 const selectedUser = ref(null);
+const showGameIdModal = ref(false);
+const selectedGameIdUser = ref(null);
+
+const openGameIdModal = (user) => {
+  selectedGameIdUser.value = user;
+  showGameIdModal.value = true;
+};
 
 const filteredUsers = computed(() => {
   let filtered = [...allusers.value];

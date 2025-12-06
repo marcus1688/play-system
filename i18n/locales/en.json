@@ -1579,5 +1579,9 @@
   "adjust_amount": "Adjust Amount",
   "adjust_amount_hint": "Positive to add, negative to subtract",
   "new_amount": "New Amount",
-  "confirm_adjust": "Confirm Adjust"
+  "confirm_adjust": "Confirm Adjust",
+  "all_game_id": "All Game ID",
+  "no_game_id_found": "No game ID found",
+  "copy_all": "Copy All",
+  "all_game_ids_copied": "All game IDs copied"
 }

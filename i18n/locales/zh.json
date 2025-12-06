@@ -1579,5 +1579,9 @@
   "adjust_amount": "调整金额",
   "adjust_amount_hint": "正数增加，负数减少",
   "new_amount": "新金额",
-  "confirm_adjust": "确认调整"
+  "confirm_adjust": "确认调整",
+  "all_game_id": "所有游戏ID",
+  "no_game_id_found": "没有找到游戏ID",
+  "copy_all": "复制全部",
+  "all_game_ids_copied": "已复制所有游戏ID"
 }
