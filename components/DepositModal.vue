@@ -223,7 +223,7 @@
               <!-- Promotion Info -->
               <div
                 v-if="selectedPromotion"
-                class="mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg max-md:p-2 max-md:mt-1.5"
+                class="mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg max-md:p-2 max-md:mt-1.5 hidden"
               >
                 <div class="text-sm max-md:text-xs">
                   <div class="flex justify-between mb-1">

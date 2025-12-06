@@ -181,14 +181,13 @@
                   {{
                     $i18n.locale === "zh" ? promo.maintitle : promo.maintitleEN
                   }}
-                  - {{ currency }} {{ formatAmount(promo.bonusexact) }}
                 </option>
               </CustomSelect>
 
               <!-- Selected Promotion Info -->
               <div
                 v-if="selectedPromotion"
-                class="mt-2 p-3 bg-purple-50 border border-purple-200 rounded-lg max-md:p-2"
+                class="mt-2 p-3 bg-purple-50 border border-purple-200 rounded-lg max-md:p-2 hidden"
               >
                 <div class="text-sm max-md:text-xs">
                   <div class="flex justify-between mb-1">
