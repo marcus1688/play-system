@@ -1572,5 +1572,12 @@
   "loyaltybonus": "Loyalty Bonus",
   "free_credit_apply": "Free Credit Apply",
   "without_kiosk": "Without Kiosk (No Transfer)",
-  "enter_kiosk_name": "Enter kiosk name (for record)"
+  "enter_kiosk_name": "Enter kiosk name (for record)",
+  "adjust_total_deposit": "Adjust Total Deposit",
+  "adjust_total_withdraw": "Adjust Total Withdraw",
+  "current_amount": "Current Amount",
+  "adjust_amount": "Adjust Amount",
+  "adjust_amount_hint": "Positive to add, negative to subtract",
+  "new_amount": "New Amount",
+  "confirm_adjust": "Confirm Adjust"
 }

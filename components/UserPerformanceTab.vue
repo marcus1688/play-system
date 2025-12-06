@@ -3,7 +3,16 @@
     class="space-y-6 min-w-[500px] overflow-x-auto max-md:min-w-0 max-md:space-y-4"
   >
     <PageLoading v-if="isPageLoading" />
-
+    <AdjustTotalModal
+      v-model:show="showAdjustModal"
+      :type="adjustType"
+      :current-amount="
+        adjustType === 'deposit'
+          ? userData.totaldeposit
+          : userData.totalwithdraw
+      "
+      @submit="submitAdjust"
+    />
     <!-- Statistics Section -->
     <div class="bg-white rounded-lg shadow">
       <div class="p-4 border-b max-md:p-3">
@@ -32,6 +41,12 @@
                 >
                   {{ currency }}
                   {{ formatAmount(userData.totaldeposit) }}
+                  <button
+                    @click="openAdjustModal('deposit')"
+                    class="px-2 py-1 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 transition-colors"
+                  >
+                    {{ $t("adjust") }}
+                  </button>
                 </div>
               </div>
               <Icon
@@ -52,6 +67,12 @@
                 >
                   {{ currency }}
                   {{ formatAmount(userData.totalwithdraw) }}
+                  <button
+                    @click="openAdjustModal('withdraw')"
+                    class="px-2 py-1 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 transition-colors"
+                  >
+                    {{ $t("adjust") }}
+                  </button>
                 </div>
               </div>
               <Icon
@@ -167,6 +188,8 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["fetch-balance", "update"]);
+const showAdjustModal = ref(false);
+const adjustType = ref("deposit");
 const isFetchBalanceButtonLoading = ref(false);
 const isPageLoading = ref(true);
 const showCashoutModal = ref(false);
@@ -189,6 +212,51 @@ const winloss = computed(() => {
   const totalWithdraw = Number(props.userData.totalwithdraw || 0);
   return totalWithdraw - totalDeposit;
 });
+
+const openAdjustModal = (type) => {
+  adjustType.value = type;
+  showAdjustModal.value = true;
+};
+
+const submitAdjust = async (adjustData) => {
+  try {
+    const endpoint =
+      adjustType.value === "deposit"
+        ? `adjust-total-deposit/${props.userData._id}`
+        : `adjust-total-withdraw/${props.userData._id}`;
+
+    const { data } = await patch(endpoint, {
+      amount: Number(adjustData.amount),
+      remark: adjustData.remark,
+    });
+
+    if (data.success) {
+      await Swal.fire({
+        icon: "success",
+        title: $t("success"),
+        text: data.message[$locale.value] || data.message.en,
+        timer: 1500,
+      });
+      showAdjustModal.value = false;
+      emit("update");
+    } else {
+      await Swal.fire({
+        icon: "info",
+        title: $t("info"),
+        text: data.message[$locale.value] || data.message.en,
+      });
+    }
+  } catch (error) {
+    await Swal.fire({
+      icon: "error",
+      title: $t("error"),
+      text:
+        error.response?.data?.message?.[$locale.value] ||
+        error.response?.data?.message?.en ||
+        $t("network_error"),
+    });
+  }
+};
 
 const submitCashout = async (cashout) => {
   try {
@@ -272,7 +340,7 @@ const fetchUserGameWalletBalance = async () => {
 };
 
 onMounted(async () => {
-  await fetchUserGameWalletBalance();
+  // await fetchUserGameWalletBalance();
   isPageLoading.value = false;
 });
 </script>

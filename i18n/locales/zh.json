@@ -1572,5 +1572,12 @@
   "loyaltybonus": "忠实奖金",
   "free_credit_apply": "申请免费积分",
   "without_kiosk": "不选择平台（不转账）",
-  "enter_kiosk_name": "输入平台名称（仅作记录）"
+  "enter_kiosk_name": "输入平台名称（仅作记录）",
+  "adjust_total_deposit": "调整总存款",
+  "adjust_total_withdraw": "调整总提款",
+  "current_amount": "当前金额",
+  "adjust_amount": "调整金额",
+  "adjust_amount_hint": "正数增加，负数减少",
+  "new_amount": "新金额",
+  "confirm_adjust": "确认调整"
 }
