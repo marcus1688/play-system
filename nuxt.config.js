@@ -1,8 +1,3 @@
-// 生产环境使用的API URL
-// const APIURL = "https://api.pw66.club/api/";
-
-// 开发环境使用的API URLs
-const APIURL = "http://localhost:3001/api/";
 export default defineNuxtConfig({
   ssr: true,
 
@@ -65,10 +60,7 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/styles.scss"],
 
-  runtimeConfig: {
-    mongodbUri: process.env.MONGODB_URI,
-    public: { apiUrl: APIURL },
-  },
+  runtimeConfig: {},
 
   postcss: {
     plugins: {
