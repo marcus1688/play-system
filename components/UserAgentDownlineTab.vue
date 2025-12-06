@@ -23,10 +23,19 @@
           <div>
             <label
               class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
-              >{{ $t("username") }}</label
+              >{{ $t("userid") }}</label
             >
             <div class="text-sm max-md:text-xs">
-              {{ userData.userInfo.username }}
+              {{ props.userData.userid }}
+            </div>
+          </div>
+          <div>
+            <label
+              class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
+              >{{ $t("fullname") }}</label
+            >
+            <div class="text-sm max-md:text-xs">
+              {{ props.userData.fullname }}
             </div>
           </div>
           <div>
@@ -98,7 +107,7 @@
             @click="showTransferModal = true"
             class="px-4 py-2 bg-indigo-600 text-white rounded-lg lg:hover:bg-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:w-full"
           >
-            {{ $t("transfer_downline") }}
+            {{ $t("setup_downline") }}
           </button>
           <button
             @click="handleRemoveReferral"
@@ -118,6 +127,11 @@
                 <th
                   class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
                 >
+                  {{ $t("user_id") }}
+                </th>
+                <th
+                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
+                >
                   {{ $t("username") }}
                 </th>
                 <th
@@ -135,11 +149,7 @@
                 >
                   {{ $t("last_deposit") }}
                 </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("last_login") }}
-                </th>
+
                 <th
                   class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
                 >
@@ -156,12 +166,17 @@
                 <td
                   class="px-6 py-4 text-sm font-medium max-md:px-3 max-md:py-2 max-md:text-xs"
                 >
+                  {{ user.userid || "-" }}
+                </td>
+                <td
+                  class="px-6 py-4 text-sm font-medium max-md:px-3 max-md:py-2 max-md:text-xs"
+                >
                   {{ user.username }}
                 </td>
                 <td
                   class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
                 >
-                  {{ user.viplevel }}
+                  {{ user.viplevel || "-" }}
                 </td>
                 <td class="px-6 py-4 text-sm max-md:px-3 max-md:py-2">
                   <div
@@ -180,11 +195,7 @@
                 >
                   {{ formatDate(user.lastdepositdate) }}
                 </td>
-                <td
-                  class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
-                >
-                  {{ formatDate(user.lastLogin) }}
-                </td>
+
                 <td
                   class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
                 >
@@ -204,110 +215,6 @@
                     />
                     <span class="max-md:text-xs">{{
                       $t("no_direct_downlines")
-                    }}</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Indirect Downlines Table -->
-      <div v-if="activeTab === 'indirect'" class="bg-white rounded-b-lg shadow">
-        <div class="overflow-x-auto">
-          <table class="w-full whitespace-nowrap">
-            <thead class="bg-gray-50 text-center">
-              <tr>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("username") }}
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("vip_level") }}
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("status") }}
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("last_deposit") }}
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("last_login") }}
-                </th>
-                <th
-                  class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-                >
-                  {{ $t("registration_date") }}
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 text-center">
-              <tr
-                v-for="user in userData.downlines.indirect"
-                :key="user._id"
-                class="lg:hover:bg-gray-50"
-              >
-                <td
-                  class="px-6 py-4 text-sm font-medium max-md:px-3 max-md:py-2 max-md:text-xs"
-                >
-                  {{ user.username }}
-                </td>
-                <td
-                  class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
-                >
-                  {{ user.viplevel }}
-                </td>
-                <td class="px-6 py-4 text-sm max-md:px-3 max-md:py-2">
-                  <div
-                    :class="[
-                      'px-3 py-1 text-xs rounded inline-block max-md:px-2 max-md:py-2 max-md:text-[10px]',
-                      user.status
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800',
-                    ]"
-                  >
-                    {{ user.status ? $t("active") : $t("inactive") }}
-                  </div>
-                </td>
-                <td
-                  class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
-                >
-                  {{ formatDate(user.lastdepositdate) }}
-                </td>
-                <td
-                  class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
-                >
-                  {{ formatDate(user.lastLogin) }}
-                </td>
-                <td
-                  class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
-                >
-                  {{ formatDate(user.createdAt) }}
-                </td>
-              </tr>
-              <tr v-if="userData.downlines.indirect.length === 0">
-                <td
-                  colspan="9"
-                  class="px-6 py-4 text-center text-gray-500 max-md:px-3 max-md:py-3"
-                >
-                  <div class="flex flex-col gap-8 items-center max-md:gap-4">
-                    <img
-                      src="/images/empty2.png"
-                      alt="Empty State"
-                      class="w-32 h-auto opacity-80 max-md:w-24"
-                    />
-                    <span class="max-md:text-xs">{{
-                      $t("no_indirect_downlines")
                     }}</span>
                   </div>
                 </td>
@@ -345,7 +252,6 @@ const showTransferModal = ref(false);
 
 const tabs = [
   { label: "Direct Downlines", labelCN: "直接下线", value: "direct" },
-  { label: "Indirect Downlines", labelCN: "间接下线", value: "indirect" },
 ];
 
 const fetchUserDownlines = async () => {

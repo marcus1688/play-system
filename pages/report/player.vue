@@ -390,7 +390,7 @@ const filteredPlayers = computed(() => {
     result = result.filter(
       (player) =>
         player.username.toLowerCase().includes(query) ||
-        (player.userid && player.userid.toLowerCase().includes(query))
+        (player.userid && String(player.userid).toLowerCase().includes(query))
     );
   }
 

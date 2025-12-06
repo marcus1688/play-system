@@ -21,14 +21,14 @@
             <label
               class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
             >
-              {{ $t("username") }}
+              {{ $t("userid") }}
             </label>
             <input
-              v-model="formData.username"
+              v-model="formData.userid"
               type="text"
               required
               class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
-              :placeholder="$t('enter_username')"
+              :placeholder="$t('enter_userid')"
             />
           </div>
 
@@ -36,14 +36,14 @@
             <label
               class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
             >
-              {{ $t("new_agent_username") }}
+              {{ $t("new_agent_userid") }}
             </label>
             <input
-              v-model="formData.newAgentUsername"
+              v-model="formData.newAgentUserid"
               type="text"
               required
               class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
-              :placeholder="$t('enter_new_agent_username')"
+              :placeholder="$t('enter_new_agent_userid')"
             />
           </div>
 
@@ -82,8 +82,8 @@ const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
 const { publicPost } = useApiEndpoint();
 const isLoading = ref(false);
 const formData = ref({
-  username: "",
-  newAgentUsername: "",
+  userid: "",
+  newAgentUserid: "",
 });
 
 const handleSubmit = async () => {
@@ -124,8 +124,8 @@ const handleSubmit = async () => {
 
 const closeModal = () => {
   formData.value = {
-    username: "",
-    newAgentUsername: "",
+    userid: "",
+    newAgentUserid: "",
   };
   emit("update:show", false);
 };
@@ -135,8 +135,8 @@ watch(
   (newValue) => {
     if (!newValue) {
       formData.value = {
-        username: "",
-        newAgentUsername: "",
+        userid: "",
+        newAgentUserid: "",
       };
     }
   }

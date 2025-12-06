@@ -171,6 +171,20 @@
           />
         </div>
 
+        <!-- Referral By -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
+            >{{ $t("referral_by") }}</label
+          >
+          <div class="text-sm max-md:text-xs">
+            <span v-if="user && user.referralBy">
+              {{ user.referralBy.userid }} - {{ user.referralBy.username }}
+            </span>
+            <span v-else>-</span>
+          </div>
+        </div>
+
         <!-- VIP Level -->
         <div>
           <label

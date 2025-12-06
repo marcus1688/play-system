@@ -1583,5 +1583,9 @@
   "all_game_id": "All Game ID",
   "no_game_id_found": "No game ID found",
   "copy_all": "Copy All",
-  "all_game_ids_copied": "All game IDs copied"
+  "all_game_ids_copied": "All game IDs copied",
+  "new_agent_userid": "New Agent User ID",
+  "enter_userid": "Enter User ID",
+  "enter_new_agent_userid": "Enter New Agent User ID",
+  "setup_downline": "Setup Downline"
 }

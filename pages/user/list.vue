@@ -116,20 +116,6 @@
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
               >
-                <button
-                  @click="openUserDetails(user)"
-                  class="px-3 py-2 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
-                >
-                  <Icon
-                    icon="material-symbols:visibility"
-                    class="w-4 h-4 max-md:w-3 max-md:h-3"
-                  />
-                  <span>{{ $t("view") }}</span>
-                </button>
-              </td>
-              <td
-                class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
-              >
                 {{ user.no }}
               </td>
               <td
@@ -147,7 +133,21 @@
               <td
                 class="px-6 py-4 text-sm text-wrap max-md:px-3 max-md:py-3 max-md:text-xs"
               >
-                {{ user.fullname }}
+                <div class="flex flex-col items-center gap-1">
+                  <div>{{ user.fullname }}</div>
+                  <div>
+                    <button
+                      @click="openUserDetails(user)"
+                      class="px-3 py-1 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 flex items-center justify-center gap-1 max-md:px-2 max-md:py-2 max-md:text-xs"
+                    >
+                      <Icon
+                        icon="material-symbols:visibility"
+                        class="w-4 h-4 max-md:w-3 max-md:h-3"
+                      />
+                      <span>{{ $t("view") }}</span>
+                    </button>
+                  </div>
+                </div>
               </td>
 
               <td
@@ -323,7 +323,6 @@ const isPageLoading = ref(true);
 const allusers = ref([]);
 const { get, publicGet } = useApiEndpoint();
 const tableHeaders = [
-  { key: "view", label: "View", labelCN: "查看", sortable: false },
   { key: "no", label: "No", labelCN: "编号", sortable: false },
   { key: "userid", label: "User ID", labelCN: "用户ID", sortable: true },
   { key: "fullname", label: "Fullname", labelCN: "全名", sortable: true },

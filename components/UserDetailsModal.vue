@@ -178,6 +178,7 @@ const tabs = [
   { label: "Bank Details", labelCN: "银行详情", value: "bank" },
   { label: "Performance", labelCN: "表现", value: "performance" },
   { label: "Game Details", labelCN: "游戏详情", value: "games" },
+  { label: "Agent Downline", labelCN: "代理下线", value: "agent-downline" },
   { label: "Transfer Logs", labelCN: "钱包转账记录", value: "transfer-logs" },
   {
     label: "Wallet Logs",
