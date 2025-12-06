@@ -65,6 +65,7 @@
             </label>
             <CustomSelect v-model="formData.kioskId" required>
               <option value="" disabled>{{ $t("select_kiosk") }}</option>
+              <option value="without_kiosk">{{ $t("without_kiosk") }}</option>
               <option
                 v-for="kiosk in kioskListWithBalances"
                 :key="kiosk._id"
@@ -75,9 +76,18 @@
               </option>
             </CustomSelect>
 
+            <div v-if="formData.kioskId === 'without_kiosk'" class="mt-2">
+              <input
+                v-model="formData.customKioskName"
+                type="text"
+                :placeholder="$t('enter_kiosk_name')"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
+              />
+            </div>
+
             <!-- Selected Kiosk Info -->
             <div
-              v-if="selectedKioskInfo"
+              v-if="selectedKioskInfo && formData.kioskId !== 'without_kiosk'"
               class="mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg max-md:p-2"
             >
               <div
@@ -153,7 +163,10 @@
             </div>
 
             <!-- CashOut Remaining Balance Checkbox -->
-            <div class="flex items-center gap-2">
+            <div
+              v-if="formData.kioskId && formData.kioskId !== 'without_kiosk'"
+              class="flex items-center gap-2"
+            >
               <input
                 type="checkbox"
                 id="cashoutRemaining"
@@ -364,6 +377,7 @@ const formData = ref({
   remark: "",
   cashoutRemaining: false,
   cashoutRemark: "",
+  customKioskName: "",
 });
 
 const cashoutAmount = computed(() => {
@@ -498,12 +512,13 @@ const handleSubmit = async () => {
     return;
   }
 
-  const selectedKiosk = selectedKioskInfo.value;
+  const isWithoutKiosk = formData.value.kioskId === "without_kiosk";
+  const selectedKiosk = isWithoutKiosk ? null : selectedKioskInfo.value;
   const selectedBank = bankList.value.find(
     (b) => b._id === formData.value.bankId
   );
 
-  if (!selectedKiosk?.userKioskId) {
+  if (!isWithoutKiosk && !selectedKiosk?.userKioskId) {
     await Swal.fire({
       icon: "warning",
       title: $t("warning"),
@@ -513,7 +528,10 @@ const handleSubmit = async () => {
   }
 
   // Validate withdraw amount <= kiosk balance
-  if (Number(formData.value.amount) > Number(selectedKiosk.balance)) {
+  if (
+    !isWithoutKiosk &&
+    Number(formData.value.amount) > Number(selectedKiosk.balance)
+  ) {
     await Swal.fire({
       icon: "warning",
       title: $t("warning"),
@@ -523,7 +541,9 @@ const handleSubmit = async () => {
   }
 
   // Calculate transfer out amount (full balance if cashout, else just withdraw amount)
-  const transferOutAmount = formData.value.cashoutRemaining
+  const transferOutAmount = isWithoutKiosk
+    ? 0
+    : formData.value.cashoutRemaining
     ? Number(selectedKiosk.balance)
     : Number(formData.value.amount);
 
@@ -531,38 +551,60 @@ const handleSubmit = async () => {
     const result = await Swal.fire({
       title: $t("confirm_withdraw"),
       html: `
-  <div class="text-left">
-    <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
-    <p><strong>${$t("gameid")}:</strong> ${selectedKiosk.userKioskId}</p>
-    <p><strong>${$t("kiosk_balance")}:</strong> ${
+        <div class="text-left">
+          <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
+          ${
+            !isWithoutKiosk
+              ? `<p><strong>${$t("gameid")}:</strong> ${
+                  selectedKiosk.userKioskId
+                }</p>`
+              : ""
+          }
+          ${
+            !isWithoutKiosk
+              ? `<p><strong>${$t("kiosk_balance")}:</strong> ${
+                  currency.value
+                } ${formatAmount(selectedKiosk.balance)}</p>`
+              : ""
+          }
+          ${
+            !isWithoutKiosk
+              ? `<p><strong>${$t("transfer_out_amount")}:</strong> ${
+                  currency.value
+                } ${formatAmount(transferOutAmount)}</p>`
+              : ""
+          }
+          <p><strong>${$t("withdraw_amount")}:</strong> ${
         currency.value
-      } ${formatAmount(selectedKiosk.balance)}</p>
-    <p><strong>${$t("transfer_out_amount")}:</strong> ${
-        currency.value
-      } ${formatAmount(transferOutAmount)}</p>
-    <p><strong>${$t("withdraw_amount")}:</strong> ${
-        currency.value
-      } ${formatAmount(actualWithdrawAmountWithMultiplier.value)}</p>
-    ${
-      transferMultiplier.value > 1
-        ? `<p><strong>${$t("multiplier")}:</strong> x${
-            transferMultiplier.value
-          }</p>`
-        : ""
-    }
-    ${
-      cashoutAmount.value > 0
-        ? `<p><strong>${$t("cashout_amount")}:</strong> ${
-            currency.value
-          } ${formatAmount(cashoutAmount.value)}</p>`
-        : ""
-    }
-    <p><strong>${$t("kiosk")}:</strong> ${selectedKiosk.name}</p>
-    <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname} - ${
+      } ${formatAmount(
+        isWithoutKiosk
+          ? formData.value.amount
+          : actualWithdrawAmountWithMultiplier.value
+      )}</p>
+          ${
+            !isWithoutKiosk && transferMultiplier.value > 1
+              ? `<p><strong>${$t("multiplier")}:</strong> x${
+                  transferMultiplier.value
+                }</p>`
+              : ""
+          }
+          ${
+            !isWithoutKiosk && cashoutAmount.value > 0
+              ? `<p><strong>${$t("cashout_amount")}:</strong> ${
+                  currency.value
+                } ${formatAmount(cashoutAmount.value)}</p>`
+              : ""
+          }
+          <p><strong>${$t("kiosk")}:</strong> ${
+        isWithoutKiosk
+          ? formData.value.customKioskName || $t("without_kiosk")
+          : selectedKiosk.name
+      }</p>
+          <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname} - ${
         selectedBank?.ownername
       }</p>
-  </div>
-  `,
+        </div>
+      `,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#ea580c",
@@ -576,28 +618,30 @@ const handleSubmit = async () => {
     isLoading.value = true;
 
     // Step 1: Call Kiosk Transfer Out API (full balance if cashout remaining)
-    const transferResponse = await post(
-      `${selectedKiosk.transferOutAPI}/${props.userData?._id}`,
-      {
-        transferAmount: transferOutAmount,
-      }
-    );
+    if (!isWithoutKiosk) {
+      const transferResponse = await post(
+        `${selectedKiosk.transferOutAPI}/${props.userData?._id}`,
+        {
+          transferAmount: transferOutAmount,
+        }
+      );
 
-    if (!transferResponse.data.success) {
-      await Swal.fire({
-        icon: "error",
-        title: $t("error"),
-        text:
-          transferResponse.data.message?.[$locale.value] ||
-          transferResponse.data.message?.en ||
-          $t("kiosk_transfer_failed"),
-      });
-      isLoading.value = false;
-      return;
+      if (!transferResponse.data.success) {
+        await Swal.fire({
+          icon: "error",
+          title: $t("error"),
+          text:
+            transferResponse.data.message?.[$locale.value] ||
+            transferResponse.data.message?.en ||
+            $t("kiosk_transfer_failed"),
+        });
+        isLoading.value = false;
+        return;
+      }
     }
 
     // Step 2: Process CashOut if any
-    if (cashoutAmount.value > 0) {
+    if (!isWithoutKiosk && cashoutAmount.value > 0) {
       const cashoutResult = await processCashout();
       if (!cashoutResult.success) {
         await Swal.fire({
@@ -617,10 +661,14 @@ const handleSubmit = async () => {
     const { data } = await post("admin-direct-withdraw", {
       userId: props.userData?._id,
       username: props.userData?.username,
-      amount: Number(actualWithdrawAmountWithMultiplier.value),
-      kioskId: formData.value.kioskId,
-      kioskName: selectedKiosk.name,
-      userKioskId: selectedKiosk.userKioskId,
+      amount: isWithoutKiosk
+        ? Number(formData.value.amount)
+        : Number(actualWithdrawAmountWithMultiplier.value),
+      kioskId: isWithoutKiosk ? null : formData.value.kioskId,
+      kioskName: isWithoutKiosk
+        ? formData.value.customKioskName || "-"
+        : selectedKiosk.name,
+      userKioskId: isWithoutKiosk ? "-" : selectedKiosk.userKioskId,
       bankId: formData.value.bankId,
       remark: formData.value.remark,
     });
@@ -664,6 +712,7 @@ const closeModal = () => {
     remark: "",
     cashoutRemaining: false,
     cashoutRemark: "",
+    customKioskName: "",
   };
   kioskListWithBalances.value = [];
   bankList.value = [];
