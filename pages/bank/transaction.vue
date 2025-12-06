@@ -313,7 +313,7 @@ const fetchTransactions = async () => {
   try {
     isLoading.value = true;
     const { data } = await get(`banktransactionlog?${params.toString()}`);
-    console.log(data);
+
     if (data.success) {
       transactions.value = data.data;
     }

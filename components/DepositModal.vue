@@ -439,7 +439,6 @@ const fetchAllKioskBalances = async () => {
     const { data } = await post("kiosk/check-all-balances", {
       userId: props.userData?._id,
     });
-    console.log(data);
     if (data.success) {
       kioskListWithBalances.value = data.data.map((kiosk) => ({
         ...kiosk,

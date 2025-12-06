@@ -485,7 +485,7 @@ const fetchReportData = async () => {
     }
 
     const { data } = await publicGet(`allAdminStats?${params.toString()}`);
-    console.log(data);
+
     if (data.success) {
       reports.value = data.data.adminStats;
       totals.value = data.data.totals;
