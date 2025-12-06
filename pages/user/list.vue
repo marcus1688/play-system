@@ -156,6 +156,11 @@
                 {{ currency }} {{ formatAmount(user.totalwithdraw) }}
               </td>
               <td
+                class="px-6 py-4 text-sm text-purple-600 font-semibold max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                {{ currency }} {{ formatAmount(user.totalbonus) }}
+              </td>
+              <td
                 class="px-6 py-4 text-sm font-semibold max-md:px-3 max-md:py-3 max-md:text-xs"
               >
                 <span
@@ -327,6 +332,12 @@ const tableHeaders = [
     key: "totalWithdraw",
     label: "Total Withdraw",
     labelCN: "总提款",
+    sortable: true,
+  },
+  {
+    key: "totalBonus",
+    label: "Total Bonus",
+    labelCN: "总奖金",
     sortable: true,
   },
   {

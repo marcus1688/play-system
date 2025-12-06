@@ -72,6 +72,7 @@
             <template v-else>
               <CustomSelect v-model="formData.kioskId" required>
                 <option value="" disabled>{{ $t("select_kiosk") }}</option>
+                <option value="without_kiosk">{{ $t("without_kiosk") }}</option>
                 <option
                   v-for="kiosk in kioskListWithBalances"
                   :key="kiosk._id"
@@ -80,6 +81,14 @@
                   {{ kiosk.name }} - {{ formatAmount(kiosk.balance) }}
                 </option>
               </CustomSelect>
+              <div v-if="formData.kioskId === 'without_kiosk'" class="mt-2">
+                <input
+                  v-model="formData.customKioskName"
+                  type="text"
+                  :placeholder="$t('enter_kiosk_name')"
+                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
+                />
+              </div>
 
               <!-- Selected Kiosk Info -->
               <div
@@ -358,6 +367,7 @@ const formData = ref({
   bankId: "",
   promotionId: "",
   remark: "",
+  customKioskName: "",
 });
 
 const formatAmount = (amount) => {
@@ -506,10 +516,10 @@ const handleSubmit = async () => {
     });
     return;
   }
+  const isWithoutKiosk = formData.value.kioskId === "without_kiosk";
+  const selectedKiosk = isWithoutKiosk ? null : selectedKioskInfo.value;
 
-  const selectedKiosk = selectedKioskInfo.value;
-
-  if (!selectedKiosk?.userKioskId) {
+  if (!isWithoutKiosk && !selectedKiosk?.userKioskId) {
     await Swal.fire({
       icon: "warning",
       title: $t("warning"),
@@ -528,11 +538,21 @@ const handleSubmit = async () => {
       html: `
     <div class="text-left">
       <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
-      <p><strong>${$t("gameid")}:</strong> ${selectedKiosk.userKioskId}</p>
+      ${
+        !isWithoutKiosk
+          ? `<p><strong>${$t("gameid")}:</strong> ${
+              selectedKiosk.userKioskId
+            }</p>`
+          : ""
+      }
       <p><strong>${$t("amount")}:</strong> ${currency.value} ${formatAmount(
         formData.value.amount
       )}</p>
-      <p><strong>${$t("kiosk")}:</strong> ${selectedKiosk.name}</p>
+  <p><strong>${$t("kiosk")}:</strong> ${
+        isWithoutKiosk
+          ? formData.value.customKioskName || $t("without_kiosk")
+          : selectedKiosk.name
+      }</p>
       <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname}</p>
       ${
         selectedPromotion.value
@@ -551,7 +571,7 @@ const handleSubmit = async () => {
           : ""
       }
       ${
-        transferMultiplier.value > 1
+        !isWithoutKiosk && transferMultiplier.value > 1
           ? `<p><strong>${$t("transfer_amount")}:</strong> ${
               currency.value
             } ${formatAmount(actualTransferAmount.value)} (x${
@@ -607,24 +627,26 @@ const handleSubmit = async () => {
     }
 
     // Step 2: Call Kiosk Transfer In API
-    const transferResponse = await post(
-      `${selectedKiosk.transferInAPI}/${props.userData?._id}`,
-      {
-        transferAmount: Number(actualTransferAmount.value),
-      }
-    );
+    if (!isWithoutKiosk) {
+      const transferResponse = await post(
+        `${selectedKiosk.transferInAPI}/${props.userData?._id}`,
+        {
+          transferAmount: Number(actualTransferAmount.value),
+        }
+      );
 
-    if (!transferResponse.data.success) {
-      await Swal.fire({
-        icon: "error",
-        title: $t("error"),
-        text:
-          transferResponse.data.message?.[$locale.value] ||
-          transferResponse.data.message?.en ||
-          $t("kiosk_transfer_failed"),
-      });
-      isLoading.value = false;
-      return;
+      if (!transferResponse.data.success) {
+        await Swal.fire({
+          icon: "error",
+          title: $t("error"),
+          text:
+            transferResponse.data.message?.[$locale.value] ||
+            transferResponse.data.message?.en ||
+            $t("kiosk_transfer_failed"),
+        });
+        isLoading.value = false;
+        return;
+      }
     }
 
     // Step 3: Submit and auto-approve deposit
@@ -632,9 +654,11 @@ const handleSubmit = async () => {
       userId: props.userData?._id,
       username: props.userData?.username,
       amount: Number(formData.value.amount),
-      kioskId: formData.value.kioskId,
-      kioskName: selectedKiosk.name,
-      userKioskId: selectedKiosk.userKioskId,
+      kioskId: isWithoutKiosk ? null : formData.value.kioskId,
+      kioskName: isWithoutKiosk
+        ? formData.value.customKioskName || "-"
+        : selectedKiosk.name,
+      userKioskId: isWithoutKiosk ? "-" : selectedKiosk.userKioskId,
       bankId: formData.value.bankId,
       promotionId: formData.value.promotionId || null,
       bonusAmount: calculatedBonus.value || 0,
@@ -651,7 +675,9 @@ const handleSubmit = async () => {
             promotionId: formData.value.promotionId,
             depositId: data.depositId,
             depositAmount: Number(formData.value.amount),
-            kioskName: selectedKiosk.name,
+            kioskName: isWithoutKiosk
+              ? formData.value.customKioskName || "-"
+              : selectedKiosk.name,
           });
         } catch (bonusError) {
           console.error("Error submitting bonus:", bonusError);
@@ -695,6 +721,7 @@ const closeModal = () => {
     bankId: "",
     promotionId: "",
     remark: "",
+    customKioskName: "",
   };
   kioskListWithBalances.value = [];
   emit("update:show", false);
