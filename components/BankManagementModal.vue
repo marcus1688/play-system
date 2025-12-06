@@ -218,6 +218,21 @@ const handleFileChange = (event) => {
   }
 };
 
+const resetForm = () => {
+  formData.value = {
+    bankname: "",
+    bankaccount: "",
+    ownername: "",
+    fastpayment: "",
+    transactionlimit: "",
+    transactionfees: "",
+    transactionamountlimit: "",
+    remark: "",
+    qrimage: null,
+  };
+  imagePreview.value = null;
+};
+
 const handleSubmit = async () => {
   try {
     isLoading.value = true;
@@ -240,6 +255,7 @@ const handleSubmit = async () => {
         text: data.message[$locale.value] || data.message.en,
         timer: 1500,
       });
+      resetForm();
       emit("success");
       emit("update:show", false);
     } else {
