@@ -43,6 +43,18 @@
         </div>
         <div
           v-if="menuOpen"
+          class="flex items-center justify-between px-2 mt-2 max-md:px-1 max-md:mt-1.5"
+        >
+          <span class="text-gray-400 text-xs max-md:text-[0.65rem]"
+            >{{ $t("company") }}:</span
+          >
+          <span
+            class="text-gray-200 text-xs font-medium max-md:text-[0.65rem] uppercase"
+            >{{ currentCompanyId }}</span
+          >
+        </div>
+        <div
+          v-if="menuOpen"
           class="w-full text-white mt-2 border-b-[0.5px] border-gray-700 pb-3 max-md:mt-1.5 max-md:pb-2"
         >
           <!-- Last Login Info -->
@@ -261,7 +273,8 @@ import {
   SpeakerWaveIcon,
   SpeakerXMarkIcon,
 } from "@heroicons/vue/24/solid";
-
+const { getCompanyId } = useCompany();
+const currentCompanyId = computed(() => getCompanyId());
 const pendingFeedbacks = useState("pendingFeedbacks");
 const isSoundMuted = useState("isSoundMuted");
 const adminUserData = useState("adminUserData");
