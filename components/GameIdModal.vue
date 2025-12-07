@@ -16,11 +16,24 @@
         class="bg-white rounded-lg w-[500px] max-h-[90vh] overflow-y-auto max-w-full"
       >
         <div class="p-6 border-b max-md:p-4">
-          <div class="flex items-center gap-4 max-md:gap-3">
-            <div class="w-2 h-8 bg-indigo-600 rounded-full max-md:h-6"></div>
-            <h2 class="text-xl font-semibold max-md:text-lg">
-              {{ $t("all_game_id") }}
-            </h2>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4 max-md:gap-3">
+              <div class="w-2 h-8 bg-indigo-600 rounded-full max-md:h-6"></div>
+              <h2 class="text-xl font-semibold max-md:text-lg">
+                {{ $t("all_game_id") }}
+              </h2>
+            </div>
+            <button
+              @click="fetchAllKioskBalances"
+              :disabled="isLoading"
+              class="flex items-center gap-1 text-sm text-indigo-600 lg:hover:text-indigo-800 max-md:text-xs"
+            >
+              <Icon
+                :icon="isLoading ? 'eos-icons:loading' : 'mdi:refresh'"
+                class="w-5 h-5 max-md:w-4 max-md:h-4"
+              />
+              <span class="max-sm:hidden">{{ $t("refresh_all") }}</span>
+            </button>
           </div>
         </div>
 
@@ -72,6 +85,13 @@
                   "
                 >
                   {{ kiosk.userKioskId || $t("not_registered") }}
+                </div>
+                <!-- Balance -->
+                <div
+                  v-if="kiosk.userKioskId"
+                  class="text-xs text-green-600 font-medium"
+                >
+                  {{ $t("balance") }}: {{ formatAmount(kiosk.balance) }}
                 </div>
               </div>
               <div class="flex items-center gap-2">
@@ -155,24 +175,36 @@ const hasAnyGameId = computed(() => {
   return kioskList.value.some((k) => k.userKioskId);
 });
 
+const formatAmount = (amount) => {
+  if (amount === null || amount === undefined) return "0.00";
+  return Number(amount).toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+
 const openChangePasswordModal = (kiosk) => {
   selectedKioskForPassword.value = kiosk;
   showChangePasswordModal.value = true;
 };
 
-const fetchKioskGameIds = async () => {
+const handleChangePasswordSuccess = () => {
+  // Refresh after password change if needed
+};
+
+const fetchAllKioskBalances = async () => {
   if (!props.userData?._id) return;
 
   isLoading.value = true;
   try {
-    const { data } = await post("kiosk/get-user-kiosk-ids", {
+    const { data } = await post("kiosk/check-all-balances", {
       userId: props.userData._id,
     });
     if (data.success) {
       kioskList.value = data.data;
     }
   } catch (error) {
-    console.error("Error fetching kiosk game IDs:", error);
+    console.error("Error fetching kiosk balances:", error);
   } finally {
     isLoading.value = false;
   }
@@ -222,7 +254,7 @@ watch(
   () => props.show,
   (newShow) => {
     if (newShow) {
-      fetchKioskGameIds();
+      fetchAllKioskBalances();
     }
   }
 );
