@@ -267,4 +267,13 @@ const closeModal = () => {
   formData.value = { amount: "", remark: "" };
   emit("update:show", false);
 };
+
+watch(
+  () => props.show,
+  (newVal) => {
+    if (!newVal) {
+      formData.value = { amount: "", remark: "" };
+    }
+  }
+);
 </script>
