@@ -155,6 +155,7 @@ const handleSubmit = async () => {
     const transferEndpoint = `${props.game.transferInAPI}/${props.userId}`;
     const transferResponse = await post(transferEndpoint, {
       transferAmount: Number(formData.value.amount),
+      remark: formData.value.remark || "",
     });
 
     if (transferResponse.data.success) {
