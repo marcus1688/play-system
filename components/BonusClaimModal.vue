@@ -83,6 +83,7 @@
             <template v-else>
               <CustomSelect v-model="selectedKioskId" required>
                 <option value="" disabled>{{ $t("select_kiosk") }}</option>
+                <option value="without_kiosk">{{ $t("without_kiosk") }}</option>
                 <option
                   v-for="kiosk in kioskListWithBalances"
                   :key="kiosk._id"
@@ -91,10 +92,17 @@
                   {{ kiosk.name }} - {{ formatAmount(kiosk.balance) }}
                 </option>
               </CustomSelect>
-
+              <div v-if="selectedKioskId === 'without_kiosk'" class="mt-2">
+                <input
+                  v-model="customKioskName"
+                  type="text"
+                  :placeholder="$t('enter_kiosk_name')"
+                  class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
+                />
+              </div>
               <!-- Selected Kiosk Info -->
               <div
-                v-if="selectedKioskInfo"
+                v-if="selectedKioskInfo && selectedKioskId !== 'without_kiosk'"
                 class="mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg max-md:p-2"
               >
                 <div
@@ -255,6 +263,7 @@ const isLoading = ref(false);
 const isLoadingBalances = ref(false);
 const kioskListWithBalances = ref([]);
 const selectedKioskId = ref("");
+const customKioskName = ref("");
 
 const themeColor = computed(() => {
   const colors = {
@@ -418,12 +427,13 @@ const handleClaim = async () => {
     return;
   }
 
-  const selectedKiosk = selectedKioskInfo.value;
+  const isWithoutKiosk = selectedKioskId.value === "without_kiosk";
+  const selectedKiosk = isWithoutKiosk ? null : selectedKioskInfo.value;
   const selectedPromotion = promotionList.value.find(
     (p) => p._id === selectedPromotionId.value
   );
 
-  if (!selectedKiosk?.userKioskId) {
+  if (!isWithoutKiosk && !selectedKiosk?.userKioskId) {
     await Swal.fire({
       icon: "warning",
       title: $t("warning"),
@@ -431,13 +441,22 @@ const handleClaim = async () => {
     });
     return;
   }
-
   try {
     const confirmHtml = `
       <div class="text-left">
         <p><strong>${$t("username")}:</strong> ${props.bonusData?.username}</p>
-        <p><strong>${$t("kiosk")}:</strong> ${selectedKiosk.name}</p>
-        <p><strong>${$t("gameid")}:</strong> ${selectedKiosk.userKioskId}</p>
+        ${
+          !isWithoutKiosk
+            ? `<p><strong>${$t("gameid")}:</strong> ${
+                selectedKiosk.userKioskId
+              }</p>`
+            : ""
+        }
+        <p><strong>${$t("kiosk")}:</strong> ${
+      isWithoutKiosk
+        ? customKioskName.value || $t("without_kiosk")
+        : selectedKiosk.name
+    }</p>
         <p><strong>${$t("promotion")}:</strong> ${
       $locale.value === "zh"
         ? selectedPromotion?.maintitle
@@ -447,7 +466,7 @@ const handleClaim = async () => {
       currency.value
     } ${formatAmount(props.bonusAmount)}</p>
         ${
-          transferMultiplier.value > 1
+          !isWithoutKiosk && transferMultiplier.value > 1
             ? `<p><strong>${$t("transfer_amount")}:</strong> ${
                 currency.value
               } ${formatAmount(actualTransferAmount.value)} (x${
@@ -474,31 +493,35 @@ const handleClaim = async () => {
     isLoading.value = true;
 
     // Step 1: Call Kiosk Transfer In API
-    const transferResponse = await post(
-      `${selectedKiosk.transferInAPI}/${props.bonusData?.userId}`,
-      {
-        transferAmount: Number(actualTransferAmount.value),
-      }
-    );
+    if (!isWithoutKiosk) {
+      const transferResponse = await post(
+        `${selectedKiosk.transferInAPI}/${props.bonusData?.userId}`,
+        {
+          transferAmount: Number(actualTransferAmount.value),
+        }
+      );
 
-    if (!transferResponse.data.success) {
-      await Swal.fire({
-        icon: "error",
-        title: $t("error"),
-        text:
-          transferResponse.data.message?.[$locale.value] ||
-          transferResponse.data.message?.en ||
-          $t("kiosk_transfer_failed"),
-      });
-      isLoading.value = false;
-      return;
+      if (!transferResponse.data.success) {
+        await Swal.fire({
+          icon: "error",
+          title: $t("error"),
+          text:
+            transferResponse.data.message?.[$locale.value] ||
+            transferResponse.data.message?.en ||
+            $t("kiosk_transfer_failed"),
+        });
+        isLoading.value = false;
+        return;
+      }
     }
 
     // Step 2: Call Claim API (mark as claimed)
     const claimPayload = {
       [props.claimIdField]: props.bonusData?._id,
-      kioskId: selectedKioskId.value,
-      kioskName: selectedKiosk.name,
+      kioskId: isWithoutKiosk ? null : selectedKioskId.value,
+      kioskName: isWithoutKiosk
+        ? customKioskName.value || "-"
+        : selectedKiosk.name,
       bonusAmount: Number(props.bonusAmount),
       transferAmount: Number(actualTransferAmount.value),
     };
@@ -519,8 +542,10 @@ const handleClaim = async () => {
     const { data } = await post("admin-direct-bonus", {
       userId: props.bonusData?.userId,
       username: props.bonusData?.username,
-      kioskId: selectedKioskId.value,
-      kioskName: selectedKiosk.name,
+      kioskId: isWithoutKiosk ? null : selectedKioskId.value,
+      kioskName: isWithoutKiosk
+        ? customKioskName.value || "-"
+        : selectedKiosk.name,
       promotionId: selectedPromotionId.value,
       amount: Number(props.bonusAmount),
       remark: props.title,
@@ -560,6 +585,7 @@ const handleClaim = async () => {
 const closeModal = () => {
   selectedKioskId.value = "";
   selectedPromotionId.value = "";
+  customKioskName.value = "";
   kioskListWithBalances.value = [];
   promotionList.value = [];
   emit("update:show", false);

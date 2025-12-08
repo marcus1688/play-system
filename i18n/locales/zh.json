@@ -1590,5 +1590,8 @@
   "setup_downline": "设置下线",
   "withdraw_points": "提款分数",
   "enter_points": "输入分数",
-  "copy": "复制"
+  "copy": "复制",
+  "confirm_transfer_in": "确认转入",
+  "transfer_in_amount": "转入金额",
+  "transfer_in_success": "转入成功"
 }

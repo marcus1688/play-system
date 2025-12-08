@@ -1590,5 +1590,8 @@
   "setup_downline": "Setup Downline",
   "withdraw_points": "Withdraw Points",
   "enter_points": "Enter Points",
-  "copy": "Copy"
+  "copy": "Copy",
+  "confirm_transfer_in": "Confirm Transfer In",
+  "transfer_in_amount": "Transfer In Amount",
+  "transfer_in_success": "Transfer in successful"
 }

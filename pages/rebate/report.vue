@@ -302,7 +302,7 @@ const tableHeaders = [
     sortable: true,
   },
   { key: "claimedBy", label: "Process By", labelCN: "处理人", sortable: true },
-  { key: "claimed", label: "Action", labelCN: "操作", sortable: false },
+  { key: "claimed", label: "Action", labelCN: "操作", sortable: true },
 ];
 
 const rebateLogs = ref([]);
@@ -368,6 +368,10 @@ const filteredRebateLogs = computed(() => {
         aVal = new Date(aVal || 0).getTime();
         bVal = new Date(bVal || 0).getTime();
       }
+      if (sortConfig.value.key === "claimed") {
+        aVal = a.claimed ? 1 : 0;
+        bVal = b.claimed ? 1 : 0;
+      }
       if (typeof aVal === "string") aVal = aVal.toLowerCase();
       if (typeof bVal === "string") bVal = bVal.toLowerCase();
       const direction = sortConfig.value.direction === "asc" ? 1 : -1;
@@ -376,6 +380,7 @@ const filteredRebateLogs = computed(() => {
       return 0;
     });
   }
+
   return result;
 });
 
