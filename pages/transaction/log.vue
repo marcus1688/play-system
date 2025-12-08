@@ -616,9 +616,10 @@ const revertTransaction = async (id, transactionType) => {
       });
       return;
     }
-
+    const isWithoutKiosk = !transaction.kioskId;
     // ============ Step 1: Transfer In/Out ============
     if (
+      !isWithoutKiosk &&
       transaction.game &&
       (transactionType === "deposit" ||
         transactionType === "withdraw" ||
