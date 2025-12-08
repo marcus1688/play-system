@@ -191,6 +191,16 @@
               <td
                 class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
+                {{ summary.cashinQty }}
+              </td>
+              <td
+                class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                {{ currency }} {{ formatAmount(summary.totalUserCashin) }}
+              </td>
+              <td
+                class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
                 {{ currency }} {{ formatAmount(summary.totalCashIn) }}
               </td>
               <td
@@ -305,6 +315,18 @@ const tableHeaders = [
     key: "totalUserCashout",
     label: "User Cash Out",
     labelCN: "提现总额(用户)",
+    sortable: false,
+  },
+  {
+    key: "cashinQty",
+    label: "User Cash In QTY",
+    labelCN: "转入数量(用户)",
+    sortable: false,
+  },
+  {
+    key: "totalUserCashin",
+    label: "User Cash In",
+    labelCN: "转入总额(用户)",
     sortable: false,
   },
   {
@@ -467,6 +489,10 @@ const handleExport = async () => {
         header: $t("reverted_transactions"),
         width: 15,
       },
+      cashoutQty: { header: $t("cashout_qty"), width: 15 },
+      totalUserCashout: { header: $t("total_user_cashout"), width: 15 },
+      cashinQty: { header: $t("cashin_qty"), width: 15 },
+      totalUserCashin: { header: $t("total_user_cashin"), width: 15 },
       totalCashIn: { header: $t("total_cash_in"), width: 15 },
       totalCashOut: { header: $t("total_cash_out"), width: 15 },
       avgDepositTime: { header: $t("avg_deposit_time"), width: 15 },
@@ -492,6 +518,8 @@ const handleExport = async () => {
           "totalBonus",
           "totalRebate",
           "winLose",
+          "totalUserCashout",
+          "totalUserCashin",
           "totalCashIn",
           "totalCashOut",
         ];

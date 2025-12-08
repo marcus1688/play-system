@@ -45,6 +45,19 @@
             <p class="text-sm text-gray-500 mt-1 max-md:text-xs max-md:mt-0.5">
               {{ $t("game_balance") }}: {{ formatAmount(balance) }}
               {{ $t("points") }}
+              <span
+                v-if="transferMultiplier > 1"
+                class="text-indigo-600 font-medium"
+              >
+                (x{{ transferMultiplier }})
+              </span>
+            </p>
+            <p
+              v-if="transferMultiplier > 1 && formData.amount"
+              class="text-sm text-green-600 mt-1 max-md:text-xs max-md:mt-0.5"
+            >
+              {{ $t("actual_cashin") }}: {{ currency }}
+              {{ formatAmount(actualCashinAmount) }}
             </p>
           </div>
 
@@ -110,13 +123,25 @@ const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
   emit("update:show", false);
 });
 
-const { post } = useApiEndpoint();
+const { post, patch } = useApiEndpoint();
 const currency = useCurrency();
 const isButtonLoading = ref(false);
 
 const formData = ref({
   amount: "",
   remark: "",
+});
+
+const transferMultiplier = computed(() => {
+  if (!props.game) return 1;
+  const kioskName = props.game.name?.toLowerCase() || "";
+  if (kioskName.includes("x5")) return 5;
+  if (kioskName.includes("x2")) return 2;
+  return 1;
+});
+
+const actualCashinAmount = computed(() => {
+  return Number(formData.value.amount || 0) * transferMultiplier.value;
 });
 
 const handleSubmit = async () => {
@@ -147,6 +172,15 @@ const handleSubmit = async () => {
           <p><strong>${$t("transfer_in_amount")}:</strong> ${
         currency.value
       } ${formatAmount(formData.value.amount)}</p>
+          ${
+            transferMultiplier.value > 1
+              ? `<p><strong>${$t("actual_cashin")}:</strong> ${
+                  currency.value
+                } ${formatAmount(actualCashinAmount.value)} (x${
+                  transferMultiplier.value
+                })</p>`
+              : ""
+          }
         </div>
       `,
       icon: "question",
@@ -161,13 +195,34 @@ const handleSubmit = async () => {
 
     isButtonLoading.value = true;
 
+    // Step 1: Call Kiosk Transfer In API
     const transferEndpoint = `${props.game.transferInAPI}/${props.userId}`;
     const transferResponse = await post(transferEndpoint, {
       transferAmount: Number(formData.value.amount),
       remark: formData.value.remark || "",
     });
 
-    if (transferResponse.data.success) {
+    if (!transferResponse.data.success) {
+      await Swal.fire({
+        icon: "error",
+        title: $t("error"),
+        text:
+          transferResponse.data.message?.[$locale.value] ||
+          transferResponse.data.message?.en ||
+          $t("transfer_failed"),
+      });
+      isButtonLoading.value = false;
+      return;
+    }
+
+    // Step 2: Record CashIn
+    const cashinResponse = await patch(`user/cashin/${props.userId}`, {
+      amount: Number(actualCashinAmount.value),
+      remark: formData.value.remark,
+      kioskName: props.game?.name,
+    });
+
+    if (cashinResponse.data.success) {
       await Swal.fire({
         icon: "success",
         title: $t("success"),
@@ -181,9 +236,9 @@ const handleSubmit = async () => {
         icon: "error",
         title: $t("error"),
         text:
-          transferResponse.data.message?.[$locale.value] ||
-          transferResponse.data.message?.en ||
-          $t("transfer_failed"),
+          cashinResponse.data.message?.[$locale.value] ||
+          cashinResponse.data.message?.en ||
+          $t("cashin_failed"),
       });
     }
   } catch (error) {

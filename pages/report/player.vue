@@ -183,6 +183,11 @@
               >
                 {{ currency }} {{ formatAmount(player.totalCashout) }}
               </td>
+              <td
+                class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                {{ currency }} {{ formatAmount(player.totalCashin) }}
+              </td>
             </tr>
             <tr
               v-if="paginatedPlayers.length === 0"
@@ -272,6 +277,11 @@
               >
                 {{ currency }} {{ formatAmount(totals.totalCashout) }}
               </td>
+              <td
+                class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                {{ currency }} {{ formatAmount(totals.totalCashin) }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -321,9 +331,10 @@ const tableHeaders = [
   { key: "totalWithdraw", label: "Withdraw", labelCN: "提款", sortable: true },
   { key: "winLose", label: "Win/Lose", labelCN: "输赢", sortable: true },
   { key: "totalTurnover", label: "Turnover", labelCN: "流水", sortable: true },
-  { key: "totalBonus", label: "Bonus", labelCN: "奖金", sortable: false },
-  { key: "totalRebate", label: "Rebate", labelCN: "返水", sortable: false },
-  { key: "totalCashout", label: "Cash Out", labelCN: "提现", sortable: false },
+  { key: "totalBonus", label: "Bonus", labelCN: "奖金", sortable: true },
+  { key: "totalRebate", label: "Rebate", labelCN: "返水", sortable: true },
+  { key: "totalCashout", label: "Cash Out", labelCN: "提现", sortable: true },
+  { key: "totalCashin", label: "Cash In", labelCN: "转入", sortable: true },
 ];
 
 const players = ref([]);
@@ -431,6 +442,7 @@ const totals = computed(() => {
       totalBonus: acc.totalBonus + player.totalBonus,
       totalRebate: acc.totalRebate + player.totalRebate,
       totalCashout: acc.totalCashout + player.totalCashout,
+      totalCashin: acc.totalCashin + (player.totalCashin || 0),
       winLose: acc.winLose + player.winLose,
     }),
     {
@@ -442,6 +454,7 @@ const totals = computed(() => {
       totalBonus: 0,
       totalRebate: 0,
       totalCashout: 0,
+      totalCashin: 0,
       winLose: 0,
     }
   );
@@ -489,6 +502,7 @@ const handleExport = async () => {
       totalBonus: totals.value.totalBonus,
       totalRebate: totals.value.totalRebate,
       totalCashout: totals.value.totalCashout,
+      totalCashin: totals.value.totalCashin,
     };
     exportData.push(totalRow);
     let filename = "player_report";
@@ -518,6 +532,7 @@ const handleExport = async () => {
         totalBonus: { header: $t("total_bonus"), width: 12 },
         totalRebate: { header: $t("total_rebate"), width: 12 },
         totalCashout: { header: $t("total_cashout"), width: 12 },
+        totalCashin: { header: $t("total_cashin"), width: 12 },
       },
       formatter: (value, key) => {
         const moneyFields = [
@@ -528,6 +543,7 @@ const handleExport = async () => {
           "totalBonus",
           "totalRebate",
           "totalCashout",
+          "totalCashin",
         ];
         if (moneyFields.includes(key) && typeof value === "number") {
           return value.toFixed(2);

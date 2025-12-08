@@ -204,7 +204,12 @@
                 <div v-if="item.transactionType === 'bonus'">
                   <div>{{ item.promotionnameEN }}</div>
                 </div>
-                <div v-else-if="item.transactionType === 'user cashout'">
+                <div
+                  v-else-if="
+                    item.transactionType === 'user cashout' ||
+                    item.transactionType === 'user cashin'
+                  "
+                >
                   <div>N/A</div>
                 </div>
                 <div v-else>
@@ -289,6 +294,7 @@
                     item.status === 'approved' &&
                     !item.reverted &&
                     item.transactionType !== 'user cashout' &&
+                    item.transactionType !== 'user cashin' &&
                     item.bankname !== 'USDT'
                   "
                   :loading="isButtonLoading[item._id]"
@@ -583,6 +589,8 @@ const getRowStyle = (type) => {
       return "bg-blue-100 ";
     case "user cashout":
       return "bg-purple-100 ";
+    case "user cashin":
+      return "bg-teal-100 ";
     default:
       return "";
   }
@@ -795,7 +803,8 @@ const handleExport = async () => {
       const bankDetails =
         item.transactionType === "bonus"
           ? item.promotionnameEN
-          : item.transactionType === "user cashout"
+          : item.transactionType === "user cashout" ||
+            item.transactionType === "user cashin"
           ? "N/A"
           : `${$t("bank_name")}: ${item.bankname}, ${
               item.bankname === "USDT" ? $t("address") : $t("owner_name")
