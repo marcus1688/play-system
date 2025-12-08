@@ -129,6 +129,15 @@ const handleSubmit = async () => {
     return;
   }
 
+  if (!formData.value.remark || !formData.value.remark.trim()) {
+    await Swal.fire({
+      icon: "warning",
+      title: $t("warning"),
+      text: $t("please_enter_remark"),
+    });
+    return;
+  }
+
   try {
     const result = await Swal.fire({
       title: $t("confirm_transfer_in"),

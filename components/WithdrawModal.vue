@@ -305,6 +305,7 @@
                 >
                   {{ bank.bankname }} - {{ bank.ownername }} -
                   {{ bank.bankaccount }}
+                  ({{ $t("balance") }}: {{ formatAmount(bank.currentbalance) }})
                 </option>
               </CustomSelect>
             </div>
@@ -544,6 +545,22 @@ const handleSubmit = async () => {
       icon: "warning",
       title: $t("warning"),
       text: $t("withdraw_exceeds_balance"),
+    });
+    return;
+  }
+
+  const withdrawAmount = isWithoutKiosk
+    ? Number(formData.value.amount)
+    : Number(actualWithdrawAmountWithMultiplier.value);
+
+  if (
+    selectedBank?.currentbalance !== undefined &&
+    withdrawAmount > Number(selectedBank.currentbalance)
+  ) {
+    await Swal.fire({
+      icon: "warning",
+      title: $t("warning"),
+      text: $t("withdraw_exceeds_bank_balance"),
     });
     return;
   }

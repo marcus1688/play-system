@@ -1593,5 +1593,7 @@
   "copy": "Copy",
   "confirm_transfer_in": "Confirm Transfer In",
   "transfer_in_amount": "Transfer In Amount",
-  "transfer_in_success": "Transfer in successful"
+  "transfer_in_success": "Transfer in successful",
+  "please_enter_remark": "Please enter a remark",
+  "withdraw_exceeds_bank_balance": "Withdraw amount exceeds bank balance"
 }

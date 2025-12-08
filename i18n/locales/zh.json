@@ -1593,5 +1593,7 @@
   "copy": "复制",
   "confirm_transfer_in": "确认转入",
   "transfer_in_amount": "转入金额",
-  "transfer_in_success": "转入成功"
+  "transfer_in_success": "转入成功",
+  "please_enter_remark": "请输入备注",
+  "withdraw_exceeds_bank_balance": "提款金额超过银行余额"
 }
