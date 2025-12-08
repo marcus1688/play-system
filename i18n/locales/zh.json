@@ -1597,5 +1597,7 @@
   "please_enter_remark": "请输入备注",
   "withdraw_exceeds_bank_balance": "提款金额超过银行余额",
   "actual_cashin": "实际充值",
-  "cashin_failed": "充值记录失败"
+  "cashin_failed": "充值记录失败",
+  "user_cashout": "用户提现",
+  "user_cashin": "用户转入"
 }

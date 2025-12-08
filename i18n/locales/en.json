@@ -1597,5 +1597,7 @@
   "please_enter_remark": "Please enter a remark",
   "withdraw_exceeds_bank_balance": "Withdraw amount exceeds bank balance",
   "actual_cashin": "Actual Cash In",
-  "cashin_failed": "Cash in record failed"
+  "cashin_failed": "Cash in record failed",
+  "user_cashout": "User Cash Out",
+  "user_cashin": "User Cash In"
 }

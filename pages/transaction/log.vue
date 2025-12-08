@@ -57,6 +57,8 @@
             <option value="deposit">{{ $t("deposit") }}</option>
             <option value="withdraw">{{ $t("withdraw") }}</option>
             <option value="bonus">{{ $t("bonus") }}</option>
+            <option value="user cashout">{{ $t("user_cashout") }}</option>
+            <option value="user cashin">{{ $t("user_cashin") }}</option>
           </CustomSelect>
         </div>
 
@@ -590,7 +592,7 @@ const getRowStyle = (type) => {
     case "user cashout":
       return "bg-purple-100 ";
     case "user cashin":
-      return "bg-teal-100 ";
+      return "bg-amber-100 ";
     default:
       return "";
   }
