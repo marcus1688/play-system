@@ -616,10 +616,9 @@ const revertTransaction = async (id, transactionType) => {
       });
       return;
     }
-    const isWithoutKiosk = !transaction.kioskId;
+
     // ============ Step 1: Transfer In/Out ============
     if (
-      !isWithoutKiosk &&
       transaction.game &&
       (transactionType === "deposit" ||
         transactionType === "withdraw" ||
@@ -636,73 +635,75 @@ const revertTransaction = async (id, transactionType) => {
         });
         return;
       }
+
       const kiosk = kioskData.data.find(
         (k) => k.name.toLowerCase() === transaction.game.toLowerCase()
       );
+
       if (!kiosk) {
-        await Swal.fire({
-          icon: "error",
-          title: $t("error"),
-          text: "Kiosk not found",
-        });
-        return;
-      }
-      const getMultiplier = (gameName) => {
-        if (!gameName) return 1;
-        const name = gameName.toLowerCase();
-        if (name.includes("x5")) return 5;
-        if (name.includes("x2")) return 2;
-        return 1;
-      };
-      const multiplier = getMultiplier(transaction.game);
-      if (transactionType === "deposit" || transactionType === "bonus") {
-        if (!kiosk.transferOutAPI) {
-          await Swal.fire({
-            icon: "error",
-            title: $t("error"),
-            text: "Kiosk Transfer Out API not found",
-          });
-          return;
-        }
-        const totalAmount = transaction.amount + (transaction.bonusAmount || 0);
-        const kioskTransferAmount = totalAmount / multiplier;
-        const transferResponse = await post(
-          `${kiosk.transferOutAPI}/${transaction.userId}`,
-          { transferAmount: kioskTransferAmount }
-        );
-        if (!transferResponse.data.success) {
-          await Swal.fire({
-            icon: "error",
-            title: $t("error"),
-            text:
-              transferResponse.data.message?.[$locale.value] ||
-              $t("kiosk_transfer_failed"),
-          });
-          return;
-        }
-      } else if (transactionType === "withdraw") {
-        if (!kiosk.transferInAPI) {
-          await Swal.fire({
-            icon: "error",
-            title: $t("error"),
-            text: "Kiosk Transfer In API not found",
-          });
-          return;
-        }
-        const kioskTransferAmount = transaction.amount / multiplier;
-        const transferResponse = await post(
-          `${kiosk.transferInAPI}/${transaction.userId}`,
-          { transferAmount: kioskTransferAmount }
-        );
-        if (!transferResponse.data.success) {
-          await Swal.fire({
-            icon: "error",
-            title: $t("error"),
-            text:
-              transferResponse.data.message?.[$locale.value] ||
-              $t("kiosk_transfer_failed"),
-          });
-          return;
+        // No matching kiosk found, skip kiosk transfer (without kiosk case)
+        console.log("No matching kiosk found, skipping kiosk transfer");
+      } else {
+        // Found matching kiosk, proceed with transfer
+        const getMultiplier = (gameName) => {
+          if (!gameName) return 1;
+          const name = gameName.toLowerCase();
+          if (name.includes("x5")) return 5;
+          if (name.includes("x2")) return 2;
+          return 1;
+        };
+        const multiplier = getMultiplier(transaction.game);
+
+        if (transactionType === "deposit" || transactionType === "bonus") {
+          if (!kiosk.transferOutAPI) {
+            await Swal.fire({
+              icon: "error",
+              title: $t("error"),
+              text: "Kiosk Transfer Out API not found",
+            });
+            return;
+          }
+          const totalAmount =
+            transaction.amount + (transaction.bonusAmount || 0);
+          const kioskTransferAmount = totalAmount / multiplier;
+          const transferResponse = await post(
+            `${kiosk.transferOutAPI}/${transaction.userId}`,
+            { transferAmount: kioskTransferAmount }
+          );
+          if (!transferResponse.data.success) {
+            await Swal.fire({
+              icon: "error",
+              title: $t("error"),
+              text:
+                transferResponse.data.message?.[$locale.value] ||
+                $t("kiosk_transfer_failed"),
+            });
+            return;
+          }
+        } else if (transactionType === "withdraw") {
+          if (!kiosk.transferInAPI) {
+            await Swal.fire({
+              icon: "error",
+              title: $t("error"),
+              text: "Kiosk Transfer In API not found",
+            });
+            return;
+          }
+          const kioskTransferAmount = transaction.amount / multiplier;
+          const transferResponse = await post(
+            `${kiosk.transferInAPI}/${transaction.userId}`,
+            { transferAmount: kioskTransferAmount }
+          );
+          if (!transferResponse.data.success) {
+            await Swal.fire({
+              icon: "error",
+              title: $t("error"),
+              text:
+                transferResponse.data.message?.[$locale.value] ||
+                $t("kiosk_transfer_failed"),
+            });
+            return;
+          }
         }
       }
     }
