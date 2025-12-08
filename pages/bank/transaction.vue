@@ -335,6 +335,7 @@ const filteredTransactions = computed(() => {
     const searchTerm = searchQuery.value.toLowerCase();
     filtered = filtered.filter(
       (item) =>
+        (item.userid || "").toLowerCase().includes(searchTerm) ||
         (item.ownername || "").toLowerCase().includes(searchTerm) ||
         (item.bankName || "").toLowerCase().includes(searchTerm) ||
         (item.transactiontype || "").toLowerCase().includes(searchTerm) ||
@@ -402,7 +403,8 @@ const uniqueBanks = computed(() => {
         banksMap.set(key, {
           bankName: t.bankName,
           bankAccount: t.bankAccount,
-          display: key,
+          ownername: t.ownername,
+          display: `${t.bankName} - ${t.ownername} - ${t.bankAccount}`,
         });
       }
     }
