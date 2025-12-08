@@ -104,6 +104,7 @@
                     >
                     <span class="font-bold text-indigo-600 ml-1">
                       {{ formatAmount(selectedKioskInfo.balance) }}
+                      {{ $t("points") }}
                     </span>
                   </div>
                   <div class="flex items-center gap-2">

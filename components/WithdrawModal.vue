@@ -97,6 +97,7 @@
                   <span class="text-gray-600">{{ $t("kiosk_balance") }}:</span>
                   <span class="font-bold text-indigo-600 ml-1">
                     {{ formatAmount(selectedKioskInfo.balance) }}
+                    {{ $t("points") }}
                   </span>
                 </div>
                 <div class="flex items-center gap-2">
@@ -149,14 +150,14 @@
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
-                {{ $t("withdraw_amount") }} <span class="text-red-500">*</span>
+                {{ $t("withdraw_points") }} <span class="text-red-500">*</span>
               </label>
               <input
                 v-model="formData.amount"
                 type="number"
                 step="0.01"
                 min="0"
-                :placeholder="$t('enter_amount')"
+                :placeholder="$t('enter_points')"
                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
                 required
               />
@@ -194,26 +195,33 @@
                 <div class="flex justify-between mb-1">
                   <span class="text-gray-600">{{ $t("kiosk_balance") }}:</span>
                   <span class="font-semibold text-gray-800">
-                    {{ currency }} {{ formatAmount(selectedKioskInfo.balance) }}
+                    - {{ formatAmount(selectedKioskInfo.balance) }}
+                    {{ $t("points") }}
                   </span>
                 </div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-gray-600"
-                    >{{ $t("withdraw_amount") }}:</span
-                  >
-                  <span class="font-semibold text-gray-800">
-                    {{ currency }} {{ formatAmount(formData.amount) }}
-                  </span>
-                </div>
+
                 <div
                   class="flex justify-between pt-2 border-t border-orange-200 mt-2"
                 >
-                  <span class="text-gray-700 font-medium"
-                    >{{ $t("cashout_amount") }}:</span
-                  >
-                  <span class="font-bold text-red-600">
-                    {{ currency }} {{ formatAmount(cashoutAmount) }}
-                  </span>
+                  <div class="w-full flex flex-col">
+                    <div class="flex justify-between w-full">
+                      <span class="text-gray-700 font-medium"
+                        >{{ $t("actual_withdraw") }}:</span
+                      >
+                      <span class="font-bold text-red-600">
+                        {{ currency }}
+                        {{ formatAmount(actualWithdrawAmountWithMultiplier) }}
+                      </span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-700 font-medium"
+                        >{{ $t("cashout_amount") }}:</span
+                      >
+                      <span class="font-bold text-red-600">
+                        {{ currency }} {{ formatAmount(cashoutAmount) }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

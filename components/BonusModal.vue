@@ -7,7 +7,7 @@
       @pointerup.self="onBackdropUp"
     >
       <div
-        class="bg-white rounded-lg w-[500px] max-h-[90vh] overflow-y-auto max-w-full"
+        class="bg-white rounded-lg w-[700px] max-h-[90vh] overflow-y-auto max-w-full"
       >
         <div class="p-6 border-b max-md:p-4">
           <div class="flex items-center justify-between">
@@ -105,6 +105,7 @@
                     >
                     <span class="font-bold text-indigo-600 ml-1">
                       {{ formatAmount(selectedKioskInfo.balance) }}
+                      {{ $t("points") }}
                     </span>
                   </div>
                   <div class="flex items-center gap-2">

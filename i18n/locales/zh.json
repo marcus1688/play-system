@@ -1587,5 +1587,8 @@
   "new_agent_userid": "新代理用户ID",
   "enter_userid": "输入用户ID",
   "enter_new_agent_userid": "输入新代理用户ID",
-  "setup_downline": "设置下线"
+  "setup_downline": "设置下线",
+  "withdraw_points": "提款分数",
+  "enter_points": "输入分数",
+  "copy": "复制"
 }

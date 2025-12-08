@@ -73,11 +73,7 @@
               >
                 {{ $t("game_balance") }}
               </th>
-              <th
-                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-              >
-                {{ $t("wallet_balance") }}
-              </th>
+
               <th
                 class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
               >
@@ -87,11 +83,6 @@
                 class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
               >
                 {{ $t("time") }}
-              </th>
-              <th
-                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
-              >
-                {{ $t("action") }}
               </th>
             </tr>
           </thead>
@@ -131,26 +122,14 @@
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
               >
-                {{ currency }} {{ log.amount }}
+                {{ log.amount }} {{ $t("points") }}
               </td>
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
               >
-                {{
-                  log.remark === "Seamless"
-                    ? "Seamless"
-                    : `${currency} ${log.gamebalance}`
-                }}
+                {{ log.gamebalance }} {{ $t("points") }}
               </td>
-              <td
-                class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
-              >
-                {{
-                  log.remark === "Seamless"
-                    ? "Seamless"
-                    : `${currency} ${log.afterwalletbalance}`
-                }}
-              </td>
+
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
               >
@@ -160,25 +139,6 @@
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
               >
                 {{ log.time }}
-              </td>
-              <td
-                class="px-6 py-4 text-sm flex justify-center max-md:px-3 max-md:py-2"
-              >
-                <LoadingButton
-                  :loading="isButtonLoading[log._id]"
-                  v-if="log.remark === 'Seamless' && !log.reverted"
-                  class="bg-red-500 lg:hover:bg-red-600 text-white py-2 px-4 rounded text-xs max-md:py-1 max-md:px-2 max-md:text-[10px]"
-                  @click="revertTransaction(log._id)"
-                >
-                  {{ $t("revert") }}
-                </LoadingButton>
-                <span
-                  v-else-if="log.remark === 'Seamless' && log.reverted"
-                  class="bg-gray-500 text-white py-2 px-4 rounded text-xs max-md:py-1 max-md:px-2 max-md:text-[10px]"
-                >
-                  {{ $t("reverted") }}
-                </span>
-                <span v-else class="max-md:text-xs">N/A</span>
               </td>
             </tr>
             <tr

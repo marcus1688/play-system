@@ -90,8 +90,8 @@
                   <div>
                     <span class="text-gray-600">{{ $t("balance") }}:</span>
                     <span class="font-bold text-red-600 ml-1">
-                      {{ currency }}
                       {{ formatAmount(selectedFromKiosk.balance) }}
+                      {{ $t("points") }}
                     </span>
                     <span
                       v-if="fromKioskMultiplier > 1"
@@ -158,7 +158,8 @@
                   <div>
                     <span class="text-gray-600">{{ $t("balance") }}:</span>
                     <span class="font-bold text-green-600 ml-1">
-                      {{ currency }} {{ formatAmount(selectedToKiosk.balance) }}
+                      {{ formatAmount(selectedToKiosk.balance) }}
+                      {{ $t("points") }}
                     </span>
                     <span
                       v-if="toKioskMultiplier > 1"
@@ -212,15 +213,17 @@
                 <div class="flex justify-between mb-1">
                   <span class="text-gray-600">{{ $t("from") }}:</span>
                   <span class="font-semibold text-red-600">
-                    {{ selectedFromKiosk.name }} (-{{ currency }}
-                    {{ formatAmount(actualTransferOutAmount) }})
+                    {{ selectedFromKiosk.name }} (-
+                    {{ formatAmount(actualTransferOutAmount) }}
+                    {{ $t("points") }})
                   </span>
                 </div>
                 <div class="flex justify-between mb-1">
                   <span class="text-gray-600">{{ $t("to") }}:</span>
                   <span class="font-semibold text-green-600">
-                    {{ selectedToKiosk.name }} (+{{ currency }}
-                    {{ formatAmount(actualTransferInAmount) }})
+                    {{ selectedToKiosk.name }} (+
+                    {{ formatAmount(actualTransferInAmount) }}
+                    {{ $t("points") }})
                   </span>
                 </div>
                 <div

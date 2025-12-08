@@ -63,12 +63,12 @@
                 {{ $t("game_id") }}
               </th>
               <th
-                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
+                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px] hidden"
               >
                 {{ $t("lock_transfer_in") }}
               </th>
               <th
-                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
+                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px] hidden"
               >
                 {{ $t("lock_transfer_out") }}
               </th>
@@ -168,7 +168,7 @@
                   </button>
                 </div>
               </td>
-              <td class="px-6 py-4 max-md:px-3 max-md:py-2">
+              <td class="px-6 py-4 max-md:px-3 max-md:py-2 hidden">
                 <div class="flex justify-center items-center">
                   <label
                     class="relative inline-flex items-center cursor-pointer"
@@ -190,7 +190,7 @@
                   </label>
                 </div>
               </td>
-              <td class="px-6 py-4 max-md:px-3 max-md:py-2">
+              <td class="px-6 py-4 max-md:px-3 max-md:py-2 hidden">
                 <div class="flex justify-center items-center">
                   <div v-if="game.isHTMLGame || game.isManualGame">
                     <label
@@ -239,6 +239,12 @@
                     {{ $t("account") }}
                   </button>
                   <button
+                    @click="handleTransferIn(game)"
+                    class="px-3 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-1 max-md:text-[10px]"
+                  >
+                    {{ $t("transfer_in") }}
+                  </button>
+                  <button
                     @click="handleTransferOut(game)"
                     class="px-3 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 max-md:px-2 max-md:py-1 max-md:text-[10px]"
                   >
@@ -277,7 +283,7 @@
             <tr>
               <td
                 class="px-6 py-4 text-sm font-bold text-right max-md:px-3 max-md:py-2 max-md:text-xs"
-                colspan="6"
+                colspan="4"
               >
                 {{ $t("total") }}:
               </td>
@@ -305,6 +311,14 @@
       :game="selectedGame"
       :user-id="userData._id"
       @success="handleTransferOutSuccess"
+    />
+
+    <GameTransferInModal
+      v-model:show="showTransferInModal"
+      :balance="gameBalances[selectedGameForTransferIn?._id] || 0"
+      :game="selectedGameForTransferIn"
+      :user-id="userData._id"
+      @success="handleTransferInSuccess"
     />
 
     <GameAccountModal
@@ -348,7 +362,8 @@ const props = defineProps({
     required: true,
   },
 });
-
+const showTransferInModal = ref(false);
+const selectedGameForTransferIn = ref(null);
 const categoryTotals = ref({});
 const isTransferToMainButtonLoading = ref({});
 const isTransferAllButtonLoading = ref(false);
@@ -463,6 +478,12 @@ const handleTransferOutSuccess = async () => {
   }
 };
 
+const handleTransferInSuccess = async () => {
+  if (selectedGameForTransferIn.value) {
+    await checkGameBalance(selectedGameForTransferIn.value);
+  }
+};
+
 const isFetchActiveGamesLoading = ref(false);
 const activeGamesData = ref([]);
 const showActiveGamesModal = ref(false);
@@ -517,6 +538,11 @@ const handleFetchActiveGames = async () => {
   } finally {
     isFetchActiveGamesLoading.value = false;
   }
+};
+
+const handleTransferIn = (game) => {
+  selectedGameForTransferIn.value = game;
+  showTransferInModal.value = true;
 };
 
 const fetchGames = async () => {
