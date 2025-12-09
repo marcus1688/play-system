@@ -1620,5 +1620,12 @@
   "hkd": "HKD",
   "deposit_from": "Deposit From",
   "select_source": "Select Source",
-  "after_deposit": "After Deposit"
+  "after_deposit": "After Deposit",
+  "save_remaining_to_wallet": "Save remaining to wallet",
+  "save_to_wallet_amount": "Save to Wallet Amount",
+  "save_to_wallet": "Save to Wallet",
+  "transfer_to_kiosk": "Transfer to Kiosk",
+  "total_bank_deposit": "Total Bank Deposit",
+  "wallet_save_exceeds_deposit": "Wallet save amount cannot exceed deposit amount",
+  "kiosk_amount_must_be_positive": "Kiosk deposit amount must be greater than 0"
 }

@@ -1620,5 +1620,12 @@
   "hkd": "HKD",
   "deposit_from": "存款来源",
   "select_source": "选择来源",
-  "after_deposit": "存款后"
+  "after_deposit": "存款后",
+  "save_remaining_to_wallet": "剩余存入钱包",
+  "save_to_wallet_amount": "存入钱包金额",
+  "save_to_wallet": "存入钱包",
+  "transfer_to_kiosk": "转入 Kiosk",
+  "total_bank_deposit": "银行存款总额",
+  "wallet_save_exceeds_deposit": "存入钱包金额不能超过存款金额",
+  "kiosk_amount_must_be_positive": "Kiosk 存款金额必须大于 0"
 }

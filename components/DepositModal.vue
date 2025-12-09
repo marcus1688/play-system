@@ -251,6 +251,82 @@
                   </div>
                 </div>
               </div>
+
+              <div
+                v-if="
+                  formData.bankId &&
+                  formData.bankId !== 'user_wallet' &&
+                  formData.amount
+                "
+                class="mt-3"
+              >
+                <div class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="saveToWallet"
+                    v-model="formData.saveToWallet"
+                    class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                  />
+                  <label
+                    for="saveToWallet"
+                    class="text-sm text-gray-700 max-md:text-xs"
+                  >
+                    {{ $t("save_remaining_to_wallet") }}
+                  </label>
+                </div>
+
+                <!-- Wallet Amount Input -->
+                <div v-if="formData.saveToWallet" class="mt-2">
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+                  >
+                    {{ $t("save_to_wallet_amount") }}
+                  </label>
+                  <input
+                    v-model.number="formData.walletSaveAmount"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    :max="Number(formData.amount)"
+                    :placeholder="$t('enter_amount')"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
+                  />
+                </div>
+
+                <!-- Save to Wallet Info -->
+                <div
+                  v-if="formData.saveToWallet && formData.walletSaveAmount > 0"
+                  class="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg max-md:p-2"
+                >
+                  <div class="text-sm max-md:text-xs space-y-1">
+                    <div class="flex justify-between">
+                      <span class="text-gray-600"
+                        >{{ $t("total_bank_deposit") }}:</span
+                      >
+                      <span class="font-semibold text-gray-800">
+                        {{ currency }} {{ formatAmount(formData.amount) }}
+                      </span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-600"
+                        >{{ $t("transfer_to_kiosk") }}:</span
+                      >
+                      <span class="font-semibold text-indigo-600">
+                        {{ currency }} {{ formatAmount(kioskDepositAmount) }}
+                      </span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-600"
+                        >{{ $t("save_to_wallet") }}:</span
+                      >
+                      <span class="font-semibold text-green-600">
+                        {{ currency }}
+                        {{ formatAmount(formData.walletSaveAmount) }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Promotion Select (Optional) -->
@@ -420,6 +496,8 @@ const formData = ref({
   promotionId: "",
   remark: "",
   customKioskName: "",
+  saveToWallet: false,
+  walletSaveAmount: "",
 });
 
 const formatAmount = (amount) => {
@@ -429,6 +507,15 @@ const formatAmount = (amount) => {
     maximumFractionDigits: 2,
   });
 };
+
+const kioskDepositAmount = computed(() => {
+  const total = Number(formData.value.amount) || 0;
+  const walletSave =
+    formData.value.saveToWallet && formData.value.walletSaveAmount
+      ? Number(formData.value.walletSaveAmount)
+      : 0;
+  return total - walletSave;
+});
 
 const selectedKioskInfo = computed(() => {
   if (!formData.value.kioskId) return null;
@@ -445,7 +532,7 @@ const selectedPromotion = computed(() => {
 const calculatedBonus = computed(() => {
   if (!selectedPromotion.value || !formData.value.amount) return 0;
 
-  const amount = Number(formData.value.amount);
+  const amount = kioskDepositAmount.value;
   let bonus = 0;
 
   if (selectedPromotion.value.claimtype === "Percentage") {
@@ -535,8 +622,7 @@ const transferMultiplier = computed(() => {
 });
 
 const actualTransferAmount = computed(() => {
-  const totalAmount =
-    Number(formData.value.amount || 0) + calculatedBonus.value;
+  const totalAmount = kioskDepositAmount.value + calculatedBonus.value;
   return totalAmount / transferMultiplier.value;
 });
 
@@ -574,6 +660,30 @@ const handleSubmit = async () => {
   const selectedBank = isFromWallet
     ? null
     : bankList.value.find((b) => b._id === formData.value.bankId);
+  const totalBankAmount = Number(formData.value.amount);
+  const walletSaveAmount =
+    !isFromWallet && formData.value.saveToWallet
+      ? Number(formData.value.walletSaveAmount) || 0
+      : 0;
+  const actualKioskAmount = totalBankAmount - walletSaveAmount;
+
+  if (walletSaveAmount >= totalBankAmount) {
+    await Swal.fire({
+      icon: "warning",
+      title: $t("warning"),
+      text: $t("wallet_save_exceeds_deposit"),
+    });
+    return;
+  }
+
+  if (actualKioskAmount <= 0 && !isWithoutKiosk) {
+    await Swal.fire({
+      icon: "warning",
+      title: $t("warning"),
+      text: $t("kiosk_amount_must_be_positive"),
+    });
+    return;
+  }
 
   if (!isWithoutKiosk && !selectedKiosk?.userKioskId) {
     await Swal.fire({
@@ -585,7 +695,7 @@ const handleSubmit = async () => {
   }
 
   if (isFromWallet) {
-    if (Number(formData.value.amount) > Number(props.userData?.wallet)) {
+    if (totalBankAmount > Number(props.userData?.wallet)) {
       await Swal.fire({
         icon: "warning",
         title: $t("warning"),
@@ -608,9 +718,23 @@ const handleSubmit = async () => {
                 }</p>`
               : ""
           }
-          <p><strong>${$t("amount")}:</strong> ${currency.value} ${formatAmount(
-        formData.value.amount
-      )}</p>
+          <p><strong>${$t("total_bank_deposit")}:</strong> ${
+        currency.value
+      } ${formatAmount(totalBankAmount)}</p>
+          ${
+            walletSaveAmount > 0
+              ? `<p><strong>${$t("transfer_to_kiosk")}:</strong> ${
+                  currency.value
+                } ${formatAmount(actualKioskAmount)}</p>`
+              : ""
+          }
+          ${
+            walletSaveAmount > 0
+              ? `<p><strong>${$t("save_to_wallet")}:</strong> ${
+                  currency.value
+                } ${formatAmount(walletSaveAmount)}</p>`
+              : ""
+          }
           <p><strong>${$t("kiosk")}:</strong> ${
         isWithoutKiosk
           ? formData.value.customKioskName || $t("without_kiosk")
@@ -663,7 +787,7 @@ const handleSubmit = async () => {
       try {
         const checkResponse = await post("checkpromotion", {
           promotionId: formData.value.promotionId,
-          depositAmount: Number(formData.value.amount),
+          depositAmount: actualKioskAmount,
           userid: props.userData?._id,
           username: props.userData?.username,
         });
@@ -691,12 +815,14 @@ const handleSubmit = async () => {
       }
     }
 
-    // Step 2: Call Kiosk Transfer In API
+    // Step 2: Call Kiosk Transfer In API（用 actualKioskAmount + bonus）
     if (!isWithoutKiosk) {
+      const transferAmount =
+        (actualKioskAmount + calculatedBonus.value) / transferMultiplier.value;
       const transferResponse = await post(
         `${selectedKiosk.transferInAPI}/${props.userData?._id}`,
         {
-          transferAmount: Number(actualTransferAmount.value),
+          transferAmount: Number(transferAmount),
         }
       );
 
@@ -718,14 +844,16 @@ const handleSubmit = async () => {
     const { data } = await post("admin-direct-deposit", {
       userId: props.userData?._id,
       username: props.userData?.username,
-      amount: Number(formData.value.amount),
+      amount: actualKioskAmount,
+      bankAmount: totalBankAmount,
+      walletSaveAmount: walletSaveAmount,
       kioskId: isWithoutKiosk ? null : formData.value.kioskId,
       kioskName: isWithoutKiosk
         ? formData.value.customKioskName || "-"
         : selectedKiosk.name,
       userKioskId: isWithoutKiosk ? "-" : selectedKiosk.userKioskId,
       bankId: isFromWallet ? null : formData.value.bankId,
-      fromWallet: isFromWallet, // 新增
+      fromWallet: isFromWallet,
       promotionId: formData.value.promotionId || null,
       bonusAmount: calculatedBonus.value || 0,
       remark: formData.value.remark,
@@ -740,7 +868,7 @@ const handleSubmit = async () => {
             username: props.userData?.username,
             promotionId: formData.value.promotionId,
             depositId: data.depositId,
-            depositAmount: Number(formData.value.amount),
+            depositAmount: actualKioskAmount,
             kioskName: isWithoutKiosk
               ? formData.value.customKioskName || "-"
               : selectedKiosk.name,
@@ -788,6 +916,8 @@ const closeModal = () => {
     promotionId: "",
     remark: "",
     customKioskName: "",
+    saveToWallet: false,
+    walletSaveAmount: "",
   };
   kioskListWithBalances.value = [];
   emit("update:show", false);
