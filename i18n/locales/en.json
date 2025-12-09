@@ -1602,5 +1602,19 @@
   "user_cashin": "User Cash In",
   "transaction_date": "Transaction Date",
   "leave_empty_for_current_time": "Leave empty to use current time",
-  "select_date": "Select Date"
+  "select_date": "Select Date",
+  "user_wallet": "User Wallet",
+  "withdraw_to": "Withdraw To",
+  "select_destination": "Select Destination",
+  "current_wallet_balance": "Current Wallet Balance",
+  "after_withdraw": "After Withdraw",
+  "withdraw_to_wallet": "Withdraw to Wallet",
+  "include_wallet_balance": "Include wallet balance",
+  "kiosk_withdraw": "Kiosk Withdraw",
+  "wallet_withdraw": "Wallet Withdraw",
+  "total_bank_withdraw": "Total Bank Withdraw",
+  "wallet_withdraw_amount": "Wallet Withdraw Amount",
+  "wallet_amount_exceeds_balance": "Wallet amount exceeds available balance",
+  "available": "Available",
+  "no_kiosk": "No Kiosk (Wallet Only)"
 }

@@ -1602,5 +1602,19 @@
   "user_cashin": "用户转入",
   "transaction_date": "交易日期",
   "leave_empty_for_current_time": "留空则使用当前时间",
-  "select_date": "选择日期"
+  "select_date": "选择日期",
+  "user_wallet": "用户钱包",
+  "withdraw_to": "提款至",
+  "select_destination": "选择目的地",
+  "current_wallet_balance": "当前钱包余额",
+  "after_withdraw": "提款后",
+  "withdraw_to_wallet": "提款到钱包",
+  "include_wallet_balance": "包含钱包余额",
+  "kiosk_withdraw": "Kiosk 提款",
+  "wallet_withdraw": "钱包提款",
+  "total_bank_withdraw": "银行总出款",
+  "wallet_withdraw_amount": "钱包提款金额",
+  "wallet_amount_exceeds_balance": "钱包金额超过可用余额",
+  "available": "可用",
+  "no_kiosk": "无 Kiosk（仅钱包）"
 }
