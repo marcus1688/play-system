@@ -1616,5 +1616,6 @@
   "wallet_withdraw_amount": "Wallet Withdraw Amount",
   "wallet_amount_exceeds_balance": "Wallet amount exceeds available balance",
   "available": "Available",
-  "no_kiosk": "No Kiosk (Wallet Only)"
+  "no_kiosk": "No Kiosk (Wallet Only)",
+  "hkd": "HKD"
 }

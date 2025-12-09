@@ -176,7 +176,7 @@
                 type="number"
                 step="0.01"
                 min="0"
-                :placeholder="$t('enter_amount')"
+                :placeholder="$t('hkd')"
                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
                 required
               />

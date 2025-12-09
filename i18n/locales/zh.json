@@ -1616,5 +1616,6 @@
   "wallet_withdraw_amount": "钱包提款金额",
   "wallet_amount_exceeds_balance": "钱包金额超过可用余额",
   "available": "可用",
-  "no_kiosk": "无 Kiosk（仅钱包）"
+  "no_kiosk": "无 Kiosk（仅钱包）",
+  "hkd": "HKD"
 }

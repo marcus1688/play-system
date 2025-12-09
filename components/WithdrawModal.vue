@@ -150,14 +150,23 @@
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
-                {{ $t("withdraw_points") }} <span class="text-red-500">*</span>
+                {{
+                  formData.kioskId === "without_kiosk"
+                    ? $t("withdraw_amount")
+                    : $t("withdraw_points")
+                }}
+                <span class="text-red-500">*</span>
               </label>
               <input
                 v-model="formData.amount"
                 type="number"
                 step="0.01"
                 min="0"
-                :placeholder="$t('enter_points')"
+                :placeholder="
+                  formData.kioskId === 'without_kiosk'
+                    ? $t('hkd')
+                    : $t('enter_points')
+                "
                 class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
                 required
               />
