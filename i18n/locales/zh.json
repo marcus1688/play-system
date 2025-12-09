@@ -1599,5 +1599,8 @@
   "actual_cashin": "实际充值",
   "cashin_failed": "充值记录失败",
   "user_cashout": "用户提现",
-  "user_cashin": "用户转入"
+  "user_cashin": "用户转入",
+  "transaction_date": "交易日期",
+  "leave_empty_for_current_time": "留空则使用当前时间",
+  "select_date": "选择日期"
 }

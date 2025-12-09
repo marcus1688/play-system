@@ -42,6 +42,21 @@
             <div>
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("transaction_date") }}
+              </label>
+              <TransactionDatePicker
+                v-model="formData.transactionDate"
+                :placeholder="$t('select_date')"
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                {{ $t("leave_empty_for_current_time") }}
+              </p>
+            </div>
+
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
                 >{{ $t("remark") }}</label
               >
               <textarea
@@ -109,6 +124,7 @@ const isLoading = ref(false);
 const formData = ref({
   amount: "",
   remark: "",
+  transactionDate: null,
 });
 
 const modalTitle = computed(() => {
@@ -187,6 +203,7 @@ const handleSubmit = async () => {
       id: props.bankData._id,
       amount: formData.value.amount,
       remark: formData.value.remark || "-",
+      transactionDate: formData.value.transactionDate || null,
     };
 
     if (props.type === "startingbalance") {
@@ -240,6 +257,7 @@ watch(
             ? props.bankData?.startingbalance || 0
             : "",
         remark: "",
+        transactionDate: "",
       };
     }
   }

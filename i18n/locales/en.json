@@ -1599,5 +1599,8 @@
   "actual_cashin": "Actual Cash In",
   "cashin_failed": "Cash in record failed",
   "user_cashout": "User Cash Out",
-  "user_cashin": "User Cash In"
+  "user_cashin": "User Cash In",
+  "transaction_date": "Transaction Date",
+  "leave_empty_for_current_time": "Leave empty to use current time",
+  "select_date": "Select Date"
 }
