@@ -1617,5 +1617,8 @@
   "wallet_amount_exceeds_balance": "钱包金额超过可用余额",
   "available": "可用",
   "no_kiosk": "无 Kiosk（仅钱包）",
-  "hkd": "HKD"
+  "hkd": "HKD",
+  "deposit_from": "存款来源",
+  "select_source": "选择来源",
+  "after_deposit": "存款后"
 }

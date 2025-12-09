@@ -7,7 +7,7 @@
       @pointerup.self="onBackdropUp"
     >
       <div
-        class="bg-white rounded-lg w-[500px] max-h-[90vh] overflow-y-auto max-w-full"
+        class="bg-white rounded-lg w-[700px] max-h-[90vh] overflow-y-auto max-w-full"
       >
         <div class="p-6 border-b max-md:p-4">
           <div class="flex items-center justify-between">
@@ -40,29 +40,25 @@
             class="border rounded-lg p-4 mb-4 max-md:p-3 max-md:mb-3"
             :class="infoBgClass"
           >
-            <div class="grid grid-cols-2 gap-4 max-md:gap-2">
-              <slot name="info">
-                <div>
-                  <div class="text-sm text-gray-500 max-md:text-xs">
-                    {{ $t("username") }}
-                  </div>
-                  <div class="font-semibold text-gray-800 max-md:text-sm">
-                    {{ bonusData?.username }}
-                  </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-xs text-gray-500">
+                  {{ $t("username") }}
                 </div>
-              </slot>
-            </div>
-
-            <!-- Bonus Amount -->
-            <div class="mt-4 pt-4 border-t max-md:mt-3 max-md:pt-3">
-              <div class="text-sm text-gray-500 max-md:text-xs">
-                {{ $t("bonus_amount") }}
+                <div class="font-semibold text-gray-800 text-sm max-md:text-xs">
+                  {{ bonusData?.username }}
+                </div>
               </div>
-              <div
-                class="font-bold text-2xl max-md:text-xl"
-                :class="amountColor"
-              >
-                {{ currency }} {{ formatAmount(bonusAmount) }}
+              <div class="text-right">
+                <div class="text-xs text-gray-500">
+                  {{ $t("bonus_amount") }}
+                </div>
+                <div
+                  class="font-bold text-lg max-md:text-base"
+                  :class="amountColor"
+                >
+                  {{ currency }} {{ formatAmount(bonusAmount) }}
+                </div>
               </div>
             </div>
           </div>

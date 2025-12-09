@@ -36,7 +36,7 @@
           <div
             class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4 max-md:p-3 max-md:mb-3"
           >
-            <div class="grid grid-cols-2 gap-4 max-md:gap-2">
+            <div class="grid grid-cols-3 max-lg:grid-cols-1 gap-4 max-md:gap-2">
               <div>
                 <div class="text-sm text-gray-500 max-md:text-xs">
                   {{ $t("userid") }}
@@ -51,6 +51,14 @@
                 </div>
                 <div class="font-semibold text-gray-800 max-md:text-sm">
                   {{ userData?.fullname }}
+                </div>
+              </div>
+              <div>
+                <div class="text-sm text-gray-500 max-md:text-xs">
+                  {{ $t("wallet") }}
+                </div>
+                <div class="font-semibold text-gray-800 max-md:text-sm">
+                  {{ currency }} {{ formatAmount(userData?.wallet) }}
                 </div>
               </div>
             </div>

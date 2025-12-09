@@ -36,7 +36,7 @@
           <div
             class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4 max-md:p-3 max-md:mb-3"
           >
-            <div class="grid grid-cols-2 gap-4 max-md:gap-2">
+            <div class="grid grid-cols-3 max-lg:grid-cols-1 gap-4 max-md:gap-2">
               <div>
                 <div class="text-sm text-gray-500 max-md:text-xs">
                   {{ $t("userid") }}
@@ -51,6 +51,14 @@
                 </div>
                 <div class="font-semibold text-gray-800 max-md:text-sm">
                   {{ userData?.fullname }}
+                </div>
+              </div>
+              <div>
+                <div class="text-sm text-gray-500 max-md:text-xs">
+                  {{ $t("wallet") }}
+                </div>
+                <div class="font-semibold text-gray-800 max-md:text-sm">
+                  {{ currency }} {{ formatAmount(userData?.wallet) }}
                 </div>
               </div>
             </div>
@@ -187,10 +195,16 @@
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
-                {{ $t("bank_name") }} <span class="text-red-500">*</span>
+                {{ $t("deposit_from") }} <span class="text-red-500">*</span>
               </label>
               <CustomSelect v-model="formData.bankId" required>
-                <option value="" disabled>{{ $t("select_bank") }}</option>
+                <option value="" disabled>{{ $t("select_source") }}</option>
+                <!-- User Wallet 选项 -->
+                <option v-if="userData?.wallet > 0" value="user_wallet">
+                  {{ $t("user_wallet") }} ({{ $t("balance") }}: {{ currency }}
+                  {{ formatAmount(userData?.wallet || 0) }})
+                </option>
+                <!-- 银行选项 -->
                 <option
                   v-for="bank in bankList"
                   :key="bank._id"
@@ -200,6 +214,43 @@
                   {{ bank.bankaccount }}
                 </option>
               </CustomSelect>
+
+              <!-- User Wallet Info (如果选了 user_wallet) -->
+              <div
+                v-if="formData.bankId === 'user_wallet'"
+                class="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg max-md:p-2"
+              >
+                <div class="text-sm max-md:text-xs">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600"
+                      >{{ $t("current_wallet_balance") }}:</span
+                    >
+                    <span class="font-bold text-green-600">
+                      {{ currency }} {{ formatAmount(userData?.wallet || 0) }}
+                    </span>
+                  </div>
+                  <div v-if="formData.amount" class="flex justify-between mt-1">
+                    <span class="text-gray-600"
+                      >{{ $t("after_deposit") }}:</span
+                    >
+                    <span
+                      class="font-bold"
+                      :class="
+                        (userData?.wallet || 0) - Number(formData.amount) >= 0
+                          ? 'text-green-600'
+                          : 'text-red-600'
+                      "
+                    >
+                      {{ currency }}
+                      {{
+                        formatAmount(
+                          (userData?.wallet || 0) - Number(formData.amount)
+                        )
+                      }}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Promotion Select (Optional) -->
@@ -516,8 +567,13 @@ const handleSubmit = async () => {
     });
     return;
   }
+
   const isWithoutKiosk = formData.value.kioskId === "without_kiosk";
+  const isFromWallet = formData.value.bankId === "user_wallet";
   const selectedKiosk = isWithoutKiosk ? null : selectedKioskInfo.value;
+  const selectedBank = isFromWallet
+    ? null
+    : bankList.value.find((b) => b._id === formData.value.bankId);
 
   if (!isWithoutKiosk && !selectedKiosk?.userKioskId) {
     await Swal.fire({
@@ -528,59 +584,68 @@ const handleSubmit = async () => {
     return;
   }
 
-  const selectedBank = bankList.value.find(
-    (b) => b._id === formData.value.bankId
-  );
+  if (isFromWallet) {
+    if (Number(formData.value.amount) > Number(props.userData?.wallet)) {
+      await Swal.fire({
+        icon: "warning",
+        title: $t("warning"),
+        text: $t("wallet_amount_exceeds_balance"),
+      });
+      return;
+    }
+  }
 
   try {
     const result = await Swal.fire({
       title: $t("confirm_deposit"),
       html: `
-    <div class="text-left">
-      <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
-      ${
-        !isWithoutKiosk
-          ? `<p><strong>${$t("gameid")}:</strong> ${
-              selectedKiosk.userKioskId
-            }</p>`
-          : ""
-      }
-      <p><strong>${$t("amount")}:</strong> ${currency.value} ${formatAmount(
+        <div class="text-left">
+          <p><strong>${$t("userid")}:</strong> ${props.userData?.userid}</p>
+          ${
+            !isWithoutKiosk
+              ? `<p><strong>${$t("gameid")}:</strong> ${
+                  selectedKiosk.userKioskId
+                }</p>`
+              : ""
+          }
+          <p><strong>${$t("amount")}:</strong> ${currency.value} ${formatAmount(
         formData.value.amount
       )}</p>
-  <p><strong>${$t("kiosk")}:</strong> ${
+          <p><strong>${$t("kiosk")}:</strong> ${
         isWithoutKiosk
           ? formData.value.customKioskName || $t("without_kiosk")
           : selectedKiosk.name
       }</p>
-      <p><strong>${$t("bank")}:</strong> ${selectedBank?.bankname}</p>
-      ${
-        selectedPromotion.value
-          ? `<p><strong>${$t("promotion")}:</strong> ${
-              $locale.value === "zh"
-                ? selectedPromotion.value.maintitle
-                : selectedPromotion.value.maintitleEN
-            }</p>`
-          : ""
-      }
-      ${
-        calculatedBonus.value > 0
-          ? `<p><strong>${$t("bonus")}:</strong> ${
-              currency.value
-            } ${formatAmount(calculatedBonus.value)}</p>`
-          : ""
-      }
-      ${
-        !isWithoutKiosk && transferMultiplier.value > 1
-          ? `<p><strong>${$t("transfer_amount")}:</strong> ${
-              currency.value
-            } ${formatAmount(actualTransferAmount.value)} (x${
-              transferMultiplier.value
-            })</p>`
-          : ""
-      }
-    </div>
-  `,
+          <p><strong>${$t("deposit_from")}:</strong> ${
+        isFromWallet ? $t("user_wallet") : selectedBank?.bankname
+      }</p>
+          ${
+            selectedPromotion.value
+              ? `<p><strong>${$t("promotion")}:</strong> ${
+                  $locale.value === "zh"
+                    ? selectedPromotion.value.maintitle
+                    : selectedPromotion.value.maintitleEN
+                }</p>`
+              : ""
+          }
+          ${
+            calculatedBonus.value > 0
+              ? `<p><strong>${$t("bonus")}:</strong> ${
+                  currency.value
+                } ${formatAmount(calculatedBonus.value)}</p>`
+              : ""
+          }
+          ${
+            !isWithoutKiosk && transferMultiplier.value > 1
+              ? `<p><strong>${$t("transfer_amount")}:</strong> ${
+                  currency.value
+                } ${formatAmount(actualTransferAmount.value)} (x${
+                  transferMultiplier.value
+                })</p>`
+              : ""
+          }
+        </div>
+      `,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#16a34a",
@@ -659,7 +724,8 @@ const handleSubmit = async () => {
         ? formData.value.customKioskName || "-"
         : selectedKiosk.name,
       userKioskId: isWithoutKiosk ? "-" : selectedKiosk.userKioskId,
-      bankId: formData.value.bankId,
+      bankId: isFromWallet ? null : formData.value.bankId,
+      fromWallet: isFromWallet, // 新增
       promotionId: formData.value.promotionId || null,
       bonusAmount: calculatedBonus.value || 0,
       remark: formData.value.remark,
