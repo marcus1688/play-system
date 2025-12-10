@@ -268,7 +268,7 @@ const isLoading = ref(false);
 
 const fetchReportData = async () => {
   try {
-    isLoading.value = true;
+    isPageLoading.value = true;
     const params = new URLSearchParams();
 
     if (dateRange.value.startDate) {
@@ -292,7 +292,7 @@ const fetchReportData = async () => {
       text: "Failed to load report data",
     });
   } finally {
-    isLoading.value = false;
+    isPageLoading.value = false;
   }
 };
 
@@ -442,11 +442,6 @@ watch(
 
 watch(searchQuery, (newValue) => {
   currentPage.value = 1;
-});
-
-onMounted(async () => {
-  await fetchReportData();
-  isPageLoading.value = false;
 });
 
 useHead({
