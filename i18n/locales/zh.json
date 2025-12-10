@@ -1629,5 +1629,11 @@
   "wallet_save_exceeds_deposit": "存入钱包金额不能超过存款金额",
   "kiosk_amount_must_be_positive": "Kiosk 存款金额必须大于 0",
   "new_deposit_breakdown": "新存款明细",
-  "search_username_fullname": "搜索用户名或全名"
+  "search_username_fullname": "搜索用户名或全名",
+  "transfer_between_banks": "银行间转账",
+  "from_bank": "从银行",
+  "to_bank": "到银行",
+  "please_select_both_banks": "请选择源银行和目标银行",
+  "cannot_transfer_same_bank": "不能转账到同一银行",
+  "transfer_remark_placeholder": "例如：运营费用转账"
 }

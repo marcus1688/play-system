@@ -1629,5 +1629,11 @@
   "wallet_save_exceeds_deposit": "Wallet save amount cannot exceed deposit amount",
   "kiosk_amount_must_be_positive": "Kiosk deposit amount must be greater than 0",
   "new_deposit_breakdown": "New Deposit Breakdown",
-  "search_username_fullname": "Search username or fullname"
+  "search_username_fullname": "Search username or fullname",
+  "transfer_between_banks": "Transfer Between Banks",
+  "from_bank": "From Bank",
+  "to_bank": "To Bank",
+  "please_select_both_banks": "Please select both source and destination banks",
+  "cannot_transfer_same_bank": "Cannot transfer to the same bank",
+  "transfer_remark_placeholder": "e.g. Transfer for operation expenses"
 }

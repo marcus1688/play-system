@@ -128,6 +128,12 @@
                     {{ $t("cash_out") }}
                   </button>
                   <button
+                    @click="handleTransfer(bank)"
+                    class="px-3 py-1 bg-green-600 text-white rounded lg:hover:bg-green-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
+                  >
+                    {{ $t("transfer") }}
+                  </button>
+                  <button
                     @click="handleStartingBalance(bank)"
                     class="px-3 py-1 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
                   >
@@ -170,6 +176,13 @@
         :bank-data="currentBank"
         @success="fetchBanks"
       />
+
+      <BankTransferModal
+        v-model:show="showTransferModal"
+        :banks="banks"
+        :default-from-bank="currentBank"
+        @success="fetchBanks"
+      />
     </div>
   </div>
 </template>
@@ -178,6 +191,7 @@ import { Icon } from "@iconify/vue";
 import { formatDate } from "~/utils/dateFormatter";
 import { formatAmount } from "~/utils/amountFormatter";
 
+const showTransferModal = ref(false);
 const isPageLoading = ref(true);
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "编号" },
@@ -235,6 +249,11 @@ const handleSort = (key) => {
     sortConfig.value.key = key;
     sortConfig.value.direction = "asc";
   }
+};
+
+const handleTransfer = (bank) => {
+  currentBank.value = bank;
+  showTransferModal.value = true;
 };
 
 const filteredBanks = computed(() => {
