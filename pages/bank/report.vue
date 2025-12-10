@@ -26,7 +26,7 @@
           <div
             class="flex items-center gap-2 max-md:flex-col max-md:items-stretch"
           >
-            <BaseDatePicker
+            <BankReportDatePicker
               v-model="dateRange.startDate"
               :placeholder="$t('start_date')"
               :is-start-date="true"
@@ -34,7 +34,7 @@
               @update:otherDate="dateRange.endDate = null"
             />
             <span class="text-gray-500 max-md:hidden">-</span>
-            <BaseDatePicker
+            <BankReportDatePicker
               v-model="dateRange.endDate"
               :placeholder="$t('end_date')"
               :is-start-date="false"
