@@ -265,9 +265,4 @@ watch(
     }
   }
 );
-
-onMounted(async () => {
-  await fetchWithdrawals();
-  isPageLoading.value = false;
-});
 </script>

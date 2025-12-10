@@ -1,6 +1,10 @@
 <template>
   <div>
     <PageLoading v-if="isPageLoading" />
+    <NewDepositBreakdownModal
+      v-model:show="showNewDepositModal"
+      :data="selectedNewDepositData"
+    />
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-6 max-md:mb-4">
       <div class="flex items-center gap-4 max-md:gap-3">
@@ -171,7 +175,19 @@
               <td
                 class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
-                {{ summary.newDeposits }}
+                <div class="flex items-center justify-center gap-2">
+                  {{ summary.newDeposits }}
+                  <button
+                    v-if="
+                      summary.newDepositBreakdown &&
+                      summary.newDepositBreakdown.length > 0
+                    "
+                    @click="openNewDepositModal(summary.newDepositBreakdown)"
+                    class="px-2 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500"
+                  >
+                    {{ $t("view") }}
+                  </button>
+                </div>
               </td>
               <td
                 class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
@@ -251,11 +267,19 @@ import { formatDate } from "~/utils/dateFormatter";
 import { formatAmount } from "~/utils/amountFormatter";
 import moment from "moment-timezone";
 
+const showNewDepositModal = ref(false);
+const selectedNewDepositData = ref([]);
 const { isExporting, exportToExcel } = useExportExcel();
 const adminUserData = useState("adminUserData");
 const isPageLoading = ref(true);
 const currency = useCurrency();
 const { get } = useApiEndpoint();
+
+const openNewDepositModal = (data) => {
+  selectedNewDepositData.value = data;
+  showNewDepositModal.value = true;
+};
+
 const tableHeaders = [
   { key: "date", label: "Date", labelCN: "日期", sortable: false },
   {
@@ -366,6 +390,7 @@ const dateFilterRef = ref(null);
 
 const fetchSummaryData = async () => {
   try {
+    isPageLoading.value = true;
     const params = new URLSearchParams();
     if (dateRange.value.startDate) {
       params.append("startDate", dateRange.value.startDate);
@@ -385,6 +410,8 @@ const fetchSummaryData = async () => {
       title: "Error",
       text: "Failed to load summary report",
     });
+  } finally {
+    isPageLoading.value = false;
   }
 };
 
@@ -576,11 +603,6 @@ watch(
     }
   }
 );
-
-onMounted(async () => {
-  await fetchSummaryData();
-  isPageLoading.value = false;
-});
 
 useHead({
   title: "Play System | Summary Report",

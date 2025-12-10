@@ -262,9 +262,4 @@ watch(
     }
   }
 );
-
-onMounted(async () => {
-  await fetchBonuses();
-  isPageLoading.value = false;
-});
 </script>

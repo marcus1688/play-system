@@ -1627,5 +1627,7 @@
   "transfer_to_kiosk": "Transfer to Kiosk",
   "total_bank_deposit": "Total Bank Deposit",
   "wallet_save_exceeds_deposit": "Wallet save amount cannot exceed deposit amount",
-  "kiosk_amount_must_be_positive": "Kiosk deposit amount must be greater than 0"
+  "kiosk_amount_must_be_positive": "Kiosk deposit amount must be greater than 0",
+  "new_deposit_breakdown": "New Deposit Breakdown",
+  "search_username_fullname": "Search username or fullname"
 }

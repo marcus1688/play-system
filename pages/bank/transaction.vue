@@ -311,7 +311,7 @@ const fetchTransactions = async () => {
     params.append("endDate", dateRange.value.endDate);
   }
   try {
-    isLoading.value = true;
+    isPageLoading.value = true;
     const { data } = await get(`banktransactionlog?${params.toString()}`);
 
     if (data.success) {
@@ -325,7 +325,7 @@ const fetchTransactions = async () => {
       text: "Failed to load transaction data",
     });
   } finally {
-    isLoading.value = false;
+    isPageLoading.value = false;
   }
 };
 
@@ -437,11 +437,6 @@ watch(
   },
   { deep: true }
 );
-
-onMounted(async () => {
-  await fetchTransactions();
-  isPageLoading.value = false;
-});
 
 useHead({
   title: "Play System | Bank Transaction",

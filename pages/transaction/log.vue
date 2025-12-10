@@ -438,6 +438,7 @@ const { get } = useApiEndpoint();
 const transactions = ref([]);
 
 const fetchTransactions = async () => {
+  isPageLoading.value = true;
   const params = new URLSearchParams();
   if (dateRange.value.startDate) {
     params.append("startDate", dateRange.value.startDate);
@@ -453,6 +454,8 @@ const fetchTransactions = async () => {
     }
   } catch (error) {
     console.error("Error fetching transactions:", error);
+  } finally {
+    isPageLoading.value = false;
   }
 };
 
@@ -918,11 +921,6 @@ watch(
   },
   { deep: true }
 );
-
-onMounted(async () => {
-  await fetchTransactions();
-  isPageLoading.value = false;
-});
 
 useHead({
   title: "Play System | Transaction Log",

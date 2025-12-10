@@ -362,8 +362,4 @@ watch(
     }
   }
 );
-
-onMounted(() => {
-  fetchWalletLogs();
-});
 </script>

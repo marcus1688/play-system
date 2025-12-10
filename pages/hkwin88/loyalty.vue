@@ -393,6 +393,7 @@ const formatAmount = (amount) => {
 
 const fetchRecords = async () => {
   try {
+    isPageLoading.value = true;
     const params = new URLSearchParams();
     if (dateRange.value.startDate) {
       params.append(
@@ -418,6 +419,8 @@ const fetchRecords = async () => {
       title: $t("error"),
       text: $t("failed_to_load_records"),
     });
+  } finally {
+    isPageLoading.value = false;
   }
 };
 
@@ -647,9 +650,6 @@ onMounted(async () => {
       .endOf("month")
       .toDate();
   }
-
-  await fetchRecords();
-  isPageLoading.value = false;
 });
 
 useHead({

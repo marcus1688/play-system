@@ -317,6 +317,7 @@ const dateFilterRef = ref(null);
 
 const fetchRebateReport = async () => {
   try {
+    isPageLoading.value = true;
     const params = new URLSearchParams();
     if (dateRange.value.startDate) {
       params.append("startDate", dateRange.value.startDate);
@@ -336,6 +337,8 @@ const fetchRebateReport = async () => {
       title: "Error",
       text: "Failed to load rebate report",
     });
+  } finally {
+    isPageLoading.value = false;
   }
 };
 
@@ -522,9 +525,6 @@ onMounted(async () => {
   const yesterday = now.clone().subtract(1, "day");
   dateRange.value.startDate = yesterday.startOf("day").toDate();
   dateRange.value.endDate = yesterday.endOf("day").toDate();
-
-  await fetchRebateReport();
-  isPageLoading.value = false;
 });
 
 useHead({

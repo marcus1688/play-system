@@ -370,6 +370,7 @@ const handleSort = (key) => {
 
 const fetchPlayerData = async () => {
   try {
+    isPageLoading.value = true;
     const params = new URLSearchParams();
     if (dateRange.value.startDate) {
       params.append("startDate", dateRange.value.startDate);
@@ -390,6 +391,8 @@ const fetchPlayerData = async () => {
       title: "Error",
       text: "Failed to load player data",
     });
+  } finally {
+    isPageLoading.value = false;
   }
 };
 
@@ -588,11 +591,6 @@ watch(
 
 watch(searchQuery, (newValue) => {
   currentPage.value = 1;
-});
-
-onMounted(async () => {
-  await fetchPlayerData();
-  isPageLoading.value = false;
 });
 
 useHead({

@@ -346,6 +346,7 @@ const handleSort = (key) => {
 
 const fetchRecords = async () => {
   try {
+    isPageLoading.value = true;
     const params = new URLSearchParams();
     if (dateRange.value.startDate) {
       params.append(
@@ -363,6 +364,8 @@ const fetchRecords = async () => {
     }
   } catch (error) {
     console.error("Error fetching VIP monthly bonus records:", error);
+  } finally {
+    isPageLoading.value = false;
   }
 };
 
@@ -625,9 +628,6 @@ onMounted(async () => {
   const now = moment().tz("Asia/Kuala_Lumpur");
   dateRange.value.startDate = now.clone().startOf("month").toDate();
   dateRange.value.endDate = now.clone().endOf("month").toDate();
-
-  await fetchRecords();
-  isPageLoading.value = false;
 });
 useHead({
   title: "Play System | VIP Monthly Bonus Report",

@@ -346,9 +346,4 @@ watch(
     }
   }
 );
-
-onMounted(async () => {
-  await fetchWalletLogs();
-  isPageLoading.value = false;
-});
 </script>

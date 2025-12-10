@@ -294,6 +294,7 @@ const dateFilterRef = ref(null);
 
 const fetchReportData = async () => {
   try {
+    isPageLoading.value = true;
     const params = new URLSearchParams();
     if (dateRange.value.startDate)
       params.append("startDate", dateRange.value.startDate);
@@ -311,6 +312,8 @@ const fetchReportData = async () => {
       title: "Error",
       text: "Failed to load promotions report",
     });
+  } finally {
+    isPageLoading.value = false;
   }
 };
 
@@ -472,11 +475,6 @@ watch(
 
 watch(searchQuery, (newValue) => {
   currentPage.value = 1;
-});
-
-onMounted(async () => {
-  await fetchReportData();
-  isPageLoading.value = false;
 });
 
 useHead({

@@ -290,9 +290,4 @@ watch(
     }
   }
 );
-
-onMounted(async () => {
-  await fetchDeposits();
-  isPageLoading.value = false;
-});
 </script>

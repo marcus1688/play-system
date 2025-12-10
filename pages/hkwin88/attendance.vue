@@ -423,6 +423,7 @@ const handleSort = (key) => {
 
 const fetchRecords = async () => {
   try {
+    isPageLoading.value = true;
     const params = new URLSearchParams();
     if (dateRange.value.startDate) {
       params.append("startDate", dateRange.value.startDate);
@@ -442,6 +443,8 @@ const fetchRecords = async () => {
       title: $t("error"),
       text: $t("failed_to_load_records"),
     });
+  } finally {
+    isPageLoading.value = false;
   }
 };
 
@@ -727,8 +730,6 @@ onMounted(async () => {
   const lastSunday = now.clone().subtract(1, "week").endOf("isoWeek");
   dateRange.value.startDate = lastMonday.toDate();
   dateRange.value.endDate = lastSunday.toDate();
-  await fetchRecords();
-  isPageLoading.value = false;
 });
 
 useHead({

@@ -224,12 +224,15 @@ const fetchLogs = async () => {
     params.append("endDate", dateRange.value.endDate);
   }
   try {
+    isPageLoading.value = true;
     const { data } = await get(`adminuserlogs?${params.toString()}`);
     if (data.success) {
       logs.value = data.data;
     }
   } catch (error) {
     console.error("Error fetching admin logs:", error);
+  } finally {
+    isPageLoading.value = false;
   }
 };
 
@@ -301,11 +304,6 @@ watch(
 
 watch(searchQuery, (newValue) => {
   currentPage.value = 1;
-});
-
-onMounted(async () => {
-  await fetchLogs();
-  isPageLoading.value = false;
 });
 
 useHead({
