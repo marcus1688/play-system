@@ -21,7 +21,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
   if (companyId) {
     try {
-      const { get } = useApiEndpoint();
+      const { get } = useApiEndpoint(true);
       const { data } = await get("auth/check");
       adminUserData.value = data.adminuser;
       if (data?.authorized) {

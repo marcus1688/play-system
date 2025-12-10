@@ -1,5 +1,5 @@
 import { getCompanyApiUrl, getPublicApiUrl } from "~/utils/companies";
-export const useApiEndpoint = () => {
+export const useApiEndpoint = (skipRoute = false) => {
   const getApiUrl = () => {
     const companyId = localStorage.getItem("companyId");
     return getCompanyApiUrl(companyId);
@@ -44,8 +44,11 @@ export const useApiEndpoint = () => {
       const apiUrl = usePublic ? getPublicApi() : getApiUrl();
       const token = localStorage.getItem("token");
       const companyId = localStorage.getItem("companyId");
-      const route = useRoute();
-      const currentRoute = route.path;
+      let currentRoute = "";
+      if (!skipRoute) {
+        const route = useRoute();
+        currentRoute = route.path;
+      }
       const requestConfig = {
         method,
         credentials: "include",
