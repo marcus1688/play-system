@@ -229,6 +229,17 @@
                   <div v-if="item.bankname !== 'USDT'">
                     {{ $t("transfer_number") }}: {{ item.transfernumber }}
                   </div>
+                  <button
+                    v-if="
+                      item.status === 'approved' &&
+                      !item.reverted &&
+                      item.bankid
+                    "
+                    @click="openChangeBankModal(item)"
+                    class="mt-2 px-3 py-1 bg-indigo-600 text-white rounded text-xs lg:hover:bg-indigo-500"
+                  >
+                    {{ $t("change_bank") }}
+                  </button>
                 </div>
               </td>
 
@@ -365,6 +376,12 @@
       :image-url="selectedReceiptUrl"
       :image-urls="selectedReceiptUrls"
     />
+
+    <ChangeBankModal
+      v-model:show="showChangeBankModal"
+      :transaction-data="selectedTransaction"
+      @success="handleChangeBankSuccess"
+    />
   </div>
 </template>
 
@@ -373,6 +390,8 @@ import moment from "moment-timezone";
 import { Icon } from "@iconify/vue";
 import { formatDate } from "~/utils/dateFormatter";
 
+const showChangeBankModal = ref(false);
+const selectedTransaction = ref(null);
 const selectedReceiptUrls = ref([]);
 const adminUserData = useState("adminUserData");
 const { isExporting, exportToExcel } = useExportExcel();
@@ -436,6 +455,15 @@ const showReceiptModal = ref(false);
 const selectedReceiptUrl = ref("");
 const { get } = useApiEndpoint();
 const transactions = ref([]);
+
+const openChangeBankModal = (item) => {
+  selectedTransaction.value = item;
+  showChangeBankModal.value = true;
+};
+
+const handleChangeBankSuccess = () => {
+  fetchTransactions();
+};
 
 const fetchTransactions = async () => {
   isPageLoading.value = true;

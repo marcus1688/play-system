@@ -1635,5 +1635,12 @@
   "to_bank": "To Bank",
   "please_select_both_banks": "Please select both source and destination banks",
   "cannot_transfer_same_bank": "Cannot transfer to the same bank",
-  "transfer_remark_placeholder": "e.g. Transfer for operation expenses"
+  "transfer_remark_placeholder": "e.g. Transfer for operation expenses",
+  "change_bank": "Change Bank",
+  "select_new_bank": "Select New Bank",
+  "new_bank": "New Bank",
+  "current_bank": "Current Bank",
+  "confirm_change": "Confirm Change",
+  "confirm_change_bank": "Confirm Change Bank",
+  "transaction_id": "Transaction ID"
 }

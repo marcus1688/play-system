@@ -1635,5 +1635,12 @@
   "to_bank": "到银行",
   "please_select_both_banks": "请选择源银行和目标银行",
   "cannot_transfer_same_bank": "不能转账到同一银行",
-  "transfer_remark_placeholder": "例如：运营费用转账"
+  "transfer_remark_placeholder": "例如：运营费用转账",
+  "change_bank": "更换银行",
+  "select_new_bank": "选择新银行",
+  "new_bank": "新银行",
+  "current_bank": "当前银行",
+  "confirm_change": "确认更换",
+  "confirm_change_bank": "确认更换银行",
+  "transaction_id": "交易单号"
 }
