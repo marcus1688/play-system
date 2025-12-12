@@ -348,9 +348,17 @@ const filteredTransactions = computed(() => {
     );
   }
   if (filters.value.bankAccount) {
-    filtered = filtered.filter(
-      (item) => item.bankAccount === filters.value.bankAccount
+    const selectedBank = uniqueBanks.value.find(
+      (bank) => bank.bankAccount === filters.value.bankAccount
     );
+    if (selectedBank) {
+      filtered = filtered.filter(
+        (item) =>
+          item.bankName === selectedBank.bankName &&
+          item.ownername === selectedBank.ownername &&
+          item.bankAccount === selectedBank.bankAccount
+      );
+    }
   }
   if (filters.value.transactionType) {
     filtered = filtered.filter(
