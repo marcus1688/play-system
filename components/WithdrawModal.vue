@@ -789,6 +789,71 @@ const handleSubmit = async () => {
 
     if (!result.isConfirmed) return;
 
+    const checkLimitResult = await post("check-bank-limit", {
+      bankId: isToWallet ? null : formData.value.bankId,
+      amount: totalBankAmount,
+      type: "withdraw",
+    });
+
+    if (checkLimitResult.data.hasWarning) {
+      const warnings = checkLimitResult.data.warnings;
+      let warningHtml = '<div class="text-left">';
+
+      warnings.forEach((w) => {
+        if (w.type === "daily") {
+          warningHtml += `
+      <p class="text-red-600 mb-2">
+        <strong>${$t("daily_limit_warning")}</strong><br>
+        ${$t("daily_limit")}: ${currency.value} ${formatAmount(w.limit)}<br>
+        ${$t("current_daily_total")}: ${currency.value} ${formatAmount(
+            w.currentTotal
+          )}<br>
+        ${$t("this_transaction")}: ${currency.value} ${formatAmount(
+            w.newAmount
+          )}<br>
+        ${$t("after_transaction")}: ${currency.value} ${formatAmount(
+            w.afterTotal
+          )}
+      </p>
+    `;
+        }
+        if (w.type === "monthly") {
+          warningHtml += `
+      <p class="text-red-600 mb-2">
+        <strong>${$t("monthly_limit_warning")}</strong><br>
+        ${$t("monthly_limit")}: ${currency.value} ${formatAmount(w.limit)}<br>
+        ${$t("current_monthly_total")}: ${currency.value} ${formatAmount(
+            w.currentTotal
+          )}<br>
+        ${$t("this_transaction")}: ${currency.value} ${formatAmount(
+            w.newAmount
+          )}<br>
+        ${$t("after_transaction")}: ${currency.value} ${formatAmount(
+            w.afterTotal
+          )}
+      </p>
+    `;
+        }
+      });
+
+      warningHtml += "</div>";
+
+      const warningResult = await Swal.fire({
+        title: $t("limit_exceeded_warning"),
+        html: warningHtml,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#f59e0b",
+        cancelButtonColor: "#d33",
+        confirmButtonText: $t("continue_anyway"),
+        cancelButtonText: $t("cancel"),
+      });
+
+      if (!warningResult.isConfirmed) {
+        return;
+      }
+    }
+
     isLoading.value = true;
 
     // Step 1: Call Kiosk Transfer Out API (只有选了真正的 kiosk 才执行)

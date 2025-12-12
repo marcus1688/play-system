@@ -117,6 +117,58 @@
                   class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
                 />
               </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+                  >{{ $t("daily_deposit_limit") }}</label
+                >
+                <input
+                  v-model.number="formData.dailydepositamountlimit"
+                  type="number"
+                  min="0"
+                  class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+                  >{{ $t("daily_withdraw_limit") }}</label
+                >
+                <input
+                  v-model.number="formData.dailywithdrawamountlimit"
+                  type="number"
+                  min="0"
+                  class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+                  >{{ $t("monthly_deposit_limit") }}</label
+                >
+                <input
+                  v-model.number="formData.monthlydepositamountlimit"
+                  type="number"
+                  min="0"
+                  class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+                  >{{ $t("monthly_withdraw_limit") }}</label
+                >
+                <input
+                  v-model.number="formData.monthlywithdrawamountlimit"
+                  type="number"
+                  min="0"
+                  class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
+                />
+              </div>
             </div>
 
             <div>
@@ -201,6 +253,10 @@ const formData = ref({
   transactionlimit: "",
   transactionfees: "",
   transactionamountlimit: "",
+  dailydepositamountlimit: "",
+  dailywithdrawamountlimit: "",
+  monthlydepositamountlimit: "",
+  monthlywithdrawamountlimit: "",
   remark: "",
   qrimage: null,
 });
@@ -227,6 +283,10 @@ const resetForm = () => {
     transactionlimit: "",
     transactionfees: "",
     transactionamountlimit: "",
+    dailydepositamountlimit: "",
+    dailywithdrawamountlimit: "",
+    monthlydepositamountlimit: "",
+    monthlywithdrawamountlimit: "",
     remark: "",
     qrimage: null,
   };
@@ -302,6 +362,10 @@ watch(
         transactionlimit: newData.transactionlimit || "",
         transactionfees: newData.transactionfees || "",
         transactionamountlimit: newData.transactionamountlimit || "",
+        dailydepositamountlimit: newData.dailydepositamountlimit || "",
+        dailywithdrawamountlimit: newData.dailywithdrawamountlimit || "",
+        monthlydepositamountlimit: newData.monthlydepositamountlimit || "",
+        monthlywithdrawamountlimit: newData.monthlywithdrawamountlimit || "",
         remark: newData.remark || "",
         qrimage: newData.qrimage || null,
       };
@@ -314,6 +378,10 @@ watch(
         transactionlimit: "",
         transactionfees: "",
         transactionamountlimit: "",
+        dailydepositamountlimit: "",
+        dailywithdrawamountlimit: "",
+        monthlydepositamountlimit: "",
+        monthlywithdrawamountlimit: "",
         remark: "",
         qrimage: null,
       };

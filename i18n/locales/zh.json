@@ -1642,5 +1642,19 @@
   "current_bank": "当前银行",
   "confirm_change": "确认更换",
   "confirm_change_bank": "确认更换银行",
-  "transaction_id": "交易单号"
+  "transaction_id": "交易单号",
+  "daily_deposit_limit": "每日存款限额",
+  "daily_withdraw_limit": "每日提款限额",
+  "monthly_deposit_limit": "每月存款限额",
+  "monthly_withdraw_limit": "每月提款限额",
+  "daily_limit_warning": "每日限额警告",
+  "monthly_limit_warning": "每月限额警告",
+  "current_daily_total": "当日累计",
+  "current_monthly_total": "当月累计",
+  "this_transaction": "本次交易",
+  "exceeded_by": "超出金额",
+  "limit_exceeded_warning": "超出限额警告",
+  "continue_anyway": "继续执行",
+  "monthly_limit": "每月限额",
+  "after_transaction": "交易后总额"
 }

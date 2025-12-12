@@ -1642,5 +1642,19 @@
   "current_bank": "Current Bank",
   "confirm_change": "Confirm Change",
   "confirm_change_bank": "Confirm Change Bank",
-  "transaction_id": "Transaction ID"
+  "transaction_id": "Transaction ID",
+  "daily_deposit_limit": "Daily Deposit Limit",
+  "daily_withdraw_limit": "Daily Withdraw Limit",
+  "monthly_deposit_limit": "Monthly Deposit Limit",
+  "monthly_withdraw_limit": "Monthly Withdraw Limit",
+  "daily_limit_warning": "Daily Limit Warning",
+  "monthly_limit_warning": "Monthly Limit Warning",
+  "current_daily_total": "Current Daily Total",
+  "current_monthly_total": "Current Monthly Total",
+  "this_transaction": "This Transaction",
+  "exceeded_by": "Exceeded By",
+  "limit_exceeded_warning": "Limit Exceeded Warning",
+  "continue_anyway": "Continue Anyway",
+  "monthly_limit": "Monthly Limit",
+  "after_transaction": "After Transaction"
 }
