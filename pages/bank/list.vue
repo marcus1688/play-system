@@ -70,17 +70,6 @@
               >
                 {{ bank.no }}
               </td>
-              <td class="px-6 py-4 max-md:px-3 max-md:py-3">
-                <img
-                  v-if="bank.qrimage"
-                  :src="bank.qrimage"
-                  alt="Bank QR"
-                  class="h-10 w-10 object-contain mx-auto max-md:h-8 max-md:w-8"
-                />
-                <span v-else class="text-sm text-gray-500 max-md:text-xs">{{
-                  $t("no_image")
-                }}</span>
-              </td>
               <td
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
@@ -104,17 +93,20 @@
               <td
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
-                {{ bank.transactionlimit || "-" }}
+                {{
+                  bank.monthlydepositamountlimit
+                    ? `${currency} ${bank.monthlydepositamountlimit}`
+                    : "-"
+                }}
               </td>
               <td
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
-                {{ bank.transactionfees || "-" }}
-              </td>
-              <td
-                class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
-              >
-                {{ bank.transactionamountlimit || "-" }}
+                {{
+                  bank.monthlydepositamountlimit
+                    ? `${currency} ${bank.monthlywithdrawamountlimit}`
+                    : "-"
+                }}
               </td>
               <td
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
@@ -189,11 +181,11 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 
+const currency = useCurrency();
 const isButtonLoading = ref({});
 const isPageLoading = ref(true);
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "编号", sortable: false },
-  { key: "qrimage", label: "QR / Bank Logo", labelCN: "二维码/银行标志" },
   { key: "bankname", label: "Bank Name", labelCN: "银行名称", sortable: false },
   {
     key: "ownername",
@@ -204,21 +196,15 @@ const tableHeaders = [
   { key: "fastpayment", label: "Fast Payment", labelCN: "快速支付" },
   { key: "bankaccount", label: "Bank Account", labelCN: "银行账户" },
   {
-    key: "transactionlimit",
-    label: "Transaction Limit",
-    labelCN: "交易限制",
+    key: "monthlydepositamountlimit",
+    label: "Monthly Deposit Limit",
+    labelCN: "每月存款限额",
     sortable: true,
   },
   {
-    key: "transactionfees",
-    label: "Transaction Fees",
-    labelCN: "交易费用",
-    sortable: true,
-  },
-  {
-    key: "transactionamountlimit",
-    label: "Transaction Amount Limit",
-    labelCN: "交易金额限制",
+    key: "monthlywithdrawamountlimit",
+    label: "Monthly Withdraw Limit",
+    labelCN: "每月提款限额",
     sortable: true,
   },
   { key: "remark", label: "Remark", labelCN: "备注", sortable: false },
