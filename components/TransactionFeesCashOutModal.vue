@@ -1,0 +1,211 @@
+<template>
+  <Teleport to="body">
+    <div
+      v-if="show"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 custom-modal p-4 max-md:p-3"
+      @pointerdown.self="onBackdropDown"
+      @pointerup.self="onBackdropUp"
+    >
+      <div class="bg-white rounded-lg w-[500px] max-w-full">
+        <!-- Modal Header -->
+        <div class="p-6 border-b max-md:p-4">
+          <div class="flex items-center gap-4 max-md:gap-3">
+            <div class="w-2 h-8 bg-indigo-600 rounded-full max-md:h-6"></div>
+            <h2 class="text-xl font-semibold max-md:text-lg">
+              {{ $t("transaction_fees") }}
+            </h2>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-6 max-md:p-4">
+          <!-- Bank Info -->
+          <div
+            class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4 max-md:p-3 max-md:mb-3"
+          >
+            <div class="grid grid-cols-2 gap-4 max-md:gap-2">
+              <div>
+                <div class="text-sm text-gray-500 max-md:text-xs">
+                  {{ $t("bank_name") }}
+                </div>
+                <div class="font-semibold text-gray-800 max-md:text-sm">
+                  {{ bankData?.bankname }}
+                </div>
+              </div>
+              <div>
+                <div class="text-sm text-gray-500 max-md:text-xs">
+                  {{ $t("owner_name") }}
+                </div>
+                <div class="font-semibold text-gray-800 max-md:text-sm">
+                  {{ bankData?.ownername }}
+                </div>
+              </div>
+              <div>
+                <div class="text-sm text-gray-500 max-md:text-xs">
+                  {{ $t("bank_account") }}
+                </div>
+                <div class="font-semibold text-gray-800 max-md:text-sm">
+                  {{ bankData?.bankaccount }}
+                </div>
+              </div>
+              <div>
+                <div class="text-sm text-gray-500 max-md:text-xs">
+                  {{ $t("current_balance") }}
+                </div>
+                <div class="font-semibold text-gray-800 max-md:text-sm">
+                  {{ currency }} {{ formatAmount(bankData?.currentbalance) }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <form
+            @submit.prevent="handleSubmit"
+            class="space-y-4 max-md:space-y-3"
+          >
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("transaction_fees_amount") }}
+              </label>
+              <input
+                v-model.number="formData.amount"
+                type="number"
+                required
+                min="0"
+                step="0.01"
+                class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
+              />
+            </div>
+
+            <div
+              class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 max-md:p-2"
+            >
+              <p class="text-sm text-yellow-800 max-md:text-xs">
+                <strong>{{ $t("note") }}:</strong>
+                {{ $t("transaction_fees_note") }}
+              </p>
+            </div>
+          </form>
+        </div>
+
+        <!-- Modal Footer -->
+        <div
+          class="p-6 border-t flex justify-end gap-3 max-md:p-4 max-md:gap-2 max-md:flex-col-reverse"
+        >
+          <button
+            type="button"
+            @click="$emit('update:show', false)"
+            class="px-4 py-2 border rounded-lg lg:hover:bg-gray-50 max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:w-full"
+          >
+            {{ $t("cancel") }}
+          </button>
+          <LoadingButton
+            :loading="isLoading"
+            @click="handleSubmit"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-lg lg:hover:bg-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm max-md:w-full"
+          >
+            {{ $t("confirm_transaction_fees") }}
+          </LoadingButton>
+        </div>
+      </div>
+    </div>
+  </Teleport>
+</template>
+
+<script setup>
+import { formatAmount } from "~/utils/amountFormatter";
+
+const props = defineProps({
+  show: {
+    type: Boolean,
+    default: false,
+  },
+  bankData: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+
+const emit = defineEmits(["update:show", "success"]);
+const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
+  emit("update:show", false);
+});
+const { post } = useApiEndpoint();
+const currency = useCurrency();
+const isLoading = ref(false);
+
+const formData = ref({
+  amount: "",
+});
+
+const handleSubmit = async () => {
+  if (!props.bankData?._id) {
+    await Swal.fire({
+      icon: "error",
+      title: $t("error"),
+      text: $t("invalid_bank_data"),
+    });
+    return;
+  }
+
+  if (!formData.value.amount || formData.value.amount <= 0) {
+    await Swal.fire({
+      icon: "warning",
+      title: $t("warning"),
+      text: $t("please_enter_valid_amount"),
+    });
+    return;
+  }
+
+  try {
+    isLoading.value = true;
+
+    const { data } = await post("transactionfeescashout", {
+      id: props.bankData._id,
+      amount: formData.value.amount,
+    });
+
+    if (data.success) {
+      await Swal.fire({
+        icon: "success",
+        title: $t("success"),
+        text: data.message[$locale.value] || data.message.en,
+        timer: 1500,
+      });
+      emit("success");
+      emit("update:show", false);
+    } else {
+      await Swal.fire({
+        icon: "info",
+        title: $t("info"),
+        text: data.message[$locale.value] || data.message.en,
+      });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    await Swal.fire({
+      icon: "error",
+      title: $t("error"),
+      text:
+        error.response?.data?.message?.[$locale.value] ||
+        error.response?.data?.message?.en ||
+        $t("network_error"),
+    });
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+watch(
+  () => props.show,
+  (newVal) => {
+    if (newVal) {
+      formData.value = {
+        amount: "",
+      };
+    }
+  }
+);
+</script>

@@ -1656,5 +1656,9 @@
   "limit_exceeded_warning": "Limit Exceeded Warning",
   "continue_anyway": "Continue Anyway",
   "monthly_limit": "Monthly Limit",
-  "after_transaction": "After Transaction"
+  "after_transaction": "After Transaction",
+  "transaction_fees_amount": "Transaction Fees Amount",
+  "confirm_transaction_fees": "Confirm Transaction Fees",
+  "transaction_fees_note": "This will be recorded as yesterday's transaction at 23:59:50 (UTC+8)",
+  "invalid_bank_data": "Invalid bank data"
 }

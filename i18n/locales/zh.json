@@ -1656,5 +1656,9 @@
   "limit_exceeded_warning": "超出限额警告",
   "continue_anyway": "继续执行",
   "monthly_limit": "每月限额",
-  "after_transaction": "交易后总额"
+  "after_transaction": "交易后总额",
+  "transaction_fees_amount": "交易费用金额",
+  "confirm_transaction_fees": "确认交易费用",
+  "transaction_fees_note": "此交易将记录为昨日 23:59:50 (UTC+8) 的交易",
+  "invalid_bank_data": "无效的银行数据"
 }

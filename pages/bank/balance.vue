@@ -128,6 +128,12 @@
                     {{ $t("cash_out") }}
                   </button>
                   <button
+                    @click="handleTransactionFees(bank)"
+                    class="px-3 py-1 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
+                  >
+                    {{ $t("transaction_fees") }}
+                  </button>
+                  <button
                     @click="handleTransfer(bank)"
                     class="px-3 py-1 bg-green-600 text-white rounded lg:hover:bg-green-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
                   >
@@ -183,6 +189,12 @@
         :default-from-bank="currentBank"
         @success="fetchBanks"
       />
+
+      <TransactionFeesCashOutModal
+        v-model:show="showTransactionFeesModal"
+        :bank-data="currentBank"
+        @success="fetchBanks"
+      />
     </div>
   </div>
 </template>
@@ -191,6 +203,7 @@ import { Icon } from "@iconify/vue";
 import { formatDate } from "~/utils/dateFormatter";
 import { formatAmount } from "~/utils/amountFormatter";
 
+const showTransactionFeesModal = ref(false);
 const showTransferModal = ref(false);
 const isPageLoading = ref(true);
 const tableHeaders = [
@@ -235,6 +248,11 @@ const itemsPerPage = ref(10);
 const showTransactionModal = ref(false);
 const currentBank = ref(null);
 const transactionType = ref("");
+
+const handleTransactionFees = (bank) => {
+  currentBank.value = bank;
+  showTransactionFeesModal.value = true;
+};
 
 const sortConfig = ref({
   key: "no",

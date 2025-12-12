@@ -143,6 +143,13 @@
               >
                 <span v-if="report.bankName === `USDT`">USDT</span>
                 <span v-else>{{ currency }}</span>
+                {{ formatAmount(report.totalTransactionFees) }}
+              </td>
+              <td
+                class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                <span v-if="report.bankName === `USDT`">USDT</span>
+                <span v-else>{{ currency }}</span>
                 {{ formatAmount(report.totalCashIn) }}
               </td>
               <td
@@ -238,6 +245,11 @@ const tableHeaders = [
     labelCN: "总提款金额",
   },
   {
+    key: "totalTransactionFees",
+    label: "Total Txn Fees",
+    labelCN: "总交易费用",
+  },
+  {
     key: "totalCashIn",
     label: "Total Cash In",
     labelCN: "总现金流入",
@@ -255,6 +267,7 @@ const totals = ref({
   totalWithdraw: 0,
   totalCashIn: 0,
   totalCashOut: 0,
+  totalTransactionFees: 0,
 });
 const searchQuery = ref("");
 const currentPage = ref(1);
@@ -369,6 +382,7 @@ const handleExport = async () => {
       totalWithdraw: totals.value.totalWithdraw,
       totalCashIn: totals.value.totalCashIn,
       totalCashOut: totals.value.totalCashOut,
+      totalTransactionFees: totals.value.totalTransactionFees,
     });
     let filename = "bank_report";
     if (dateRange.value.startDate && dateRange.value.endDate) {
@@ -390,6 +404,10 @@ const handleExport = async () => {
         totalWithdraw: { header: $t("total_withdraw_amount"), width: 20 },
         totalCashIn: { header: $t("total_cash_in"), width: 20 },
         totalCashOut: { header: $t("total_cash_out"), width: 20 },
+        totalTransactionFees: {
+          header: $t("total_transaction_fees"),
+          width: 20,
+        },
       },
       formatter: (value, key, item) => {
         const moneyFields = [
@@ -397,6 +415,7 @@ const handleExport = async () => {
           "totalWithdraw",
           "totalCashIn",
           "totalCashOut",
+          "totalTransactionFees",
         ];
         if (moneyFields.includes(key) && typeof value === "number") {
           return value.toFixed(2);
