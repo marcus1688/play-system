@@ -116,6 +116,12 @@
                   class="flex items-center justify-center gap-2 max-md:gap-1 max-md:flex-col"
                 >
                   <button
+                    @click="handleTransactionFees(bank)"
+                    class="px-3 py-1 bg-purple-600 text-white rounded lg:hover:bg-purple-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
+                  >
+                    {{ $t("transaction_fees") }}
+                  </button>
+                  <button
                     @click="handleCashIn(bank)"
                     class="px-3 py-1 bg-blue-500 text-white rounded lg:hover:bg-blue-600 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
                   >
@@ -127,12 +133,7 @@
                   >
                     {{ $t("cash_out") }}
                   </button>
-                  <button
-                    @click="handleTransactionFees(bank)"
-                    class="px-3 py-1 bg-indigo-600 text-white rounded lg:hover:bg-indigo-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
-                  >
-                    {{ $t("transaction_fees") }}
-                  </button>
+
                   <button
                     @click="handleTransfer(bank)"
                     class="px-3 py-1 bg-green-600 text-white rounded lg:hover:bg-green-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
