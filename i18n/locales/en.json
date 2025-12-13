@@ -1660,5 +1660,15 @@
   "transaction_fees_amount": "Transaction Fees Amount",
   "confirm_transaction_fees": "Confirm Transaction Fees",
   "transaction_fees_note": "This will be recorded as yesterday's transaction at 23:59:50 (UTC+8)",
-  "invalid_bank_data": "Invalid bank data"
+  "invalid_bank_data": "Invalid bank data",
+  "add_to_total_deposit": "Add to Total Deposit",
+  "add_to_total_withdraw": "Add to Total Withdraw",
+  "change_to_cashin": "Change to Cash In",
+  "change_to_adjustin": "Change to Adjust In",
+  "change_to_cashout": "Change to Cash Out",
+  "change_to_adjustout": "Change to Adjust Out",
+  "total_adjust_in": "Total Adjust In",
+  "total_adjust_out": "Total Adjust Out",
+  "adjust_in": "Adjust In",
+  "adjust_out": "Adjust Out"
 }

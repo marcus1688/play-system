@@ -39,6 +39,28 @@
               />
             </div>
 
+            <div
+              v-if="type === 'cashin' || type === 'cashout'"
+              class="flex items-center gap-2"
+            >
+              <input
+                v-model="formData.affectTotal"
+                type="checkbox"
+                id="affectTotal"
+                class="w-4 h-4 text-indigo-600 border-gray-300 rounded"
+              />
+              <label
+                for="affectTotal"
+                class="text-sm text-gray-700 max-md:text-xs"
+              >
+                {{
+                  type === "cashin"
+                    ? $t("add_to_total_deposit")
+                    : $t("add_to_total_withdraw")
+                }}
+              </label>
+            </div>
+
             <div>
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
@@ -125,6 +147,7 @@ const formData = ref({
   amount: "",
   remark: "",
   transactionDate: null,
+  affectTotal: true,
 });
 
 const modalTitle = computed(() => {
@@ -204,6 +227,7 @@ const handleSubmit = async () => {
       amount: formData.value.amount,
       remark: formData.value.remark || "-",
       transactionDate: formData.value.transactionDate || null,
+      affectTotal: formData.value.affectTotal,
     };
 
     if (props.type === "startingbalance") {
@@ -258,6 +282,7 @@ watch(
             : "",
         remark: "",
         transactionDate: "",
+        affectTotal: true,
       };
     }
   }

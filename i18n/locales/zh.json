@@ -1660,5 +1660,15 @@
   "transaction_fees_amount": "交易费用金额",
   "confirm_transaction_fees": "确认交易费用",
   "transaction_fees_note": "此交易将记录为昨日 23:59:50 (UTC+8) 的交易",
-  "invalid_bank_data": "无效的银行数据"
+  "invalid_bank_data": "无效的银行数据",
+  "add_to_total_deposit": "增加到总存款",
+  "add_to_total_withdraw": "增加到总提款",
+  "change_to_cashin": "改为现金流入",
+  "change_to_adjustin": "改为调整流入",
+  "change_to_cashout": "改为现金流出",
+  "change_to_adjustout": "改为调整流出",
+  "total_adjust_in": "总调整流入",
+  "total_adjust_out": "总调整流出",
+  "adjust_in": "调整流入",
+  "adjust_out": "调整流出"
 }

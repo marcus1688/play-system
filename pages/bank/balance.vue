@@ -136,7 +136,7 @@
 
                   <button
                     @click="handleTransfer(bank)"
-                    class="px-3 py-1 bg-green-600 text-white rounded lg:hover:bg-green-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
+                    class="hidden px-3 py-1 bg-green-600 text-white rounded lg:hover:bg-green-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
                   >
                     {{ $t("transfer") }}
                   </button>

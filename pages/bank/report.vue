@@ -159,6 +159,20 @@
                 <span v-else>{{ currency }}</span>
                 {{ formatAmount(report.totalCashOut) }}
               </td>
+              <td
+                class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                <span v-if="report.bankName === `USDT`">USDT</span>
+                <span v-else>{{ currency }}</span>
+                {{ formatAmount(report.totalAdjustIn) }}
+              </td>
+              <td
+                class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                <span v-if="report.bankName === `USDT`">USDT</span>
+                <span v-else>{{ currency }}</span>
+                {{ formatAmount(report.totalAdjustOut) }}
+              </td>
             </tr>
 
             <!-- Total Row -->
@@ -229,36 +243,18 @@ const currency = useCurrency();
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "编号" },
   { key: "bankName", label: "Bank Name", labelCN: "银行名称" },
-  {
-    key: "ownerName",
-    label: "Owner Name",
-    labelCN: "所有者姓名",
-  },
-  {
-    key: "totalDeposit",
-    label: "Total Dep. Amount",
-    labelCN: "总存款金额",
-  },
-  {
-    key: "totalWithdraw",
-    label: "Total With. Amount",
-    labelCN: "总提款金额",
-  },
+  { key: "ownerName", label: "Owner Name", labelCN: "所有者姓名" },
+  { key: "totalDeposit", label: "Total Dep. Amount", labelCN: "总存款金额" },
+  { key: "totalWithdraw", label: "Total With. Amount", labelCN: "总提款金额" },
   {
     key: "totalTransactionFees",
     label: "Total Txn Fees",
     labelCN: "总交易费用",
   },
-  {
-    key: "totalCashIn",
-    label: "Total Cash In",
-    labelCN: "总现金流入",
-  },
-  {
-    key: "totalCashOut",
-    label: "Total Cash Out",
-    labelCN: "总现金流出",
-  },
+  { key: "totalCashIn", label: "Total Cash In", labelCN: "总现金流入" },
+  { key: "totalCashOut", label: "Total Cash Out", labelCN: "总现金流出" },
+  { key: "totalAdjustIn", label: "Total Adjust In", labelCN: "总调整流入" },
+  { key: "totalAdjustOut", label: "Total Adjust Out", labelCN: "总调整流出" },
 ];
 
 const reports = ref([]);
@@ -267,6 +263,8 @@ const totals = ref({
   totalWithdraw: 0,
   totalCashIn: 0,
   totalCashOut: 0,
+  totalAdjustIn: 0,
+  totalAdjustOut: 0,
   totalTransactionFees: 0,
 });
 const searchQuery = ref("");
@@ -382,6 +380,8 @@ const handleExport = async () => {
       totalWithdraw: totals.value.totalWithdraw,
       totalCashIn: totals.value.totalCashIn,
       totalCashOut: totals.value.totalCashOut,
+      totalAdjustIn: totals.value.totalAdjustIn,
+      totalAdjustOut: totals.value.totalAdjustOut,
       totalTransactionFees: totals.value.totalTransactionFees,
     });
     let filename = "bank_report";
@@ -404,6 +404,8 @@ const handleExport = async () => {
         totalWithdraw: { header: $t("total_withdraw_amount"), width: 20 },
         totalCashIn: { header: $t("total_cash_in"), width: 20 },
         totalCashOut: { header: $t("total_cash_out"), width: 20 },
+        totalAdjustIn: { header: $t("total_adjust_in"), width: 20 },
+        totalAdjustOut: { header: $t("total_adjust_out"), width: 20 },
         totalTransactionFees: {
           header: $t("total_transaction_fees"),
           width: 20,
@@ -415,6 +417,8 @@ const handleExport = async () => {
           "totalWithdraw",
           "totalCashIn",
           "totalCashOut",
+          "totalAdjustIn",
+          "totalAdjustOut",
           "totalTransactionFees",
         ];
         if (moneyFields.includes(key) && typeof value === "number") {

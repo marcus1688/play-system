@@ -75,6 +75,8 @@
             <option value="withdraw">{{ $t("withdraw") }}</option>
             <option value="cashin">{{ $t("cash_in") }}</option>
             <option value="cashout">{{ $t("cash_out") }}</option>
+            <option value="adjustin">{{ $t("adjust_in") }}</option>
+            <option value="adjustout">{{ $t("adjust_out") }}</option>
             <option value="transaction fees">
               {{ $t("transaction_fees") }}
             </option>
@@ -169,7 +171,38 @@
               <td
                 class="px-6 py-4 text-sm uppercase max-md:px-3 max-md:py-3 max-md:text-xs"
               >
-                {{ transaction.transactiontype }}
+                <div class="flex flex-col items-center gap-1">
+                  <div>
+                    {{ transaction.transactiontype }}
+                  </div>
+                  <button
+                    v-if="
+                      ['adjustin', 'cashin', 'adjustout', 'cashout'].includes(
+                        transaction.transactiontype
+                      )
+                    "
+                    @click="handleToggleType(transaction)"
+                    class="px-2 py-1 text-xs text-white rounded lg:hover:opacity-80"
+                    :class="{
+                      'bg-indigo-500':
+                        transaction.transactiontype === 'adjustin' ||
+                        transaction.transactiontype === 'cashin',
+                      'bg-orange-500':
+                        transaction.transactiontype === 'adjustout' ||
+                        transaction.transactiontype === 'cashout',
+                    }"
+                  >
+                    {{
+                      transaction.transactiontype === "adjustin"
+                        ? $t("change_to_cashin")
+                        : transaction.transactiontype === "cashin"
+                        ? $t("change_to_adjustin")
+                        : transaction.transactiontype === "adjustout"
+                        ? $t("change_to_cashout")
+                        : $t("change_to_adjustout")
+                    }}
+                  </button>
+                </div>
               </td>
               <td
                 class="px-6 py-4 text-sm font-medium max-md:px-3 max-md:py-3 max-md:text-xs"
@@ -286,7 +319,7 @@ const tableHeaders = [
 ];
 
 const currency = useCurrency();
-const { get } = useApiEndpoint();
+const { get, patch } = useApiEndpoint();
 const isLoading = ref(false);
 const transactions = ref([]);
 const filters = ref({
@@ -422,6 +455,61 @@ const uniqueBanks = computed(() => {
     a.display.localeCompare(b.display)
   );
 });
+
+const handleToggleType = async (transaction) => {
+  const typeMap = {
+    adjustin: "cashin",
+    cashin: "adjustin",
+    adjustout: "cashout",
+    cashout: "adjustout",
+  };
+
+  const newType = typeMap[transaction.transactiontype];
+
+  const result = await Swal.fire({
+    icon: "warning",
+    title: $t("confirm"),
+    text:
+      $locale.value === "zh"
+        ? `确定要将 ${transaction.transactiontype} 改为 ${newType} 吗？`
+        : `Are you sure you want to change ${transaction.transactiontype} to ${newType}?`,
+    showCancelButton: true,
+    confirmButtonText: $t("confirm"),
+    cancelButtonText: $t("cancel"),
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    const { data } = await patch("toggletransactiontype", {
+      id: transaction._id,
+      newType: newType,
+    });
+
+    if (data.success) {
+      await Swal.fire({
+        icon: "success",
+        title: $t("success"),
+        text: data.message[$locale.value] || data.message.en,
+        timer: 1500,
+      });
+      await fetchTransactions();
+    } else {
+      await Swal.fire({
+        icon: "error",
+        title: $t("error"),
+        text: data.message[$locale.value] || data.message.en,
+      });
+    }
+  } catch (error) {
+    console.error("Error toggling transaction type:", error);
+    await Swal.fire({
+      icon: "error",
+      title: $t("error"),
+      text: $t("network_error"),
+    });
+  }
+};
 
 watch(
   dateRange,
