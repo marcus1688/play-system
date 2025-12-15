@@ -380,7 +380,7 @@ const fetchPlayerData = async () => {
     }
 
     const { data } = await get(`player-report?${params.toString()}`);
-
+    console.log(data);
     if (data.success) {
       players.value = data.data;
     }
