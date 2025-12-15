@@ -85,7 +85,7 @@ export const COMPANIES = {
     id: "megapng",
     name: "megapng",
     apiUrl: "https://api.megapng.co/admin/api/",
-    publicApiUrl: "https://api.megapng.co/admin/api/",
+    publicApiUrl: "https://api.mysteryclub77.com/admin/api/",
     socketUrl: "https://api.megapng.co",
     logo: "/images/logo/megapng.png",
     currency: "PGK",
