@@ -396,7 +396,7 @@ const tableHeaders = [
   { key: "totalDaysDeposited", label: "Days", labelCN: "天数", sortable: true },
   { key: "isFullAttendance", label: "Full", labelCN: "全勤", sortable: true },
   {
-    key: "bonusAmount",
+    key: "bonusPoints",
     label: "Bonus Amount",
     labelCN: "奖金金额",
     sortable: true,

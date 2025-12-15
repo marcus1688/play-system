@@ -296,7 +296,7 @@ const tableHeaders = [
     sortable: true,
   },
   {
-    key: "bonusAmount",
+    key: "bonusPoints",
     label: "Bonus Amount",
     labelCN: "奖金金额",
     sortable: true,
