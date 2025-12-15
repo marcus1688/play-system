@@ -401,7 +401,7 @@ const tableHeaders = [
     labelCN: "奖金金额",
     sortable: true,
   },
-  { key: "action", label: "Action", labelCN: "操作", sortable: false },
+  { key: "action", label: "Action", labelCN: "操作", sortable: true },
   { key: "claimedBy", label: "Process By", labelCN: "处理人", sortable: true },
   {
     key: "claimedAt",
@@ -453,8 +453,10 @@ const filteredRecords = computed(() => {
 
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
-    result = result.filter((record) =>
-      record.username.toLowerCase().includes(query)
+    result = result.filter(
+      (record) =>
+        record.username.toLowerCase().includes(query) ||
+        record.userid?.toLowerCase().includes(query)
     );
   }
 
@@ -471,6 +473,16 @@ const filteredRecords = computed(() => {
       if (sortConfig.value.key === "isFullAttendance") {
         aVal = a.isFullAttendance ? 1 : 0;
         bVal = b.isFullAttendance ? 1 : 0;
+      }
+
+      if (sortConfig.value.key === "action") {
+        const getPriority = (record) => {
+          if (!record.claimed && record.isFullAttendance) return 2;
+          if (record.claimed) return 1;
+          return 0;
+        };
+        aVal = getPriority(a);
+        bVal = getPriority(b);
       }
 
       if (typeof aVal === "string") aVal = aVal.toLowerCase();
