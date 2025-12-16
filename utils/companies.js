@@ -108,7 +108,7 @@ export const COMPANIES = {
       carousel: false,
       admin: true,
       promotion: true,
-      vip: true,
+      vip: false,
       rebate: true,
       report: true,
       tools: false,
