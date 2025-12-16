@@ -179,14 +179,14 @@
                 >
                   <li v-for="child in item.children" :key="child.name">
                     <NuxtLinkLocale
-                      @click="handleSubItemClick(child.name)"
+                      @click="handleSubItemClick(child)"
                       :to="child.path"
                       class="flex items-center px-4 py-2 mt-2 text-gray-300 group lg:hover:text-white max-md:px-3 max-md:py-1.5 max-md:mt-1.5"
                       :class="[
                         menuOpen
                           ? 'mx-3 max-md:mx-2'
                           : 'mx-2 justify-center max-md:mx-1.5',
-                        menuActiveBar === child.name
+                        menuActiveBar === child.path
                           ? 'bg-blue-700 rounded-xl text-white'
                           : 'lg:hover:bg-gray-700 lg:hover:rounded-xl lg:hover:text-white',
                       ]"
@@ -195,7 +195,7 @@
                         <div
                           class="w-1.5 h-1.5 rounded-full bg-gray-600 lg:group-hover:bg-white max-md:w-1 max-md:h-1"
                           :class="[
-                            menuActiveBar === child.name
+                            menuActiveBar === child.path
                               ? 'bg-white'
                               : 'bg-gray-600 lg:group-hover:bg-white',
                           ]"
@@ -220,7 +220,7 @@
                   item.name === 'Logout'
                     ? 'lg:hover:bg-gray-700 lg:hover:rounded-xl'
                     : [
-                        menuActiveBar === item.name
+                        menuActiveBar === item.path
                           ? 'bg-blue-700 rounded-xl'
                           : 'lg:hover:bg-gray-700 lg:hover:rounded-xl',
                       ],
@@ -233,7 +233,7 @@
                     item.name === 'Logout'
                       ? 'text-gray-300 lg:group-hover:text-white'
                       : [
-                          menuActiveBar === item.name
+                          menuActiveBar === item.path
                             ? 'text-white'
                             : 'text-gray-300 lg:group-hover:text-white',
                         ],
@@ -246,7 +246,7 @@
                     item.name === 'Logout'
                       ? 'text-gray-300 lg:group-hover:text-white'
                       : [
-                          menuActiveBar === item.name
+                          menuActiveBar === item.path
                             ? 'text-white'
                             : 'text-gray-300 lg:group-hover:text-white',
                         ],
@@ -281,20 +281,20 @@ const adminUserData = useState("adminUserData");
 const showTooltip = ref(null);
 const route = useRoute();
 const menuActiveBar = useState("menuActiveBar", () => {
-  return localStorage.getItem("menuActiveBar") || "dashboard";
+  return localStorage.getItem("menuActiveBar") || "/";
 });
 const menuOpen = useState("menuOpen");
 const openDropdowns = useState("openDropdowns", () => ({}));
 const toggleMenu = () => {
   if (menuOpen.value) {
     const activeMenu = menuItems.find(
-      (item) => item.name === menuActiveBar.value
+      (item) => item.path === menuActiveBar.value
     );
     if (activeMenu && !activeMenu.children) {
       openDropdowns.value = {};
     } else {
       const parentMenu = menuItems.find((item) =>
-        item.children?.some((child) => child.name === menuActiveBar.value)
+        item.children?.some((child) => child.path === menuActiveBar.value)
       );
       if (parentMenu) {
         openDropdowns.value = {
@@ -396,7 +396,7 @@ watch(menuActiveBar, (newValue) => {
   localStorage.setItem("menuActiveBar", newValue);
   if (!menuOpen.value) {
     const isMainMenuItem = menuItems.find(
-      (item) => item.name === newValue && !item.children
+      (item) => item.path === newValue && !item.children
     );
     if (isMainMenuItem) {
       openDropdowns.value = {};
@@ -407,23 +407,16 @@ watch(menuActiveBar, (newValue) => {
 watch(
   () => route.path,
   (newPath) => {
+    menuActiveBar.value = newPath;
     for (const item of menuItems) {
       if (item.children) {
         const matchedChild = item.children.find(
           (child) => child.path === newPath
         );
         if (matchedChild) {
-          menuActiveBar.value = matchedChild.name;
-          localStorage.setItem("menuActiveBar", matchedChild.name);
-          openDropdowns.value = {
-            [item.name]: true,
-          };
+          openDropdowns.value = { [item.name]: true };
           return;
         }
-      } else if (item.path === newPath) {
-        menuActiveBar.value = item.name;
-        localStorage.setItem("menuActiveBar", item.name);
-        return;
       }
     }
   },
@@ -486,8 +479,8 @@ const closeMobileMenu = () => {
   }
 };
 
-const handleSubItemClick = (childName) => {
-  menuActiveBar.value = childName;
+const handleSubItemClick = (child) => {
+  menuActiveBar.value = child.path;
   closeMobileMenu();
 };
 
@@ -496,11 +489,10 @@ const handleMainItemClick = (item) => {
     handleLogout();
     return;
   }
-  menuActiveBar.value = item.name;
+  menuActiveBar.value = item.path;
   openDropdowns.value = {};
   closeMobileMenu();
 };
-
 const toggleSound = () => {
   isSoundMuted.value = !isSoundMuted.value;
 };
@@ -512,7 +504,7 @@ onMounted(() => {
     for (const item of menuItems) {
       if (item.children) {
         const isChildActive = item.children.some(
-          (child) => child.name === storedActiveBar
+          (child) => child.path === storedActiveBar
         );
         if (isChildActive) {
           openDropdowns.value = {
@@ -529,8 +521,8 @@ onMounted(() => {
           (child) => child.path === route.path
         );
         if (matchedChild) {
-          menuActiveBar.value = matchedChild.name;
-          localStorage.setItem("menuActiveBar", matchedChild.name);
+          menuActiveBar.value = matchedChild.path;
+          localStorage.setItem("menuActiveBar", matchedChild.path);
           openDropdowns.value = {
             [item.name]: true,
           };
@@ -540,8 +532,8 @@ onMounted(() => {
     }
     const matchedMainItem = menuItems.find((item) => item.path === route.path);
     if (matchedMainItem) {
-      menuActiveBar.value = matchedMainItem.name;
-      localStorage.setItem("menuActiveBar", matchedMainItem.name);
+      menuActiveBar.value = matchedMainItem.path;
+      localStorage.setItem("menuActiveBar", matchedMainItem.path);
       openDropdowns.value = {};
     }
   }

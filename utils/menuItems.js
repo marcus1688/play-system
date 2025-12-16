@@ -88,6 +88,23 @@ export const menuItems = [
     ],
   },
   {
+    name: "megapng",
+    iconSolid: TrophyIcon,
+    requiredFeature: "megapng",
+    children: [
+      {
+        name: "attendance",
+        path: "/megapng/attendance",
+        permission: "megapng.attendance",
+      },
+      {
+        name: "loyalty",
+        path: "/megapng/loyalty",
+        permission: "megapng.loyalty",
+      },
+    ],
+  },
+  {
     name: "agent",
     iconSolid: UserCircleIcon,
     requiredFeature: "agent",
