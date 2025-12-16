@@ -44,28 +44,28 @@
           <div class="text-sm font-semibold text-gray-700 max-md:text-xs">
             1,000 - 4,999
           </div>
-          <div class="text-indigo-600 font-bold">{{ currency }} 28</div>
+          <div class="text-indigo-600 font-bold">{{ currency }} 38</div>
         </div>
         <div class="bg-gray-50 p-3 rounded-lg text-center max-md:p-2">
           <div class="text-xs text-gray-500 mb-1">Tier 2</div>
           <div class="text-sm font-semibold text-gray-700 max-md:text-xs">
-            5,000 - 24,999
+            5,000 - 14,999
           </div>
-          <div class="text-indigo-600 font-bold">{{ currency }} 88</div>
+          <div class="text-indigo-600 font-bold">{{ currency }} 138</div>
         </div>
         <div class="bg-gray-50 p-3 rounded-lg text-center max-md:p-2">
           <div class="text-xs text-gray-500 mb-1">Tier 3</div>
           <div class="text-sm font-semibold text-gray-700 max-md:text-xs">
-            25,000 - 49,999
+            15,000 - 29,999
           </div>
-          <div class="text-indigo-600 font-bold">{{ currency }} 388</div>
+          <div class="text-indigo-600 font-bold">{{ currency }} 288</div>
         </div>
         <div class="bg-gray-50 p-3 rounded-lg text-center max-md:p-2">
           <div class="text-xs text-gray-500 mb-1">Tier 4</div>
           <div class="text-sm font-semibold text-gray-700 max-md:text-xs">
-            50,000+
+            30,000+
           </div>
-          <div class="text-indigo-600 font-bold">{{ currency }} 588</div>
+          <div class="text-indigo-600 font-bold">{{ currency }} 388</div>
         </div>
       </div>
     </div>
@@ -108,9 +108,9 @@
           </label>
           <CustomSelect v-model="selectedTier">
             <option value="all">{{ $t("all_tiers") }}</option>
-            <option value="tier4">Tier 4 (50,000+)</option>
-            <option value="tier3">Tier 3 (25,000 - 49,999)</option>
-            <option value="tier2">Tier 2 (5,000 - 24,999)</option>
+            <option value="tier4">Tier 4 (30,000+)</option>
+            <option value="tier3">Tier 3 (15,000 - 29,999)</option>
+            <option value="tier2">Tier 2 (5,000 - 14,999)</option>
             <option value="tier1">Tier 1 (1,000 - 4,999)</option>
             <option value="none">{{ $t("no_bonus") }} (&lt; 1,000)</option>
           </CustomSelect>
