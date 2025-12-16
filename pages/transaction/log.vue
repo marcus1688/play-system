@@ -215,19 +215,20 @@
                   <div>N/A</div>
                 </div>
                 <div v-else>
-                  <div>{{ $t("bank_name") }}: {{ item.bankname }}</div>
+                  <div>{{ $t("bank_name") }}: {{ item.bankname || "-" }}</div>
                   <div v-if="item.bankcode">
-                    {{ $t("bank_code") }}: {{ item.bankcode }}
+                    {{ $t("bank_code") }}: {{ item.bankcode || "-" }}
                   </div>
                   <div>
                     <span v-if="item.bankname === 'USDT'">{{
                       $t("address")
                     }}</span>
                     <span v-else>{{ $t("owner_name") }}</span>
-                    : {{ item.ownername }}
+                    : {{ item.ownername || "-" }}
                   </div>
                   <div v-if="item.bankname !== 'USDT'">
-                    {{ $t("transfer_number") }}: {{ item.transfernumber }}
+                    {{ $t("transfer_number") }}:
+                    {{ item.transfernumber || "-" }}
                   </div>
                   <button
                     v-if="
