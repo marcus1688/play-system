@@ -171,9 +171,9 @@
                 rgba(11, 20, 26, 0.85),
                 rgba(11, 20, 26, 0.85)
               ),
-              url('/images/whatsapp/bg.jpg');
+              url('/images/whatsapp/bg2.png');
             background-repeat: repeat;
-            background-size: 400px;
+            background-size: 300px;
           "
           @scroll="handleScroll"
         >
@@ -194,9 +194,11 @@
             </div>
             <div
               class="max-w-[70%] px-4 py-2 rounded-lg shadow"
-              :class="
-                msg.direction === 'sent' ? 'bg-[#005c4b]' : 'bg-[#202c33]'
-              "
+              :class="[
+                msg.direction === 'sent' ? 'bg-[#005c4b]' : 'bg-[#202c33]',
+                msg.status === 'sending' ? 'opacity-70' : '',
+                msg.status === 'failed' ? 'border border-red-500' : '',
+              ]"
             >
               <img
                 v-if="msg.type === 'image'"
@@ -205,15 +207,28 @@
                 @click="openImage(msg.content?.image?.url)"
               />
               <p v-else class="text-gray-100">{{ msg.content?.text }}</p>
-              <p class="text-xs text-gray-400 text-right mt-1">
-                {{ formatTime(msg.createdAt) }}
-              </p>
-            </div>
-            <div
-              v-if="msg.direction === 'sent'"
-              class="w-8 h-8 bg-[#3b82f6] rounded-full flex items-center justify-center text-white flex-shrink-0"
-            >
-              <Icon icon="mdi:headset" class="w-5 h-5" />
+              <div class="flex items-center justify-end gap-1 mt-1">
+                <p class="text-xs text-gray-400">
+                  {{ formatTime(msg.createdAt) }}
+                </p>
+                <Icon
+                  v-if="msg.direction === 'sent' && msg.status === 'sending'"
+                  icon="mdi:clock-outline"
+                  class="w-3 h-3 text-gray-400"
+                />
+                <Icon
+                  v-else-if="
+                    msg.direction === 'sent' && msg.status === 'failed'
+                  "
+                  icon="mdi:alert-circle"
+                  class="w-3 h-3 text-red-500"
+                />
+                <Icon
+                  v-else-if="msg.direction === 'sent'"
+                  icon="mdi:check"
+                  class="w-3 h-3 text-gray-400"
+                />
+              </div>
             </div>
           </div>
           <button
@@ -370,22 +385,47 @@ const selectConversation = async (conv) => {
 
 const sendMessage = async () => {
   if (!newMessage.value.trim() || !selectedConversation.value) return;
-  isSending.value = true;
+
+  const tempId = `temp-${Date.now()}`;
+  const tempMessage = {
+    messageId: tempId,
+    conversationId: selectedConversation.value.conversationId,
+    direction: "sent",
+    type: "text",
+    content: { text: newMessage.value },
+    createdAt: new Date().toISOString(),
+    status: "sending",
+  };
+
+  messages.value.push(tempMessage);
+  const messageText = newMessage.value;
+  newMessage.value = "";
+
+  await nextTick();
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  }
+
   try {
     await post(
       `conversations/${selectedConversation.value.conversationId}/send`,
-      { text: newMessage.value }
+      { text: messageText }
     );
-    newMessage.value = "";
-    await fetchMessages(selectedConversation.value.conversationId);
+
+    await fetchMessages(
+      selectedConversation.value.conversationId,
+      isAtBottom.value
+    );
     await nextTick();
     if (messagesContainer.value) {
       messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
     }
   } catch (error) {
     console.error("Failed to send message:", error);
-  } finally {
-    isSending.value = false;
+    const index = messages.value.findIndex((m) => m.messageId === tempId);
+    if (index !== -1) {
+      messages.value[index].status = "failed";
+    }
   }
 };
 
