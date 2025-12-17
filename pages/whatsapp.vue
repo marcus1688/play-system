@@ -385,7 +385,6 @@ const selectConversation = async (conv) => {
 
 const sendMessage = async () => {
   if (!newMessage.value.trim() || !selectedConversation.value) return;
-
   const tempId = `temp-${Date.now()}`;
   const tempMessage = {
     messageId: tempId,
@@ -396,22 +395,18 @@ const sendMessage = async () => {
     createdAt: new Date().toISOString(),
     status: "sending",
   };
-
   messages.value.push(tempMessage);
   const messageText = newMessage.value;
   newMessage.value = "";
-
   await nextTick();
   if (messagesContainer.value) {
     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
   }
-
   try {
     await post(
       `conversations/${selectedConversation.value.conversationId}/send`,
       { text: messageText }
     );
-
     await fetchMessages(
       selectedConversation.value.conversationId,
       isAtBottom.value
