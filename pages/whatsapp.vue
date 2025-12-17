@@ -90,6 +90,30 @@
           No conversations
         </div>
       </div>
+
+      <!-- My Account -->
+      <div class="p-4 border-t border-[#2a3942] bg-[#202c33]">
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 bg-[#3b82f6] rounded-full flex items-center justify-center text-white"
+          >
+            <Icon icon="mdi:headset" class="w-6 h-6" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-gray-100 truncate">
+              {{ myAccount.name }}
+            </p>
+            <p class="text-xs text-gray-400 truncate">{{ myAccount.phone }}</p>
+          </div>
+          <div
+            class="w-2 h-2 rounded-full"
+            :class="
+              myAccount.status === 'active' ? 'bg-green-500' : 'bg-gray-500'
+            "
+            :title="myAccount.status === 'active' ? 'Online' : 'Offline'"
+          ></div>
+        </div>
+      </div>
     </div>
 
     <div
@@ -657,10 +681,26 @@ const onImageLoad = () => {
   }
 };
 
+const myAccount = ref({
+  name: "Customer Service",
+  phone: "",
+  status: "active",
+});
+
+const fetchMyAccount = async () => {
+  try {
+    const { data } = await get("whatsapp/account");
+    myAccount.value = data;
+  } catch (error) {
+    console.error("Failed to fetch account:", error);
+  }
+};
+
 onMounted(() => {
   notificationSound.value = new Audio("/sound/whatsapp-notification.mp3");
   notificationSound.value.volume = 0.5;
   fetchConversations();
+  fetchMyAccount();
   refreshInterval = setInterval(() => {
     fetchConversations();
     if (selectedConversation.value) {
