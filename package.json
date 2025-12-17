@@ -89,6 +89,7 @@
     "vue-fortune-wheel": "^2.1.0",
     "vue-router": "^4.3.0",
     "vue3-carousel": "^0.3.4",
+    "vue3-emoji-picker": "^1.1.8",
     "vue3-marquee": "^4.2.2",
     "vuex": "^4.0.2",
     "xlsx": "^0.18.5"

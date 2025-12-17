@@ -37,7 +37,7 @@ const menuOpen = useState("menuOpen", () => true);
 const route = useRoute();
 
 const isLoginPage = computed(() => {
-  return route.path === "/login";
+  return route.path === "/login" || route.path === "/whatsapp";
 });
 </script>
 
