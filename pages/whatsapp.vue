@@ -173,7 +173,7 @@
               ),
               url('/images/whatsapp/bg2.png');
             background-repeat: repeat;
-            background-size: 300px;
+            background-size: 450px;
           "
           @scroll="handleScroll"
         >
@@ -205,8 +205,17 @@
                 :src="msg.content?.image?.url"
                 class="w-72 h-auto rounded cursor-pointer"
                 @click="openImage(msg.content?.image?.url)"
+                @load="onImageLoad"
               />
-              <p v-else class="text-gray-100">{{ msg.content?.text }}</p>
+              <p
+                v-if="msg.type === 'image' && msg.content?.image?.caption"
+                class="text-gray-100 mt-2"
+              >
+                {{ msg.content.image.caption }}
+              </p>
+              <p v-if="msg.type !== 'image'" class="text-gray-100">
+                {{ msg.content?.text }}
+              </p>
               <div class="flex items-center justify-end gap-1 mt-1">
                 <p class="text-xs text-gray-400">
                   {{ formatTime(msg.createdAt) }}
@@ -245,7 +254,43 @@
             <Icon icon="mdi:chevron-down" class="w-6 h-6" />
           </button>
         </div>
-
+        <div v-if="imagePreview" class="mb-3 p-3 bg-[#2a3942] rounded-lg">
+          <div class="flex items-start gap-3">
+            <div class="relative">
+              <img :src="imagePreview" class="w-32 h-32 object-cover rounded" />
+              <button
+                @click="cancelImage"
+                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+              >
+                <Icon icon="mdi:close" class="w-4 h-4" />
+              </button>
+            </div>
+            <div class="flex-1">
+              <input
+                ref="captionInput"
+                v-model="imageCaption"
+                type="text"
+                placeholder="Add a caption..."
+                class="w-full px-3 py-2 bg-[#202c33] border-none rounded text-gray-100 placeholder-gray-400 outline-none"
+                @keyup.enter="sendImageWithCaption"
+              />
+            </div>
+          </div>
+          <div class="flex justify-end mt-3">
+            <button
+              @click="sendImageWithCaption"
+              :disabled="isUploading"
+              class="px-4 py-2 bg-[#00a884] text-white rounded-full hover:bg-[#00c897] disabled:opacity-50 transition-colors"
+            >
+              <Icon
+                v-if="isUploading"
+                icon="mdi:loading"
+                class="w-5 h-5 animate-spin"
+              />
+              <span v-else>Send</span>
+            </button>
+          </div>
+        </div>
         <div class="p-4 bg-[#202c33] border-t border-[#2a3942]">
           <div class="relative">
             <div
@@ -298,7 +343,7 @@
               <button
                 type="submit"
                 :disabled="!newMessage.trim() || isSending"
-                class="px-6 py-2 bg-[#00a884] text-white rounded-full hover:bg-[#00c897] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                class="hidden px-6 py-2 bg-[#00a884] text-white rounded-full hover:bg-[#00c897] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Icon
                   v-if="isSending"
@@ -424,29 +469,6 @@ const sendMessage = async () => {
   }
 };
 
-const handleImageSelect = async (event) => {
-  const file = event.target.files[0];
-  if (!file || !selectedConversation.value) return;
-  isUploading.value = true;
-  try {
-    const formData = new FormData();
-    formData.append("image", file);
-    const { data: uploadData } = await post("upload/image", formData);
-    if (uploadData.success) {
-      await post(
-        `conversations/${selectedConversation.value.conversationId}/send-image`,
-        { imageUrl: uploadData.url }
-      );
-      await fetchMessages(selectedConversation.value.conversationId);
-    }
-  } catch (error) {
-    console.error("Failed to send image:", error);
-  } finally {
-    isUploading.value = false;
-    fileInput.value.value = "";
-  }
-};
-
 const openImage = (url) => {
   window.open(url, "_blank");
 };
@@ -543,6 +565,95 @@ const togglePin = async (conv) => {
     await fetchConversations();
   } catch (error) {
     console.error("Failed to toggle pin:", error);
+  }
+};
+
+const imagePreview = ref(null);
+const imageFile = ref(null);
+const imageCaption = ref("");
+const captionInput = ref(null);
+const handleImageSelect = (event) => {
+  const file = event.target.files[0];
+  if (!file || !selectedConversation.value) return;
+  imageFile.value = file;
+  imagePreview.value = URL.createObjectURL(file);
+  fileInput.value.value = "";
+  nextTick(() => {
+    if (captionInput.value) {
+      captionInput.value.focus();
+    }
+  });
+};
+
+const cancelImage = () => {
+  imagePreview.value = null;
+  imageFile.value = null;
+  imageCaption.value = "";
+};
+
+const sendImageWithCaption = async () => {
+  if (!imageFile.value || !selectedConversation.value) return;
+  isUploading.value = true;
+  const file = imageFile.value;
+  const caption = imageCaption.value;
+  const previewUrl = imagePreview.value;
+  cancelImage();
+
+  const tempId = `temp-${Date.now()}`;
+  const tempMessage = {
+    messageId: tempId,
+    conversationId: selectedConversation.value.conversationId,
+    direction: "sent",
+    type: "image",
+    content: {
+      image: {
+        url: previewUrl,
+        caption: caption,
+      },
+    },
+    createdAt: new Date().toISOString(),
+    status: "sending",
+  };
+  messages.value.push(tempMessage);
+
+  await nextTick();
+  if (messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append("image", file);
+    const { data: uploadData } = await post("upload/image", formData);
+
+    if (uploadData.success) {
+      await post(
+        `conversations/${selectedConversation.value.conversationId}/send-image`,
+        {
+          imageUrl: uploadData.url,
+          caption: caption,
+        }
+      );
+      const index = messages.value.findIndex((m) => m.messageId === tempId);
+      if (index !== -1) {
+        messages.value[index].content.image.url = uploadData.url;
+        messages.value[index].status = "sent";
+      }
+    }
+  } catch (error) {
+    console.error("Failed to send image:", error);
+    const index = messages.value.findIndex((m) => m.messageId === tempId);
+    if (index !== -1) {
+      messages.value[index].status = "failed";
+    }
+  } finally {
+    isUploading.value = false;
+  }
+};
+
+const onImageLoad = () => {
+  if (isAtBottom.value && messagesContainer.value) {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
   }
 };
 
