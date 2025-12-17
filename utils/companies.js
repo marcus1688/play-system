@@ -39,6 +39,7 @@ export const COMPANIES = {
       bm8my: false,
       affiliate: false,
       gamelist: false,
+      whatsapp: true,
     },
   },
 
@@ -81,6 +82,7 @@ export const COMPANIES = {
       bm8my: false,
       affiliate: false,
       gamelist: false,
+      whatsapp: true,
     },
   },
   megapng: {
@@ -122,6 +124,7 @@ export const COMPANIES = {
       bm8my: false,
       affiliate: false,
       gamelist: false,
+      whatsapp: true,
     },
   },
 };

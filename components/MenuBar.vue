@@ -211,7 +211,7 @@
                 v-else
                 @click="handleMainItemClick(item)"
                 :title="!menuOpen ? item.name : ''"
-                :to="item.path"
+                :to="item.newTab ? '' : item.path"
                 class="flex items-center group cursor-pointer py-2.5 max-md:py-2"
                 :class="[
                   menuOpen
@@ -487,6 +487,10 @@ const handleSubItemClick = (child) => {
 const handleMainItemClick = (item) => {
   if (item.name === "logout") {
     handleLogout();
+    return;
+  }
+  if (item.newTab) {
+    window.open(item.path, "_blank");
     return;
   }
   menuActiveBar.value = item.path;

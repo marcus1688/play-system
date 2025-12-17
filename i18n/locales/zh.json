@@ -1671,5 +1671,7 @@
   "total_adjust_in": "总调整流入",
   "total_adjust_out": "总调整流出",
   "adjust_in": "调整流入",
-  "adjust_out": "调整流出"
+  "adjust_out": "调整流出",
+  "whatsapp": "WhatsApp",
+  "whatsapp_center": "WhatsApp中心"
 }

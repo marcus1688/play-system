@@ -42,6 +42,14 @@ export const menuItems = [
     iconSolid: DocumentTextIcon,
   },
   {
+    name: "whatsapp",
+    iconSolid: ChatBubbleBottomCenterTextIcon,
+    path: "/whatsapp",
+    newTab: true,
+    requiredFeature: "whatsapp",
+    permission: "whatsapp.whatsapp",
+  },
+  {
     name: "transaction",
     iconSolid: CreditCardIconSolid,
     requiredFeature: "transaction",
