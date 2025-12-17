@@ -24,11 +24,12 @@
           v-for="conv in conversations"
           :key="conv.conversationId"
           @click="selectConversation(conv)"
-          class="p-4 border-b border-[#2a3942] cursor-pointer hover:bg-[#202c33] transition-colors"
-          :class="{
-            'bg-[#2a3942]':
-              selectedConversation?.conversationId === conv.conversationId,
-          }"
+          class="p-4 border-b border-[#2a3942] cursor-pointer transition-colors relative group"
+          :class="
+            selectedConversation?.conversationId === conv.conversationId
+              ? 'bg-[#2a3942]'
+              : 'hover:bg-[#202c33]'
+          "
         >
           <div class="flex items-center gap-3">
             <div
@@ -38,9 +39,28 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-center">
-                <p class="font-medium text-gray-100 truncate">
-                  {{ conv.contactName || conv.contactPhone }}
-                </p>
+                <div class="flex items-center gap-1">
+                  <p class="font-medium text-gray-100 truncate">
+                    {{ conv.contactName || conv.contactPhone }}
+                  </p>
+                  <div>
+                    <button
+                      @click.stop="togglePin(conv)"
+                      class="p-1 transition-opacity"
+                      :class="
+                        conv.isPinned
+                          ? 'text-[#00a884]'
+                          : 'text-gray-400 hover:text-[#00a884] opacity-0 group-hover:opacity-100'
+                      "
+                      :title="conv.isPinned ? 'Unpin' : 'Pin'"
+                    >
+                      <Icon
+                        :icon="conv.isPinned ? 'mdi:pin' : 'mdi:pin-outline'"
+                        class="w-5 h-5"
+                      />
+                    </button>
+                  </div>
+                </div>
                 <span class="text-xs text-gray-400">
                   {{ formatTime(conv.lastMessageAt) }}
                 </span>
@@ -52,11 +72,13 @@
                 {{ conv.lastMessage || "No messages" }}
               </p>
             </div>
-            <div
-              v-if="conv.unreadCount > 0"
-              class="w-5 h-5 bg-[#00a884] rounded-full flex items-center justify-center"
-            >
-              <span class="text-xs text-white">{{ conv.unreadCount }}</span>
+            <div class="flex items-center gap-2">
+              <div
+                v-if="conv.unreadCount > 0"
+                class="w-5 h-5 bg-[#00a884] rounded-full flex items-center justify-center"
+              >
+                <span class="text-xs text-white">{{ conv.unreadCount }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -89,44 +111,55 @@
 
       <template v-else>
         <div
-          class="p-4 bg-[#202c33] border-b border-[#2a3942] flex items-center gap-3"
+          class="p-4 bg-[#202c33] border-b border-[#2a3942] flex justify-between"
         >
-          <button
-            @click="selectedConversation = null"
-            class="md:hidden p-2 hover:bg-[#2a3942] rounded-full"
-          >
-            <Icon icon="mdi:arrow-left" class="w-5 h-5 text-gray-300" />
-          </button>
-          <div
-            class="w-10 h-10 bg-[#00a884] rounded-full flex items-center justify-center text-white font-semibold"
-          >
-            {{
-              selectedConversation.contactName?.charAt(0) ||
-              selectedConversation.contactPhone?.slice(-2)
-            }}
-          </div>
-          <div>
-            <p class="font-medium text-gray-100">
+          <div class="flex items-center gap-3">
+            <button
+              @click="selectedConversation = null"
+              class="md:hidden p-2 hover:bg-[#2a3942] rounded-full"
+            >
+              <Icon icon="mdi:arrow-left" class="w-5 h-5 text-gray-300" />
+            </button>
+            <div
+              class="w-10 h-10 bg-[#00a884] rounded-full flex items-center justify-center text-white font-semibold"
+            >
               {{
-                selectedConversation.contactName ||
-                selectedConversation.contactPhone
+                selectedConversation.contactName?.charAt(0) ||
+                selectedConversation.contactPhone?.slice(-2)
               }}
-            </p>
-            <div class="flex items-center gap-1">
-              <p class="text-sm text-gray-400">
-                {{ selectedConversation.contactPhone }}
-              </p>
-              <button
-                @click="copyPhone(selectedConversation.contactPhone)"
-                class="p-1 text-gray-400 hover:text-[#00a884] rounded transition-colors"
-                :title="copied ? 'Copied' : 'Copy number'"
-              >
-                <Icon
-                  :icon="copied ? 'mdi:check' : 'mdi:content-copy'"
-                  class="w-4 h-4"
-                />
-              </button>
             </div>
+            <div>
+              <p class="font-medium text-gray-100">
+                {{
+                  selectedConversation.contactName ||
+                  selectedConversation.contactPhone
+                }}
+              </p>
+              <div class="flex items-center gap-1">
+                <p class="text-sm text-gray-400">
+                  {{ selectedConversation.contactPhone }}
+                </p>
+                <button
+                  @click="copyPhone(selectedConversation.contactPhone)"
+                  class="p-1 text-gray-400 hover:text-[#00a884] rounded transition-colors"
+                  :title="copied ? 'Copied' : 'Copy number'"
+                >
+                  <Icon
+                    :icon="copied ? 'mdi:check' : 'mdi:content-copy'"
+                    class="w-4 h-4"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-center items-center">
+            <NuxtImg
+              :src="companyLogo"
+              format="webp"
+              quality="80"
+              alt="Logo"
+              class="w-32 h-auto max-w-[200px] lg:group-hover:brightness-110 transition-all duration-300 max-md:max-w-[60px]"
+            />
           </div>
         </div>
 
@@ -287,6 +320,10 @@ const showScrollButton = ref(false);
 const newMessageCount = ref(0);
 const isAtBottom = ref(true);
 const lastMessageCount = ref(0);
+const companyLogo = computed(() => {
+  const companyId = localStorage.getItem("companyId");
+  return COMPANIES[companyId]?.logo || "/images/logo/emtech88.png";
+});
 
 const fetchConversations = async () => {
   try {
@@ -461,17 +498,18 @@ watch(totalUnread, (newVal, oldVal) => {
   prevTotalUnread.value = newVal;
 });
 
-watch(
-  totalUnread,
-  (newVal) => {
-    if (newVal > 0) {
-      document.title = `(${newVal}) Play System | WhatsApp`;
+const togglePin = async (conv) => {
+  try {
+    if (conv.isPinned) {
+      await post(`conversations/${conv.conversationId}/unpin`);
     } else {
-      document.title = "Play System | WhatsApp";
+      await post(`conversations/${conv.conversationId}/pin`);
     }
-  },
-  { immediate: true }
-);
+    await fetchConversations();
+  } catch (error) {
+    console.error("Failed to toggle pin:", error);
+  }
+};
 
 onMounted(() => {
   notificationSound.value = new Audio("/sound/whatsapp-notification.mp3");
@@ -485,7 +523,7 @@ onMounted(() => {
         isAtBottom.value
       );
     }
-  }, 5000);
+  }, 3000);
 });
 
 onUnmounted(() => {
@@ -495,6 +533,12 @@ onUnmounted(() => {
 });
 
 useHead({
+  title: computed(() => {
+    if (totalUnread.value > 0) {
+      return `(${totalUnread.value}) Play System | WhatsApp`;
+    }
+    return "Play System | WhatsApp";
+  }),
   meta: [
     {
       name: "robots",
