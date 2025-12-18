@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen bg-[#111b21] text-sm">
+  <div class="flex h-screen bg-[#111b21] text-sm max-md:overflow-hidden">
     <div
       class="w-72 bg-[#111b21] border-r border-[#2a3942] flex flex-col md:relative max-md:fixed max-md:inset-0 max-md:w-full max-md:z-50"
       :class="{ 'max-md:hidden': selectedConversation }"
