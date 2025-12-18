@@ -96,7 +96,11 @@
                     Pending Reply
                   </span>
                   <span
-                    v-else-if="conv.step && conv.step !== 'waiting_agent'"
+                    v-else-if="
+                      conv.step &&
+                      conv.step !== 'waiting_agent' &&
+                      conv.step !== 'waiting_screenshot'
+                    "
                     class="px-1 py-0.5 text-[9px] bg-blue-500/20 text-blue-400 rounded flex-shrink-0"
                   >
                     Bot
