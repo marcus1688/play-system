@@ -1,11 +1,12 @@
 <template>
-  <div class="flex h-screen bg-[#111b21] text-sm">
+  <div class="flex flex-col md:flex-row h-[100dvh] bg-[#111b21] text-sm">
+    <!-- 左侧对话列表 -->
     <div
-      class="w-72 bg-[#111b21] border-r border-[#2a3942] flex flex-col max-md:w-full"
-      :class="{ 'max-md:hidden': selectedConversation }"
+      class="w-full md:w-72 bg-[#111b21] md:border-r border-[#2a3942] flex flex-col"
+      :class="{ hidden: selectedConversation, flex: !selectedConversation }"
     >
       <!-- Header -->
-      <div class="px-3">
+      <div class="px-3 flex-shrink-0">
         <div class="flex items-center gap-2 border-b border-[#2a3942] py-4">
           <div class="flex items-center">
             <img src="/favicon.png" alt="Logo" class="w-5 h-auto" />
@@ -41,7 +42,7 @@
       </div>
 
       <!-- Conversations List -->
-      <div class="flex-1 overflow-y-auto">
+      <div class="flex-1 overflow-y-auto min-h-0">
         <div
           v-for="conv in filteredConversations"
           :key="conv.conversationId"
@@ -116,7 +117,9 @@
       </div>
 
       <!-- My Account -->
-      <div class="px-3 py-2.5 border-t border-[#2a3942] bg-[#202c33]">
+      <div
+        class="px-3 py-2.5 border-t border-[#2a3942] bg-[#202c33] flex-shrink-0"
+      >
         <div class="flex items-center gap-2.5">
           <div
             class="w-8 h-8 bg-[#3b82f6] rounded-full flex items-center justify-center text-white flex-shrink-0"
@@ -144,8 +147,8 @@
 
     <!-- 右侧聊天区 -->
     <div
-      class="flex-1 flex flex-col"
-      :class="{ 'max-md:hidden': !selectedConversation }"
+      class="flex-1 flex flex-col min-h-0"
+      :class="{ hidden: !selectedConversation, flex: selectedConversation }"
     >
       <div
         v-if="!selectedConversation"
@@ -163,7 +166,7 @@
       <template v-else>
         <!-- Chat Header -->
         <div
-          class="px-3 py-2 bg-[#202c33] border-b border-[#2a3942] flex justify-between items-center"
+          class="px-3 py-2 bg-[#202c33] border-b border-[#2a3942] flex justify-between items-center flex-shrink-0"
         >
           <div class="flex items-center gap-2.5">
             <button
@@ -218,7 +221,7 @@
         <!-- Messages -->
         <div
           ref="messagesContainer"
-          class="flex-1 overflow-y-auto px-3 py-2 space-y-1.5 bg-[#0b141a]"
+          class="flex-1 overflow-y-auto px-3 py-2 space-y-1.5 bg-[#0b141a] min-h-0 relative"
           style="
             background-image: linear-gradient(
                 rgba(11, 20, 26, 0.85),
@@ -301,7 +304,7 @@
           <button
             v-if="showScrollButton"
             @click="scrollToBottomAndRead"
-            class="absolute bottom-16 right-3 bg-[#202c33] text-gray-300 p-2 rounded-full shadow-lg hover:bg-[#2a3942] transition-colors z-20"
+            class="absolute bottom-4 right-3 bg-[#202c33] text-gray-300 p-2 rounded-full shadow-lg hover:bg-[#2a3942] transition-colors z-20"
           >
             <div
               v-if="newMessageCount > 0"
@@ -314,7 +317,7 @@
         </div>
 
         <!-- Image Preview -->
-        <div v-if="imagePreview" class="px-3 py-2 bg-[#2a3942]">
+        <div v-if="imagePreview" class="px-3 py-2 bg-[#2a3942] flex-shrink-0">
           <div class="flex items-start gap-2.5">
             <div class="relative">
               <img :src="imagePreview" class="w-24 h-24 object-cover rounded" />
@@ -351,7 +354,9 @@
         </div>
 
         <!-- Input Area -->
-        <div class="px-3 py-2 bg-[#202c33] border-t border-[#2a3942]">
+        <div
+          class="px-3 py-2 bg-[#202c33] border-t border-[#2a3942] flex-shrink-0"
+        >
           <div class="relative">
             <div
               v-if="showEmojiPicker"
@@ -422,7 +427,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { Icon } from "@iconify/vue";
 import EmojiPicker from "vue3-emoji-picker";
