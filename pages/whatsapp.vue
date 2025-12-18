@@ -236,11 +236,14 @@
               />
               <p
                 v-if="msg.type === 'image' && msg.content?.image?.caption"
-                class="text-sm text-gray-100 mt-1.5"
+                class="text-sm text-gray-100 mt-1.5 whitespace-pre-wrap"
               >
                 {{ msg.content.image.caption }}
               </p>
-              <p v-if="msg.type !== 'image'" class="text-sm text-gray-100">
+              <p
+                v-if="msg.type !== 'image'"
+                class="text-sm text-gray-100 whitespace-pre-wrap"
+              >
                 {{ msg.content?.text }}
               </p>
               <div class="flex items-center justify-end gap-1 mt-0.5">
@@ -377,7 +380,7 @@
               <button
                 type="submit"
                 :disabled="!newMessage.trim() || isSending"
-                class="hidden px-4 py-1.5 bg-[#00a884] text-white rounded-full hover:bg-[#00c897] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                class="py-2 px-2 bg-[#00a884] text-white hover:bg-[#00c897] rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Icon
                   v-if="isSending"
