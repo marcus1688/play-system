@@ -158,8 +158,8 @@
 
     <!-- 右侧聊天区 -->
     <div
-      class="flex-1 flex flex-col"
-      :class="{ 'max-md:hidden': !selectedConversation }"
+      class="flex-1 flex flex-col min-h-0 md:relative max-md:fixed max-md:inset-0 max-md:z-50 max-md:bg-[#111b21]"
+      :class="{ hidden: !selectedConversation, flex: selectedConversation }"
     >
       <div
         v-if="!selectedConversation"
