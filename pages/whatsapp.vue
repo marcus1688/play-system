@@ -1,112 +1,112 @@
 <template>
-  <div class="flex h-screen bg-[#111b21]">
+  <div class="flex h-screen bg-[#111b21] text-sm">
     <div
-      class="w-80 bg-[#111b21] border-r border-[#2a3942] flex flex-col max-md:w-full"
+      class="w-72 bg-[#111b21] border-r border-[#2a3942] flex flex-col max-md:w-full"
       :class="{ 'max-md:hidden': selectedConversation }"
     >
-      <div class="p-4 border-b border-[#2a3942]">
+      <!-- Header -->
+      <div class="px-3 py-4 border-b border-[#2a3942]">
         <div class="flex items-center gap-2">
           <div class="flex items-center">
-            <img src="/favicon.png" alt="Logo" class="w-6 h-auto" />
-            <div class="h-6 w-[2px] bg-gray-500 mx-2"></div>
+            <img src="/favicon.png" alt="Logo" class="w-5 h-auto" />
+            <div class="h-5 w-[1.5px] bg-gray-500 mx-1.5"></div>
             <img
               src="/images/whatsapp/icon.png"
               alt="WhatsApp"
-              class="w-8 h-auto"
+              class="w-6 h-auto"
             />
           </div>
-          <h1 class="text-xl font-semibold text-gray-100">WhatsApp</h1>
+          <h1 class="text-base font-semibold text-gray-100">WhatsApp</h1>
         </div>
       </div>
 
+      <!-- Conversations List -->
       <div class="flex-1 overflow-y-auto">
         <div
           v-for="conv in conversations"
           :key="conv.conversationId"
           @click="selectConversation(conv)"
-          class="p-4 border-b border-[#2a3942] cursor-pointer transition-colors relative group"
+          class="px-3 py-2.5 cursor-pointer transition-colors relative group rounded-xl mx-2 my-1"
           :class="
             selectedConversation?.conversationId === conv.conversationId
               ? 'bg-[#2a3942]'
               : 'hover:bg-[#202c33]'
           "
         >
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2.5">
             <div
-              class="w-12 h-12 bg-[#00a884] rounded-full flex items-center justify-center text-white font-semibold"
+              class="w-10 h-10 bg-[#00a884] rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0"
             >
               {{ conv.contactName?.charAt(0) || conv.contactPhone?.slice(-2) }}
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-center">
-                <div class="flex items-center gap-1">
-                  <p class="font-medium text-gray-100 truncate">
+                <div class="flex items-center gap-0.5">
+                  <p class="text-sm font-medium text-gray-100 truncate">
                     {{ conv.contactName || conv.contactPhone }}
                   </p>
-                  <div>
-                    <button
-                      @click.stop="togglePin(conv)"
-                      class="p-1 transition-opacity"
-                      :class="
-                        conv.isPinned
-                          ? 'text-[#00a884]'
-                          : 'text-gray-400 hover:text-[#00a884] opacity-0 group-hover:opacity-100'
-                      "
-                      :title="conv.isPinned ? 'Unpin' : 'Pin'"
-                    >
-                      <Icon
-                        :icon="conv.isPinned ? 'mdi:pin' : 'mdi:pin-outline'"
-                        class="w-5 h-5"
-                      />
-                    </button>
-                  </div>
+                  <button
+                    @click.stop="togglePin(conv)"
+                    class="p-0.5 transition-opacity"
+                    :class="
+                      conv.isPinned
+                        ? 'text-[#00a884]'
+                        : 'text-gray-400 hover:text-[#00a884] opacity-0 group-hover:opacity-100'
+                    "
+                    :title="conv.isPinned ? 'Unpin' : 'Pin'"
+                  >
+                    <Icon
+                      :icon="conv.isPinned ? 'mdi:pin' : 'mdi:pin-outline'"
+                      class="w-3.5 h-3.5"
+                    />
+                  </button>
                 </div>
-                <span class="text-xs text-gray-400">
+                <span class="text-[10px] text-gray-400">
                   {{ formatTime(conv.lastMessageAt) }}
                 </span>
               </div>
-              <p class="text-sm text-gray-400 truncate">
+              <p class="text-xs text-gray-400 truncate">
                 {{ conv.contactPhone }}
               </p>
-              <p class="text-xs text-gray-500 truncate pt-1">
+              <p class="text-[11px] text-gray-500 truncate mt-0.5">
                 {{ conv.lastMessage || "No messages" }}
               </p>
             </div>
-            <div class="flex items-center gap-2">
-              <div
-                v-if="conv.unreadCount > 0"
-                class="w-5 h-5 bg-[#00a884] rounded-full flex items-center justify-center"
-              >
-                <span class="text-xs text-white">{{ conv.unreadCount }}</span>
-              </div>
+            <div
+              v-if="conv.unreadCount > 0"
+              class="w-4 h-4 bg-[#00a884] rounded-full flex items-center justify-center flex-shrink-0"
+            >
+              <span class="text-[10px] text-white">{{ conv.unreadCount }}</span>
             </div>
           </div>
         </div>
 
         <div
           v-if="conversations.length === 0"
-          class="p-8 text-center text-gray-400"
+          class="p-6 text-center text-gray-400 text-sm"
         >
           No conversations
         </div>
       </div>
 
       <!-- My Account -->
-      <div class="p-4 border-t border-[#2a3942] bg-[#202c33]">
-        <div class="flex items-center gap-3">
+      <div class="px-3 py-2.5 border-t border-[#2a3942] bg-[#202c33]">
+        <div class="flex items-center gap-2.5">
           <div
-            class="w-10 h-10 bg-[#3b82f6] rounded-full flex items-center justify-center text-white"
+            class="w-8 h-8 bg-[#3b82f6] rounded-full flex items-center justify-center text-white flex-shrink-0"
           >
-            <Icon icon="mdi:headset" class="w-6 h-6" />
+            <Icon icon="mdi:headset" class="w-4 h-4" />
           </div>
           <div class="flex-1 min-w-0">
-            <p class="font-medium text-gray-100 truncate">
+            <p class="text-sm font-medium text-gray-100 truncate">
               {{ myAccount.name }}
             </p>
-            <p class="text-xs text-gray-400 truncate">{{ myAccount.phone }}</p>
+            <p class="text-[11px] text-gray-400 truncate">
+              {{ myAccount.phone }}
+            </p>
           </div>
           <div
-            class="w-2 h-2 rounded-full"
+            class="w-1.5 h-1.5 rounded-full flex-shrink-0"
             :class="
               myAccount.status === 'active' ? 'bg-green-500' : 'bg-gray-500'
             "
@@ -116,6 +116,7 @@
       </div>
     </div>
 
+    <!-- 右侧聊天区 -->
     <div
       class="flex-1 flex flex-col"
       :class="{ 'max-md:hidden': !selectedConversation }"
@@ -127,25 +128,26 @@
         <div class="text-center text-gray-400">
           <Icon
             icon="mdi:whatsapp"
-            class="w-16 h-16 mx-auto mb-4 text-[#00a884]"
+            class="w-12 h-12 mx-auto mb-3 text-[#00a884]"
           />
-          <p>Select a conversation to start chatting</p>
+          <p class="text-sm">Select a conversation to start chatting</p>
         </div>
       </div>
 
       <template v-else>
+        <!-- Chat Header -->
         <div
-          class="p-4 bg-[#202c33] border-b border-[#2a3942] flex justify-between"
+          class="px-3 py-2 bg-[#202c33] border-b border-[#2a3942] flex justify-between items-center"
         >
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2.5">
             <button
               @click="selectedConversation = null"
-              class="md:hidden p-2 hover:bg-[#2a3942] rounded-full"
+              class="md:hidden p-1.5 hover:bg-[#2a3942] rounded-full"
             >
-              <Icon icon="mdi:arrow-left" class="w-5 h-5 text-gray-300" />
+              <Icon icon="mdi:arrow-left" class="w-4 h-4 text-gray-300" />
             </button>
             <div
-              class="w-10 h-10 bg-[#00a884] rounded-full flex items-center justify-center text-white font-semibold"
+              class="w-8 h-8 bg-[#00a884] rounded-full flex items-center justify-center text-white text-sm font-semibold"
             >
               {{
                 selectedConversation.contactName?.charAt(0) ||
@@ -153,24 +155,24 @@
               }}
             </div>
             <div>
-              <p class="font-medium text-gray-100">
+              <p class="text-sm font-medium text-gray-100">
                 {{
                   selectedConversation.contactName ||
                   selectedConversation.contactPhone
                 }}
               </p>
               <div class="flex items-center gap-1">
-                <p class="text-sm text-gray-400">
+                <p class="text-xs text-gray-400">
                   {{ selectedConversation.contactPhone }}
                 </p>
                 <button
                   @click="copyPhone(selectedConversation.contactPhone)"
-                  class="p-1 text-gray-400 hover:text-[#00a884] rounded transition-colors"
+                  class="p-0.5 text-gray-400 hover:text-[#00a884] rounded transition-colors"
                   :title="copied ? 'Copied' : 'Copy number'"
                 >
                   <Icon
                     :icon="copied ? 'mdi:check' : 'mdi:content-copy'"
-                    class="w-4 h-4"
+                    class="w-3 h-3"
                   />
                 </button>
               </div>
@@ -182,14 +184,15 @@
               format="webp"
               quality="80"
               alt="Logo"
-              class="w-32 h-auto max-w-[200px] lg:group-hover:brightness-110 transition-all duration-300 max-md:max-w-[60px]"
+              class="w-24 h-auto max-w-[150px] transition-all duration-300 max-md:max-w-[50px]"
             />
           </div>
         </div>
 
+        <!-- Messages -->
         <div
           ref="messagesContainer"
-          class="flex-1 overflow-y-auto p-4 space-y-2 bg-[#0b141a]"
+          class="flex-1 overflow-y-auto px-3 py-2 space-y-1.5 bg-[#0b141a]"
           style="
             background-image: linear-gradient(
                 rgba(11, 20, 26, 0.85),
@@ -197,19 +200,19 @@
               ),
               url('/images/whatsapp/bg2.png');
             background-repeat: repeat;
-            background-size: 450px;
+            background-size: 400px;
           "
           @scroll="handleScroll"
         >
           <div
             v-for="msg in messages"
             :key="msg.messageId"
-            class="flex items-end gap-2"
+            class="flex items-end gap-1.5"
             :class="msg.direction === 'sent' ? 'justify-end' : 'justify-start'"
           >
             <div
               v-if="msg.direction === 'received'"
-              class="w-8 h-8 bg-[#00a884] rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0"
+              class="w-6 h-6 bg-[#00a884] rounded-full flex items-center justify-center text-white text-[10px] font-semibold flex-shrink-0"
             >
               {{
                 selectedConversation.contactName?.charAt(0) ||
@@ -217,7 +220,7 @@
               }}
             </div>
             <div
-              class="max-w-[70%] px-4 py-2 rounded-lg shadow"
+              class="max-w-[70%] px-2.5 py-1.5 rounded-lg shadow"
               :class="[
                 msg.direction === 'sent' ? 'bg-[#005c4b]' : 'bg-[#202c33]',
                 msg.status === 'sending' ? 'opacity-70' : '',
@@ -227,66 +230,70 @@
               <img
                 v-if="msg.type === 'image'"
                 :src="msg.content?.image?.url"
-                class="w-72 h-auto rounded cursor-pointer"
+                class="w-56 h-auto rounded cursor-pointer"
                 @click="openImage(msg.content?.image?.url)"
                 @load="onImageLoad"
               />
               <p
                 v-if="msg.type === 'image' && msg.content?.image?.caption"
-                class="text-gray-100 mt-2"
+                class="text-sm text-gray-100 mt-1.5"
               >
                 {{ msg.content.image.caption }}
               </p>
-              <p v-if="msg.type !== 'image'" class="text-gray-100">
+              <p v-if="msg.type !== 'image'" class="text-sm text-gray-100">
                 {{ msg.content?.text }}
               </p>
-              <div class="flex items-center justify-end gap-1 mt-1">
-                <p class="text-xs text-gray-400">
+              <div class="flex items-center justify-end gap-1 mt-0.5">
+                <p class="text-[10px] text-gray-400">
                   {{ formatTime(msg.createdAt) }}
                 </p>
                 <Icon
                   v-if="msg.direction === 'sent' && msg.status === 'sending'"
                   icon="mdi:clock-outline"
-                  class="w-3 h-3 text-gray-400"
+                  class="w-2.5 h-2.5 text-gray-400"
                 />
                 <Icon
                   v-else-if="
                     msg.direction === 'sent' && msg.status === 'failed'
                   "
                   icon="mdi:alert-circle"
-                  class="w-3 h-3 text-red-500"
+                  class="w-2.5 h-2.5 text-red-500"
                 />
                 <Icon
                   v-else-if="msg.direction === 'sent'"
                   icon="mdi:check"
-                  class="w-3 h-3 text-gray-400"
+                  class="w-2.5 h-2.5 text-gray-400"
                 />
               </div>
             </div>
           </div>
+
+          <!-- Scroll Button -->
           <button
             v-if="showScrollButton"
             @click="scrollToBottomAndRead"
-            class="absolute bottom-20 right-4 bg-[#202c33] text-gray-300 p-3 rounded-full shadow-lg hover:bg-[#2a3942] transition-colors z-20"
+            class="absolute bottom-16 right-3 bg-[#202c33] text-gray-300 p-2 rounded-full shadow-lg hover:bg-[#2a3942] transition-colors z-20"
           >
             <div
               v-if="newMessageCount > 0"
-              class="absolute -top-2 -right-2 bg-[#00a884] text-white text-xs w-5 h-5 rounded-full flex items-center justify-center"
+              class="absolute -top-1.5 -right-1.5 bg-[#00a884] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center"
             >
               {{ newMessageCount }}
             </div>
-            <Icon icon="mdi:chevron-down" class="w-6 h-6" />
+            <Icon icon="mdi:chevron-down" class="w-5 h-5" />
           </button>
         </div>
-        <div v-if="imagePreview" class="mb-3 p-3 bg-[#2a3942] rounded-lg">
-          <div class="flex items-start gap-3">
+
+        <!-- Image Preview -->
+        <div v-if="imagePreview" class="px-3 py-2 bg-[#2a3942]">
+          <div class="flex items-start gap-2.5">
             <div class="relative">
-              <img :src="imagePreview" class="w-32 h-32 object-cover rounded" />
+              <img :src="imagePreview" class="w-24 h-24 object-cover rounded" />
               <button
                 @click="cancelImage"
-                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                class="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600"
               >
-                <Icon icon="mdi:close" class="w-4 h-4" />
+                <Icon icon="mdi:close" class="w-3 h-3" />
               </button>
             </div>
             <div class="flex-1">
@@ -295,27 +302,27 @@
                 v-model="imageCaption"
                 type="text"
                 placeholder="Add a caption..."
-                class="w-full px-3 py-2 bg-[#202c33] border-none rounded text-gray-100 placeholder-gray-400 outline-none"
+                class="w-full px-2.5 py-1.5 bg-[#202c33] border-none rounded text-sm text-gray-100 placeholder-gray-400 outline-none"
                 @keyup.enter="sendImageWithCaption"
               />
             </div>
-          </div>
-          <div class="flex justify-end mt-3">
             <button
               @click="sendImageWithCaption"
               :disabled="isUploading"
-              class="px-4 py-2 bg-[#00a884] text-white rounded-full hover:bg-[#00c897] disabled:opacity-50 transition-colors"
+              class="px-3 py-1.5 bg-[#00a884] text-white text-sm rounded-full hover:bg-[#00c897] disabled:opacity-50 transition-colors"
             >
               <Icon
                 v-if="isUploading"
                 icon="mdi:loading"
-                class="w-5 h-5 animate-spin"
+                class="w-4 h-4 animate-spin"
               />
               <span v-else>Send</span>
             </button>
           </div>
         </div>
-        <div class="p-4 bg-[#202c33] border-t border-[#2a3942]">
+
+        <!-- Input Area -->
+        <div class="px-3 py-2 bg-[#202c33] border-t border-[#2a3942]">
           <div class="relative">
             <div
               v-if="showEmojiPicker"
@@ -327,9 +334,12 @@
               :native="true"
               :theme="'dark'"
               @select="onSelectEmoji"
-              class="absolute bottom-14 left-0 z-10"
+              class="absolute bottom-12 left-0 z-10"
             />
-            <form @submit.prevent="sendMessage" class="flex gap-2 items-center">
+            <form
+              @submit.prevent="sendMessage"
+              class="flex gap-1.5 items-center"
+            >
               <input
                 type="file"
                 ref="fileInput"
@@ -341,40 +351,40 @@
                 type="button"
                 @click="$refs.fileInput.click()"
                 :disabled="isUploading"
-                class="p-2 text-gray-400 hover:text-[#00a884] hover:bg-[#2a3942] rounded-full transition-colors"
+                class="p-1.5 text-gray-400 hover:text-[#00a884] hover:bg-[#2a3942] rounded-full transition-colors"
               >
                 <Icon
                   v-if="isUploading"
                   icon="mdi:loading"
-                  class="w-6 h-6 animate-spin"
+                  class="w-5 h-5 animate-spin"
                 />
-                <Icon v-else icon="mdi:image" class="w-6 h-6" />
+                <Icon v-else icon="mdi:image" class="w-5 h-5" />
               </button>
               <button
                 type="button"
                 @click="showEmojiPicker = !showEmojiPicker"
-                class="p-2 text-gray-400 hover:text-[#00a884] hover:bg-[#2a3942] rounded-full transition-colors"
+                class="p-1.5 text-gray-400 hover:text-[#00a884] hover:bg-[#2a3942] rounded-full transition-colors"
               >
-                <Icon icon="mdi:emoticon-outline" class="w-6 h-6" />
+                <Icon icon="mdi:emoticon-outline" class="w-5 h-5" />
               </button>
               <input
                 v-model="newMessage"
                 type="text"
                 placeholder="Type a message..."
-                class="flex-1 px-4 py-2 bg-[#2a3942] border-none rounded-full text-gray-100 placeholder-gray-400 outline-none"
+                class="flex-1 px-3 py-1.5 bg-[#2a3942] border-none rounded-full text-sm text-gray-100 placeholder-gray-400 outline-none"
                 @focus="showEmojiPicker = false"
               />
               <button
                 type="submit"
                 :disabled="!newMessage.trim() || isSending"
-                class="hidden px-6 py-2 bg-[#00a884] text-white rounded-full hover:bg-[#00c897] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                class="hidden px-4 py-1.5 bg-[#00a884] text-white rounded-full hover:bg-[#00c897] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Icon
                   v-if="isSending"
                   icon="mdi:loading"
-                  class="w-5 h-5 animate-spin"
+                  class="w-4 h-4 animate-spin"
                 />
-                <Icon v-else icon="mdi:send" class="w-5 h-5" />
+                <Icon v-else icon="mdi:send" class="w-4 h-4" />
               </button>
             </form>
           </div>
@@ -513,7 +523,8 @@ const formatTime = (dateStr) => {
 
 const copyPhone = async (phone) => {
   try {
-    await navigator.clipboard.writeText(phone);
+    const phoneWithoutPlus = phone.replace(/^\+/, "");
+    await navigator.clipboard.writeText(phoneWithoutPlus);
     copied.value = true;
     setTimeout(() => {
       copied.value = false;
