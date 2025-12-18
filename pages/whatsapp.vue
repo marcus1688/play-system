@@ -5,8 +5,8 @@
       :class="{ 'max-md:hidden': selectedConversation }"
     >
       <!-- Header -->
-      <div class="px-3 py-4 border-b border-[#2a3942]">
-        <div class="flex items-center gap-2">
+      <div class="px-3">
+        <div class="flex items-center gap-2 border-b border-[#2a3942] py-4">
           <div class="flex items-center">
             <img src="/favicon.png" alt="Logo" class="w-5 h-auto" />
             <div class="h-5 w-[1.5px] bg-gray-500 mx-1.5"></div>
@@ -18,12 +18,32 @@
           </div>
           <h1 class="text-base font-semibold text-gray-100">WhatsApp</h1>
         </div>
+        <!-- Search -->
+        <div class="relative py-2">
+          <Icon
+            icon="mdi:magnify"
+            class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+          />
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search conversations..."
+            class="w-full pl-8 pr-8 py-2 bg-[#202c33] border-none rounded-lg text-sm text-gray-100 placeholder-gray-400 outline-none"
+          />
+          <button
+            v-if="searchQuery"
+            @click="searchQuery = ''"
+            class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+          >
+            <Icon icon="mdi:close" class="w-4 h-4" />
+          </button>
+        </div>
       </div>
 
       <!-- Conversations List -->
       <div class="flex-1 overflow-y-auto">
         <div
-          v-for="conv in conversations"
+          v-for="conv in filteredConversations"
           :key="conv.conversationId"
           @click="selectConversation(conv)"
           class="px-3 py-2.5 cursor-pointer transition-colors relative group rounded-xl mx-2 my-1"
@@ -82,7 +102,13 @@
         </div>
 
         <div
-          v-if="conversations.length === 0"
+          v-if="filteredConversations.length === 0 && searchQuery"
+          class="p-6 text-center text-gray-400 text-sm"
+        >
+          No results found
+        </div>
+        <div
+          v-else-if="conversations.length === 0"
           class="p-6 text-center text-gray-400 text-sm"
         >
           No conversations
@@ -709,6 +735,22 @@ const fetchMyAccount = async () => {
     console.error("Failed to fetch account:", error);
   }
 };
+
+const searchQuery = ref("");
+const filteredConversations = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return conversations.value;
+  }
+
+  const query = searchQuery.value.toLowerCase();
+  return conversations.value.filter((conv) => {
+    return (
+      conv.contactName?.toLowerCase().includes(query) ||
+      conv.contactPhone?.includes(query) ||
+      conv.lastMessage?.toLowerCase().includes(query)
+    );
+  });
+});
 
 onMounted(() => {
   notificationSound.value = new Audio("/sound/whatsapp-notification.mp3");
