@@ -46,6 +46,7 @@
           v-for="conv in filteredConversations"
           :key="conv.conversationId"
           @click="selectConversation(conv)"
+          @contextmenu.prevent="openContextMenu($event, conv)"
           class="px-3 py-2.5 cursor-pointer transition-colors relative group rounded-xl mx-2 my-1"
           :class="
             selectedConversation?.conversationId === conv.conversationId
@@ -65,21 +66,11 @@
                   <p class="text-sm font-medium text-gray-100 truncate">
                     {{ conv.contactName || conv.contactPhone }}
                   </p>
-                  <button
-                    @click.stop="togglePin(conv)"
-                    class="p-0.5 transition-opacity"
-                    :class="
-                      conv.isPinned
-                        ? 'text-[#00a884]'
-                        : 'text-gray-400 hover:text-[#00a884] opacity-0 group-hover:opacity-100'
-                    "
-                    :title="conv.isPinned ? 'Unpin' : 'Pin'"
-                  >
-                    <Icon
-                      :icon="conv.isPinned ? 'mdi:pin' : 'mdi:pin-outline'"
-                      class="w-3.5 h-3.5"
-                    />
-                  </button>
+                  <Icon
+                    v-if="conv.isPinned"
+                    icon="mdi:pin"
+                    class="w-3 h-3 text-[#00a884] flex-shrink-0"
+                  />
                 </div>
                 <span class="text-[10px] text-gray-400">
                   {{ formatTime(conv.lastMessageAt) }}
@@ -114,6 +105,29 @@
           No conversations
         </div>
       </div>
+
+      <div
+        v-if="contextMenu.show"
+        class="fixed bg-[#233138] rounded-lg shadow-lg py-1 z-50 min-w-[140px] border border-[#2a3942]"
+        :style="{ top: contextMenu.y + 'px', left: contextMenu.x + 'px' }"
+      >
+        <button
+          @click="togglePinFromMenu"
+          class="w-full px-3 py-2 text-left text-sm text-gray-100 hover:bg-[#2a3942] flex items-center gap-2"
+        >
+          <Icon
+            :icon="contextMenu.conv?.isPinned ? 'mdi:pin-off' : 'mdi:pin'"
+            class="w-4 h-4"
+          />
+          {{ contextMenu.conv?.isPinned ? "Unpin" : "Pin" }}
+        </button>
+      </div>
+
+      <div
+        v-if="contextMenu.show"
+        class="fixed inset-0 z-40"
+        @click="contextMenu.show = false"
+      ></div>
 
       <!-- My Account -->
       <div class="px-3 py-2.5 border-t border-[#2a3942] bg-[#202c33]">
@@ -751,6 +765,29 @@ const filteredConversations = computed(() => {
     );
   });
 });
+
+const contextMenu = ref({
+  show: false,
+  x: 0,
+  y: 0,
+  conv: null,
+});
+
+const openContextMenu = (event, conv) => {
+  contextMenu.value = {
+    show: true,
+    x: event.clientX,
+    y: event.clientY,
+    conv: conv,
+  };
+};
+
+const togglePinFromMenu = async () => {
+  if (contextMenu.value.conv) {
+    await togglePin(contextMenu.value.conv);
+  }
+  contextMenu.value.show = false;
+};
 
 onMounted(() => {
   notificationSound.value = new Audio("/sound/whatsapp-notification.mp3");
