@@ -1,5 +1,23 @@
 <template>
   <div class="flex h-screen bg-[#111b21] text-sm max-md:overflow-hidden">
+    <!-- Image Preview Modal -->
+    <div
+      v-if="previewImage"
+      class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center custom-modal"
+      @click="previewImage = null"
+    >
+      <button
+        @click="previewImage = null"
+        class="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
+      >
+        <Icon icon="mdi:close" class="w-8 h-8" />
+      </button>
+      <img
+        :src="previewImage"
+        class="max-w-[90vw] max-h-[90vh] object-contain"
+        @click.stop
+      />
+    </div>
     <div
       class="w-72 bg-[#111b21] border-r border-[#2a3942] flex flex-col md:relative max-md:fixed max-md:inset-0 max-md:w-full max-md:z-50"
       :class="{ 'max-md:hidden': selectedConversation }"
@@ -62,7 +80,7 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-center">
-                <div class="flex items-center gap-0.5">
+                <div class="flex items-center gap-1">
                   <p class="text-sm font-medium text-gray-100 truncate">
                     {{ conv.contactName || conv.contactPhone }}
                   </p>
@@ -71,6 +89,18 @@
                     icon="mdi:pin"
                     class="w-3 h-3 text-[#00a884] flex-shrink-0"
                   />
+                  <span
+                    v-if="conv.needsAgent"
+                    class="px-1 py-0.5 text-[9px] bg-orange-500/20 text-orange-400 rounded flex-shrink-0"
+                  >
+                    Pending Reply
+                  </span>
+                  <span
+                    v-else-if="conv.step && conv.step !== 'waiting_agent'"
+                    class="px-1 py-0.5 text-[9px] bg-blue-500/20 text-blue-400 rounded flex-shrink-0"
+                  >
+                    Bot
+                  </span>
                 </div>
                 <span class="text-[10px] text-gray-400">
                   {{ formatTime(conv.lastMessageAt) }}
@@ -120,6 +150,24 @@
             class="w-4 h-4"
           />
           {{ contextMenu.conv?.isPinned ? "Unpin" : "Pin" }}
+        </button>
+        <button
+          v-if="
+            contextMenu.conv?.step && contextMenu.conv?.step !== 'waiting_agent'
+          "
+          @click="skipBotFromMenu"
+          class="w-full px-3 py-2 text-left text-sm text-gray-100 hover:bg-[#2a3942] flex items-center gap-2"
+        >
+          <Icon icon="mdi:robot-off" class="w-4 h-4" />
+          Skip Bot
+        </button>
+        <button
+          v-if="contextMenu.conv?.needsAgent"
+          @click="markRepliedFromMenu"
+          class="w-full px-3 py-2 text-left text-sm text-gray-100 hover:bg-[#2a3942] flex items-center gap-2"
+        >
+          <Icon icon="mdi:check-circle" class="w-4 h-4" />
+          Mark as Replied
         </button>
       </div>
 
@@ -545,9 +593,10 @@ const sendMessage = async () => {
     }
   }
 };
+const previewImage = ref(null);
 
 const openImage = (url) => {
-  window.open(url, "_blank");
+  previewImage.value = url;
 };
 
 const onSelectEmoji = (emoji) => {
@@ -625,13 +674,20 @@ const playNotificationSound = () => {
   }
 };
 
-const prevTotalUnread = ref(0);
-watch(totalUnread, (newVal, oldVal) => {
-  if (newVal > oldVal) {
-    playNotificationSound();
+watch(
+  () => totalUnread.value,
+  (newVal, oldVal) => {
+    if (newVal > oldVal) {
+      const shouldNotify = conversations.value.some(
+        (conv) => conv.unreadCount > 0 && conv.needsAgent === true
+      );
+
+      if (shouldNotify) {
+        playNotificationSound();
+      }
+    }
   }
-  prevTotalUnread.value = newVal;
-});
+);
 
 const togglePin = async (conv) => {
   try {
@@ -785,6 +841,34 @@ const openContextMenu = (event, conv) => {
 const togglePinFromMenu = async () => {
   if (contextMenu.value.conv) {
     await togglePin(contextMenu.value.conv);
+  }
+  contextMenu.value.show = false;
+};
+
+const skipBotFromMenu = async () => {
+  if (contextMenu.value.conv) {
+    try {
+      await post(
+        `conversations/${contextMenu.value.conv.conversationId}/skip-bot`
+      );
+      await fetchConversations();
+    } catch (error) {
+      console.error("Failed to skip bot:", error);
+    }
+  }
+  contextMenu.value.show = false;
+};
+
+const markRepliedFromMenu = async () => {
+  if (contextMenu.value.conv) {
+    try {
+      await post(
+        `conversations/${contextMenu.value.conv.conversationId}/mark-replied`
+      );
+      await fetchConversations();
+    } catch (error) {
+      console.error("Failed to mark as replied:", error);
+    }
   }
   contextMenu.value.show = false;
 };
