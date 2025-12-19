@@ -116,6 +116,7 @@
                   class="flex items-center justify-center gap-2 max-md:gap-1 max-md:flex-col"
                 >
                   <button
+                    v-if="['localhost', 'hkwin88'].includes(getCompanyId())"
                     @click="handleTransactionFees(bank)"
                     class="px-3 py-1 bg-purple-600 text-white rounded lg:hover:bg-purple-500 text-md max-md:px-2 max-md:py-2 max-md:text-xs max-md:w-full"
                   >
@@ -225,6 +226,7 @@ import { formatAmount } from "~/utils/amountFormatter";
 const showTransactionFeesModal = ref(false);
 const showTransferModal = ref(false);
 const isPageLoading = ref(true);
+const { getCompanyId } = useCompany();
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "编号" },
   { key: "bankName", label: "Bank Name", labelCN: "银行名称", sortable: false },
