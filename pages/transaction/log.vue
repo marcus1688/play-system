@@ -187,6 +187,18 @@
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
               >
                 <div class="flex items-center justify-center gap-1">
+                  <span
+                    class="max-w-[120px] text-wrap"
+                    :title="item.transactionId"
+                  >
+                    {{ item.transactionId || "-" }}
+                  </span>
+                </div>
+              </td>
+              <td
+                class="px-6 py-4 text-sm max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                <div class="flex items-center justify-center gap-1">
                   <Icon
                     v-if="item.duplicateIP"
                     icon="material-symbols:warning-rounded"
@@ -346,7 +358,7 @@
               class="h-[400px] max-md:h-[300px]"
             >
               <td
-                colspan="13"
+                colspan="14"
                 class="px-6 py-4 text-center text-gray-500 max-md:px-3 max-md:text-sm"
               >
                 <div class="flex flex-col gap-8 items-center max-md:gap-4">
@@ -403,6 +415,12 @@ const dateFilterRef = ref(null);
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "序号", sortable: false },
   { key: "userid", label: "User ID", labelCN: "用户ID", sortable: true },
+  {
+    key: "transactionId",
+    label: "Transaction ID",
+    labelCN: "交易编号",
+    sortable: false,
+  },
   {
     key: "playerDetails",
     label: "Player Details",
@@ -850,6 +868,7 @@ const handleExport = async () => {
       return {
         no: index + 1,
         userid: item.userid || "-",
+        transactionId: item.transactionId || "-",
         username: item.username,
         fullname: item.fullname,
         bankDetails: bankDetails,
@@ -890,6 +909,7 @@ const handleExport = async () => {
       columns: {
         no: { header: $t("no"), width: 8 },
         userid: { header: "User ID", width: 12 },
+        transactionId: { header: "Transaction ID", width: 36 },
         username: { header: $t("username"), width: 15 },
         fullname: { header: $t("fullname"), width: 20 },
         bankDetails: { header: $t("bank_details"), width: 40 },

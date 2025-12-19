@@ -420,6 +420,21 @@
               </div>
             </div>
 
+            <!-- Transaction ID (Optional) -->
+            <div>
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("transaction_id") }}
+              </label>
+              <input
+                v-model="formData.transactionId"
+                type="text"
+                :placeholder="$t('transaction_id_placeholder')"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
+              />
+            </div>
+
             <!-- Remark (Optional) -->
             <div>
               <label
@@ -494,6 +509,7 @@ const formData = ref({
   kioskId: "",
   bankId: "",
   promotionId: "",
+  transactionId: "",
   remark: "",
   customKioskName: "",
   saveToWallet: false,
@@ -921,6 +937,7 @@ const handleSubmit = async () => {
       fromWallet: isFromWallet,
       promotionId: formData.value.promotionId || null,
       bonusAmount: calculatedBonus.value || 0,
+      transactionId: formData.value.transactionId || null,
       remark: formData.value.remark,
     });
 
@@ -979,6 +996,7 @@ const closeModal = () => {
     kioskId: "",
     bankId: "",
     promotionId: "",
+    transactionId: "",
     remark: "",
     customKioskName: "",
     saveToWallet: false,
