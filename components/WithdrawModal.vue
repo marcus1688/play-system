@@ -519,7 +519,20 @@
                 </div>
               </div>
             </div>
-
+            <!-- Transaction ID (Optional) -->
+            <div v-if="['localhost', 'megapng'].includes(getCompanyId())">
+              <label
+                class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
+              >
+                {{ $t("transaction_id") }}
+              </label>
+              <input
+                v-model="formData.transactionId"
+                type="text"
+                :placeholder="$t('transaction_id_placeholder')"
+                class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 max-md:px-3 max-md:py-1.5 max-md:text-sm"
+              />
+            </div>
             <!-- Remark (Optional) -->
             <div>
               <label
@@ -580,7 +593,7 @@ const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
     closeModal();
   }
 });
-
+const { getCompanyId } = useCompany();
 const { get, post, patch } = useApiEndpoint();
 const currency = useCurrency();
 const isLoading = ref(false);
@@ -593,6 +606,7 @@ const formData = ref({
   amount: "",
   kioskId: "",
   bankId: "",
+  transactionId: "",
   remark: "",
   cashoutRemaining: false,
   cashoutRemark: "",
@@ -985,6 +999,7 @@ const handleSubmit = async () => {
         hasKiosk && !isWithoutKiosk ? selectedKiosk.userKioskId : "-",
       bankId: isToWallet ? null : formData.value.bankId,
       toWallet: isToWallet,
+      transactionId: formData.value.transactionId || null,
       remark: formData.value.remark,
     });
 
@@ -1024,6 +1039,7 @@ const closeModal = () => {
     amount: "",
     kioskId: "",
     bankId: "",
+    transactionId: "",
     remark: "",
     cashoutRemaining: false,
     cashoutRemark: "",

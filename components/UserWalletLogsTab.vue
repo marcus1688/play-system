@@ -53,6 +53,11 @@
               <th
                 class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
               >
+                {{ $t("transaction_id") }}
+              </th>
+              <th
+                class="px-6 py-3 text-xs font-medium text-gray-500 uppercase max-md:px-3 max-md:py-2 max-md:text-[10px]"
+              >
                 {{ $t("amount") }}
               </th>
               <th
@@ -96,6 +101,18 @@
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
               >
+                <div class="flex items-center justify-center gap-1">
+                  <span
+                    class="max-w-[100px] text-wrap"
+                    :title="log.transactionid"
+                  >
+                    {{ log.transactionid || "-" }}
+                  </span>
+                </div>
+              </td>
+              <td
+                class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
+              >
                 {{ currency }} {{ log.amount }}
               </td>
               <td
@@ -133,7 +150,7 @@
               class="h-[400px] max-md:h-[300px]"
             >
               <td
-                colspan="7"
+                colspan="8"
                 class="px-6 py-4 text-center text-gray-500 max-md:px-3 max-md:py-3"
               >
                 <div class="flex flex-col gap-8 items-center max-md:gap-4">

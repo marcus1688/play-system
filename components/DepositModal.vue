@@ -421,7 +421,7 @@
             </div>
 
             <!-- Transaction ID (Optional) -->
-            <div>
+            <div v-if="['localhost', 'megapng'].includes(getCompanyId())">
               <label
                 class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs max-md:mb-1.5"
               >
@@ -490,6 +490,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["update:show", "success"]);
+const { getCompanyId } = useCompany();
 const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
   if (!isLoading.value) {
     closeModal();

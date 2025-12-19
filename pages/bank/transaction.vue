@@ -140,6 +140,18 @@
               <td
                 class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
+                <div class="flex items-center justify-center gap-1">
+                  <span
+                    class="max-w-[120px] text-wrap"
+                    :title="transaction.transactionId"
+                  >
+                    {{ transaction.transactionId || "-" }}
+                  </span>
+                </div>
+              </td>
+              <td
+                class="px-6 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
                 {{ transaction.bankName }}
               </td>
               <td
@@ -285,6 +297,7 @@ import { formatDate } from "~/utils/dateFormatter";
 const isPageLoading = ref(true);
 const tableHeaders = [
   { key: "no", label: "No", labelCN: "编号" },
+  { key: "transactionId", label: "Transaction ID", labelCN: "交易编号" },
   { key: "bankName", label: "Bank Name", labelCN: "银行名称" },
   { key: "ownername", label: "Bank Holder Name", labelCN: "银行持有人姓名" },
   { key: "bankAccount", label: "Bank Account", labelCN: "银行账户" },
@@ -368,6 +381,7 @@ const filteredTransactions = computed(() => {
     const searchTerm = searchQuery.value.toLowerCase();
     filtered = filtered.filter(
       (item) =>
+        (item.transactionId || "").toLowerCase().includes(searchTerm) ||
         (item.userid || "").toLowerCase().includes(searchTerm) ||
         (item.ownername || "").toLowerCase().includes(searchTerm) ||
         (item.bankName || "").toLowerCase().includes(searchTerm) ||
