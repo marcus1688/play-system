@@ -373,10 +373,16 @@ const fetchPlayerData = async () => {
     isPageLoading.value = true;
     const params = new URLSearchParams();
     if (dateRange.value.startDate) {
-      params.append("startDate", dateRange.value.startDate);
+      params.append(
+        "startDate",
+        moment(dateRange.value.startDate).format("YYYY-MM-DD")
+      );
     }
     if (dateRange.value.endDate) {
-      params.append("endDate", dateRange.value.endDate);
+      params.append(
+        "endDate",
+        moment(dateRange.value.endDate).format("YYYY-MM-DD")
+      );
     }
 
     const { data } = await get(`player-report-timezone?${params.toString()}`);
