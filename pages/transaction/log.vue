@@ -188,7 +188,7 @@
               >
                 <div class="flex items-center justify-center gap-1">
                   <span
-                    class="max-w-[120px] text-wrap"
+                    class="max-w-[120px] text-wrap break-words"
                     :title="item.transactionId"
                   >
                     {{ item.transactionId || "-" }}
