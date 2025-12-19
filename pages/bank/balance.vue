@@ -105,7 +105,7 @@
                 {{ formatAmount(bank.startingbalance) }}
               </td>
               <td
-                class="px-6 py-4 text-sm font-medium max-md:px-3 max-md:py-3 max-md:text-xs"
+                class="px-6 py-4 text-sm font-semibold max-md:px-3 max-md:py-3 max-md:text-xs"
               >
                 <span v-if="bank.bankname === `USDT`">USDT</span>
                 <span v-else>{{ currency }}</span>
@@ -148,6 +148,24 @@
                   </button>
                 </div>
               </td>
+            </tr>
+            <!-- Totals Row -->
+            <tr
+              v-if="paginatedBanks.length > 0"
+              class="bg-gray-100 font-semibold"
+            >
+              <td
+                colspan="8"
+                class="px-6 py-4 text-sm text-right text-gray-700 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                {{ $t("total") }}:
+              </td>
+              <td
+                class="px-6 py-4 text-sm font-semibold max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                {{ currency }} {{ formatAmount(totalCurrentBalance) }}
+              </td>
+              <td class="px-6 py-4 max-md:px-3 max-md:py-3"></td>
             </tr>
             <tr
               v-if="paginatedBanks.length === 0"
@@ -339,6 +357,12 @@ const handleStartingBalance = (bank) => {
   transactionType.value = "startingbalance";
   showTransactionModal.value = true;
 };
+
+const totalCurrentBalance = computed(() => {
+  return filteredBanks.value.reduce((sum, bank) => {
+    return sum + (Number(bank.currentbalance) || 0);
+  }, 0);
+});
 
 const fetchBanks = async () => {
   try {

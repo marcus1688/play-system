@@ -279,7 +279,7 @@
           </div>
         </div>
 
-        <!-- User Register Date -->
+        <!-- Last Deposit Date -->
         <div>
           <label
             class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
@@ -287,6 +287,31 @@
           >
           <div class="text-sm uppercase max-md:text-xs">
             {{ formatDate(user.lastdepositdate) }}
+          </div>
+        </div>
+
+        <!-- Status with Toggle -->
+        <div>
+          <label
+            class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
+            >{{ $t("status") }}</label
+          >
+
+          <div class="flex items-center gap-2">
+            <BaseToggleSwitch
+              :model-value="props.user.status"
+              @update:model-value="toggleStatus"
+            />
+            <div
+              :class="[
+                'px-3 py-1 text-xs rounded max-md:px-2 max-md:py-2 max-md:text-[10px]',
+                user.status
+                  ? 'bg-green-100 text-green-800'
+                  : 'bg-red-100 text-red-800',
+              ]"
+            >
+              {{ user.status ? $t("active") : $t("inactive") }}
+            </div>
           </div>
         </div>
 
