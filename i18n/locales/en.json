@@ -1675,5 +1675,6 @@
   "whatsapp": "WhatsApp",
   "whatsapp_center": "WhatsApp Center",
   "no_bank_account": "No bank account registered",
-  "account_name": "Account Name"
+  "account_name": "Account Name",
+  "player_report_timezone": "Player Report TZ"
 }

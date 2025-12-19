@@ -1675,5 +1675,6 @@
   "whatsapp": "WhatsApp",
   "whatsapp_center": "WhatsApp中心",
   "no_bank_account": "未绑定银行账户",
-  "account_name": "账户名称"
+  "account_name": "账户名称",
+  "player_report_timezone": "玩家报告(时区)"
 }
