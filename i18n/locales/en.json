@@ -1673,5 +1673,7 @@
   "adjust_in": "Adjust In",
   "adjust_out": "Adjust Out",
   "whatsapp": "WhatsApp",
-  "whatsapp_center": "WhatsApp Center"
+  "whatsapp_center": "WhatsApp Center",
+  "no_bank_account": "No bank account registered",
+  "account_name": "Account Name"
 }

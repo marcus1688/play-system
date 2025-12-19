@@ -1673,5 +1673,7 @@
   "adjust_in": "调整流入",
   "adjust_out": "调整流出",
   "whatsapp": "WhatsApp",
-  "whatsapp_center": "WhatsApp中心"
+  "whatsapp_center": "WhatsApp中心",
+  "no_bank_account": "未绑定银行账户",
+  "account_name": "账户名称"
 }

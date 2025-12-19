@@ -241,6 +241,11 @@ export const menuItems = [
     children: [
       { name: "bank_list", path: "/bank/list", permission: "bank.banklist" },
       {
+        name: "user_bank_list",
+        path: "/bank/user-list",
+        permission: "bank.userbanklist",
+      },
+      {
         name: "bank_balance",
         path: "/bank/balance",
         permission: "bank.bankbalance",

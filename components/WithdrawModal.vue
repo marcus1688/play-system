@@ -62,6 +62,79 @@
                 </div>
               </div>
             </div>
+
+            <!-- Bank Details -->
+            <div
+              v-if="userData?.bankAccounts && userData.bankAccounts.length > 0"
+              class="mt-4 pt-4 border-t border-gray-200 max-md:mt-3 max-md:pt-3"
+            >
+              <div class="text-sm text-gray-500 mb-2 max-md:text-xs">
+                {{ $t("bank_details") }}
+              </div>
+              <div class="space-y-2">
+                <div
+                  v-for="(bank, index) in userData.bankAccounts"
+                  :key="index"
+                  class="bg-white border border-gray-200 rounded-lg p-3 max-md:p-2"
+                >
+                  <div class="space-y-1">
+                    <div class="flex items-center justify-between">
+                      <div class="text-sm max-md:text-xs">
+                        <span class="text-gray-500"
+                          >{{ $t("bank_name") }}:</span
+                        >
+                        <span class="font-semibold text-gray-800 ml-1">{{
+                          bank.bankname
+                        }}</span>
+                      </div>
+                    </div>
+                    <div class="text-sm max-md:text-xs">
+                      <span class="text-gray-500"
+                        >{{ $t("account_name") }}:</span
+                      >
+                      <span class="font-semibold text-gray-800 ml-1">{{
+                        bank.name
+                      }}</span>
+                    </div>
+                    <div class="text-sm max-md:text-xs">
+                      <span class="text-gray-500">{{ $t("bank_code") }}:</span>
+                      <span class="font-semibold text-gray-800 ml-1">{{
+                        bank.bankcode || "-"
+                      }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <div class="text-sm max-md:text-xs">
+                        <span class="text-gray-500"
+                          >{{ $t("account_number") }}:</span
+                        >
+                        <span class="font-semibold text-gray-800 ml-1">{{
+                          bank.banknumber
+                        }}</span>
+                      </div>
+                      <button
+                        @click="copyToClipboard(bank.banknumber)"
+                        class="text-gray-400 lg:hover:text-indigo-600"
+                      >
+                        <Icon icon="mdi:content-copy" class="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- No Bank Account -->
+            <div
+              v-else
+              class="mt-4 pt-4 border-t border-gray-200 max-md:mt-3 max-md:pt-3"
+            >
+              <div class="text-sm text-gray-500 max-md:text-xs">
+                {{ $t("bank_details") }}
+              </div>
+              <div class="text-orange-500 text-sm max-md:text-xs mt-1">
+                {{ $t("no_bank_account") }}
+              </div>
+            </div>
           </div>
 
           <!-- Kiosk Select -->
