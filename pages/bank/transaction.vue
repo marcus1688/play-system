@@ -52,12 +52,12 @@
             class="block text-sm font-medium text-gray-700 mb-2 max-md:text-xs"
             >{{ $t("bank") }}:</label
           >
-          <CustomSelect v-model="filters.bankAccount">
+          <CustomSelect v-model="filters.bankKey">
             <option value="">{{ $t("all") }}</option>
             <option
               v-for="bank in uniqueBanks"
-              :key="bank.bankAccount"
-              :value="bank.bankAccount"
+              :key="bank.key"
+              :value="bank.key"
             >
               {{ bank.display }}
             </option>
@@ -336,7 +336,7 @@ const { get, patch } = useApiEndpoint();
 const isLoading = ref(false);
 const transactions = ref([]);
 const filters = ref({
-  bankAccount: "",
+  bankKey: "",
   transactionType: "",
 });
 const dateRange = ref({
@@ -394,9 +394,9 @@ const filteredTransactions = computed(() => {
         (item.processby || "").toLowerCase().includes(searchTerm)
     );
   }
-  if (filters.value.bankAccount) {
+  if (filters.value.bankKey) {
     const selectedBank = uniqueBanks.value.find(
-      (bank) => bank.bankAccount === filters.value.bankAccount
+      (bank) => bank.key === filters.value.bankKey
     );
     if (selectedBank) {
       filtered = filtered.filter(
@@ -442,7 +442,7 @@ const handleSearch = () => {
 };
 
 const handleReset = () => {
-  filters.value.bankAccount = "";
+  filters.value.bankKey = "";
   filters.value.transactionType = "";
   dateFilterRef.value?.handleReset();
   searchQuery.value = "";
@@ -456,6 +456,7 @@ const uniqueBanks = computed(() => {
       const key = `${t.bankName}-${t.ownername}-${t.bankAccount}`;
       if (!banksMap.has(key)) {
         banksMap.set(key, {
+          key: key,
           bankName: t.bankName,
           bankAccount: t.bankAccount,
           ownername: t.ownername,
