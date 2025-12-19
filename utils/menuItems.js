@@ -385,6 +385,11 @@ export const menuItems = [
         path: "/report/player",
         permission: "report.playerreport",
       },
+      {
+        name: "player_report_timezone",
+        path: "/report/playertimezone",
+        permission: "report.playerreporttimezone",
+      },
     ],
   },
 
