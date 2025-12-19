@@ -453,7 +453,7 @@ const uniqueBanks = computed(() => {
   const banksMap = new Map();
   transactions.value.forEach((t) => {
     if (t.bankName && t.bankAccount) {
-      const key = `${t.bankName} - ${t.bankAccount}`;
+      const key = `${t.bankName}-${t.ownername}-${t.bankAccount}`;
       if (!banksMap.has(key)) {
         banksMap.set(key, {
           bankName: t.bankName,
