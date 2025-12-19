@@ -21,7 +21,7 @@
             <label
               class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
             >
-              {{ $t("userid") }}
+              {{ $t("userid") }} (被介绍的)
             </label>
             <input
               v-model="formData.userid"
@@ -36,7 +36,7 @@
             <label
               class="block text-sm font-medium text-gray-700 mb-1 max-md:text-xs"
             >
-              {{ $t("new_agent_userid") }}
+              {{ $t("new_agent_userid") }} (介绍人)
             </label>
             <input
               v-model="formData.newAgentUserid"
