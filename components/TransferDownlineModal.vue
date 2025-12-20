@@ -27,7 +27,8 @@
               v-model="formData.userid"
               type="text"
               required
-              class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm"
+              disabled
+              class="w-full px-3 py-2 border rounded-lg max-md:px-2 max-md:py-1.5 max-md:text-sm bg-gray-100 cursor-not-allowed"
               :placeholder="$t('enter_userid')"
             />
           </div>
@@ -74,6 +75,7 @@
 <script setup>
 const props = defineProps({
   show: Boolean,
+  userId: String,
 });
 const emit = defineEmits(["update:show", "userUpdated"]);
 const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
@@ -133,7 +135,9 @@ const closeModal = () => {
 watch(
   () => props.show,
   (newValue) => {
-    if (!newValue) {
+    if (newValue) {
+      formData.value.userid = props.userId || "";
+    } else {
       formData.value = {
         userid: "",
         newAgentUserid: "",

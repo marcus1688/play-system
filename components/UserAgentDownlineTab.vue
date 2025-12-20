@@ -4,6 +4,7 @@
     <div v-else>
       <TransferDownlineModal
         :show="showTransferModal"
+        :user-id="props.userData?.userid"
         @update:show="showTransferModal = $event"
         @userUpdated="handleUserUpdated"
       />
