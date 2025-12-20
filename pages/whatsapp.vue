@@ -300,8 +300,10 @@
           <div
             v-for="msg in messages"
             :key="msg.messageId"
-            class="flex items-end gap-1.5"
+            :data-message-id="msg.messageId"
+            class="flex items-end gap-1.5 group"
             :class="msg.direction === 'sent' ? 'justify-end' : 'justify-start'"
+            @dblclick="setReplyTo(msg)"
           >
             <div
               v-if="msg.direction === 'received'"
@@ -313,13 +315,32 @@
               }}
             </div>
             <div
-              class="max-w-[70%] px-2.5 py-1.5 rounded-lg shadow"
+              class="max-w-[70%] px-2.5 py-1.5 rounded-lg shadow relative"
               :class="[
                 msg.direction === 'sent' ? 'bg-[#005c4b]' : 'bg-[#202c33]',
                 msg.status === 'sending' ? 'opacity-70' : '',
                 msg.status === 'failed' ? 'border border-red-500' : '',
               ]"
             >
+              <div
+                v-if="msg.replyTo?.messageId"
+                class="mb-1.5 p-2 rounded bg-black/20 border-l-2 border-[#00a884] cursor-pointer"
+                @click="scrollToMessage(msg.replyTo.messageId)"
+              >
+                <p class="text-[10px] text-[#00a884] font-medium">
+                  {{
+                    msg.replyTo.from === myAccount.phone ? "You" : "Customer"
+                  }}
+                </p>
+                <p class="text-xs text-gray-300 truncate">
+                  {{
+                    msg.replyTo.type === "image"
+                      ? "📷 Image"
+                      : msg.replyTo.content?.text
+                  }}
+                </p>
+              </div>
+
               <img
                 v-if="msg.type === 'image'"
                 :src="msg.content?.image?.url"
@@ -362,13 +383,21 @@
                 />
               </div>
             </div>
+
+            <button
+              @click="setReplyTo(msg)"
+              class="p-1 text-gray-500 hover:text-[#00a884] opacity-0 group-hover:opacity-100 transition-opacity"
+              :class="msg.direction === 'sent' ? 'order-first' : ''"
+            >
+              <Icon icon="mdi:reply" class="w-4 h-4" />
+            </button>
           </div>
 
           <!-- Scroll Button -->
           <button
             v-if="showScrollButton"
             @click="scrollToBottomAndRead"
-            class="absolute bottom-16 right-3 bg-[#202c33] text-gray-300 p-2 rounded-full shadow-lg hover:bg-[#2a3942] transition-colors z-20"
+            class="absolute bottom-32 right-3 bg-[#202c33] text-gray-300 p-2 rounded-full shadow-lg hover:bg-[#2a3942] transition-colors z-20"
           >
             <div
               v-if="newMessageCount > 0"
@@ -416,7 +445,26 @@
             </button>
           </div>
         </div>
-
+        <div
+          v-if="replyToMessage"
+          class="px-3 py-2 bg-[#1f2c33] border-t border-[#2a3942] flex items-center gap-2"
+        >
+          <div class="w-1 h-10 bg-[#00a884] rounded-full flex-shrink-0"></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-xs text-[#00a884] font-medium">
+              {{ replyToMessage.direction === "sent" ? "You" : "Customer" }}
+            </p>
+            <p class="text-sm text-gray-400 truncate">
+              {{ getReplyPreviewText(replyToMessage) }}
+            </p>
+          </div>
+          <button
+            @click="cancelReply"
+            class="p-1.5 text-gray-400 hover:text-white hover:bg-[#2a3942] rounded-full transition-colors"
+          >
+            <Icon icon="mdi:close" class="w-4 h-4" />
+          </button>
+        </div>
         <!-- Input Area -->
         <div class="px-3 py-2 bg-[#202c33] border-t border-[#2a3942]">
           <div class="relative">
@@ -570,10 +618,20 @@ const sendMessage = async () => {
     content: { text: newMessage.value },
     createdAt: new Date().toISOString(),
     status: "sending",
+    replyTo: replyToMessage.value
+      ? {
+          messageId: replyToMessage.value.messageId,
+          content: replyToMessage.value.content,
+          type: replyToMessage.value.type,
+          from: replyToMessage.value.from,
+        }
+      : null,
   };
   messages.value.push(tempMessage);
   const messageText = newMessage.value;
+  const replyToMessageId = replyToMessage.value?.messageId || null;
   newMessage.value = "";
+  replyToMessage.value = null;
   await nextTick();
   if (messagesContainer.value) {
     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
@@ -581,7 +639,10 @@ const sendMessage = async () => {
   try {
     await post(
       `conversations/${selectedConversation.value.conversationId}/send`,
-      { text: messageText }
+      {
+        text: messageText,
+        replyToMessageId: replyToMessageId,
+      }
     );
     await fetchMessages(
       selectedConversation.value.conversationId,
@@ -737,7 +798,9 @@ const sendImageWithCaption = async () => {
   const file = imageFile.value;
   const caption = imageCaption.value;
   const previewUrl = imagePreview.value;
+  const replyToMessageId = replyToMessage.value?.messageId || null;
   cancelImage();
+  replyToMessage.value = null;
 
   const tempId = `temp-${Date.now()}`;
   const tempMessage = {
@@ -753,6 +816,14 @@ const sendImageWithCaption = async () => {
     },
     createdAt: new Date().toISOString(),
     status: "sending",
+    replyTo: replyToMessageId
+      ? {
+          messageId: replyToMessageId,
+          content: replyToMessage.value?.content,
+          type: replyToMessage.value?.type,
+          from: replyToMessage.value?.from,
+        }
+      : null,
   };
   messages.value.push(tempMessage);
 
@@ -772,6 +843,7 @@ const sendImageWithCaption = async () => {
         {
           imageUrl: uploadData.url,
           caption: caption,
+          replyToMessageId: replyToMessageId,
         }
       );
       const index = messages.value.findIndex((m) => m.messageId === tempId);
@@ -879,6 +951,31 @@ const markRepliedFromMenu = async () => {
   contextMenu.value.show = false;
 };
 
+const replyToMessage = ref(null);
+const setReplyTo = (message) => {
+  replyToMessage.value = message;
+};
+const cancelReply = () => {
+  replyToMessage.value = null;
+};
+
+const getReplyPreviewText = (msg) => {
+  if (!msg) return "";
+  if (msg.type === "image") {
+    return msg.content?.image?.caption || "📷 Image";
+  }
+  return msg.content?.text || "";
+};
+
+const scrollToMessage = (messageId) => {
+  const element = document.querySelector(`[data-message-id="${messageId}"]`);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth", block: "center" });
+    element.classList.add("highlight-message");
+    setTimeout(() => element.classList.remove("highlight-message"), 2000);
+  }
+};
+
 onMounted(() => {
   notificationSound.value = new Audio("/sound/whatsapp-notification.mp3");
   notificationSound.value.volume = 0.5;
@@ -916,3 +1013,18 @@ useHead({
   ],
 });
 </script>
+<style scoped>
+.highlight-message {
+  animation: highlightPulse 2s ease-out;
+}
+
+@keyframes highlightPulse {
+  0%,
+  20% {
+    background-color: rgba(0, 168, 132, 0.3);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+</style>
