@@ -628,7 +628,10 @@ const cashoutAmount = computed(() => {
   if (!formData.value.cashoutRemaining || !selectedKioskInfo.value) return 0;
   const kioskBalance = Number(selectedKioskInfo.value.balance) || 0;
   const withdrawAmount = Number(formData.value.amount) || 0;
-  const remainingBalance = Math.max(0, kioskBalance - withdrawAmount);
+  const remainingBalance = Math.max(
+    0,
+    Math.floor(kioskBalance - withdrawAmount)
+  );
   return remainingBalance * transferMultiplier.value;
 });
 
