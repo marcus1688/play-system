@@ -828,8 +828,8 @@ const handleSubmit = async () => {
   const transferOutAmount =
     hasKiosk && !isWithoutKiosk
       ? formData.value.cashoutRemaining
-        ? Math.floor(Number(selectedKiosk.balance))
-        : Math.floor(Number(formData.value.amount))
+        ? Number(selectedKiosk.balance)
+        : Number(formData.value.amount)
       : 0;
 
   try {
