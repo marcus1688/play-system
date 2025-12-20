@@ -1,5 +1,6 @@
 <template>
   <div class="flex h-screen bg-[#111b21] text-sm max-md:overflow-hidden">
+    <UserInteractionModal v-model="showInteractionModal" />
     <!-- Image Preview Modal -->
     <div
       v-if="previewImage"
@@ -495,6 +496,7 @@ import EmojiPicker from "vue3-emoji-picker";
 import "vue3-emoji-picker/css";
 
 const { get, post } = useApiEndpoint();
+const showInteractionModal = ref(true);
 const copied = ref(false);
 const conversations = ref([]);
 const messages = ref([]);
