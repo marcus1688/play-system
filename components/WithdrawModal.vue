@@ -255,7 +255,11 @@
 
             <!-- CashOut Remaining Balance Checkbox -->
             <div
-              v-if="formData.kioskId && formData.kioskId !== 'without_kiosk'"
+              v-if="
+                formData.kioskId &&
+                formData.kioskId !== 'without_kiosk' &&
+                canCashout
+              "
               class="flex items-center gap-2"
             >
               <input
@@ -633,6 +637,14 @@ const cashoutAmount = computed(() => {
     Math.floor(kioskBalance - withdrawAmount)
   );
   return remainingBalance * transferMultiplier.value;
+});
+
+const canCashout = computed(() => {
+  if (!selectedKioskInfo.value || !formData.value.amount) return false;
+  const kioskBalance = Number(selectedKioskInfo.value.balance) || 0;
+  const withdrawAmount = Number(formData.value.amount) || 0;
+  const remaining = Math.floor(kioskBalance - withdrawAmount);
+  return remaining > 0;
 });
 
 const actualWithdrawAmount = computed(() => {
@@ -1064,6 +1076,12 @@ watch(
     }
   }
 );
+
+watch(canCashout, (newVal) => {
+  if (!newVal) {
+    formData.value.cashoutRemaining = false;
+  }
+});
 
 watch(
   () => formData.value.includeWallet,
