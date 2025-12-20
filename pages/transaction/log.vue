@@ -528,6 +528,8 @@ const filteredTransactions = computed(() => {
         (item.userid && item.userid.toLowerCase().includes(searchTerm)) ||
         item.username.toLowerCase().includes(searchTerm) ||
         item.fullname.toLowerCase().includes(searchTerm) ||
+        (item.transactionId &&
+          item.transactionId.toLowerCase().includes(searchTerm)) ||
         (item.promotionnameEN &&
           item.promotionnameEN.toLowerCase().includes(searchTerm)) ||
         (item.processBy && item.processBy.toLowerCase().includes(searchTerm)) ||

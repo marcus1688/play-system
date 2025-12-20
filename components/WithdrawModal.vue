@@ -61,6 +61,21 @@
                   {{ currency }} {{ formatAmount(userData?.wallet) }}
                 </div>
               </div>
+              <div>
+                <div class="text-sm text-gray-500 max-md:text-xs">
+                  {{ $t("today_withdraw_count") }}
+                </div>
+                <div
+                  class="font-semibold max-md:text-sm"
+                  :class="
+                    (withdrawCountInfo?.todayCount || 0) > 3
+                      ? 'text-red-500'
+                      : 'text-gray-800'
+                  "
+                >
+                  {{ withdrawCountInfo?.todayCount || 0 }}
+                </div>
+              </div>
             </div>
 
             <!-- Bank Details -->
@@ -102,6 +117,7 @@
                         bank.bankcode || "-"
                       }}</span>
                     </div>
+
                     <div class="flex items-center justify-between">
                       <div class="text-sm max-md:text-xs">
                         <span class="text-gray-500"
@@ -600,6 +616,7 @@ const { onBackdropDown, onBackdropUp } = useModalBackdrop(() => {
 const { getCompanyId } = useCompany();
 const { get, post, patch } = useApiEndpoint();
 const currency = useCurrency();
+const withdrawCountInfo = ref(null);
 const isLoading = ref(false);
 const isLoadingBalances = ref(false);
 const isLoadingBanks = ref(false);
@@ -1064,7 +1081,21 @@ const closeModal = () => {
   };
   kioskListWithBalances.value = [];
   bankList.value = [];
+  withdrawCountInfo.value = null;
   emit("update:show", false);
+};
+
+const fetchWithdrawCount = async () => {
+  try {
+    const { data } = await get(
+      `user-daily-withdraw-count/${props.userData?._id}`
+    );
+    if (data.success) {
+      withdrawCountInfo.value = data.data;
+    }
+  } catch (error) {
+    console.error("Error fetching withdraw count:", error);
+  }
 };
 
 watch(
@@ -1073,6 +1104,7 @@ watch(
     if (newShow) {
       fetchAllKioskBalances();
       fetchBankList();
+      fetchWithdrawCount();
     }
   }
 );

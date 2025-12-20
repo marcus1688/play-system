@@ -1677,5 +1677,6 @@
   "no_bank_account": "未绑定银行账户",
   "account_name": "账户名称",
   "player_report_timezone": "玩家报告(时区)",
-  "transaction_id_placeholder": "输入交易编号（可选）"
+  "transaction_id_placeholder": "输入交易编号（可选）",
+  "today_withdraw_count": "今日提款次数"
 }
