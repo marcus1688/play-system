@@ -458,6 +458,30 @@
               </div>
             </div>
 
+            <div
+              v-if="
+                formData.bankId &&
+                formData.bankId !== 'user_wallet' &&
+                selectedBankInfo?.transactionfees > 0
+              "
+            >
+              <div class="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="deductTransactionFees"
+                  v-model="formData.deductTransactionFees"
+                  class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                />
+                <label
+                  for="deductTransactionFees"
+                  class="text-sm text-gray-700 max-md:text-xs"
+                >
+                  {{ $t("deduct_transaction_fees") }} ({{ currency }}
+                  {{ formatAmount(selectedBankInfo?.transactionfees) }})
+                </label>
+              </div>
+            </div>
+
             <!-- Include Wallet Balance Checkbox (只有选了银行才显示) -->
             <div
               v-if="
@@ -634,6 +658,13 @@ const formData = ref({
   customKioskName: "",
   includeWallet: false,
   walletWithdrawAmount: "",
+  deductTransactionFees: false,
+});
+
+const selectedBankInfo = computed(() => {
+  if (!formData.value.bankId || formData.value.bankId === "user_wallet")
+    return null;
+  return bankList.value.find((b) => b._id === formData.value.bankId);
 });
 
 const totalBankWithdrawAmount = computed(() => {
@@ -1033,6 +1064,7 @@ const handleSubmit = async () => {
       toWallet: isToWallet,
       transactionId: formData.value.transactionId || null,
       remark: formData.value.remark,
+      deductTransactionFees: formData.value.deductTransactionFees,
     });
 
     if (data.success) {
@@ -1078,6 +1110,7 @@ const closeModal = () => {
     customKioskName: "",
     includeWallet: false,
     walletWithdrawAmount: "",
+    deductTransactionFees: false,
   };
   kioskListWithBalances.value = [];
   bankList.value = [];

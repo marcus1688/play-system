@@ -1678,5 +1678,6 @@
   "account_name": "Account Name",
   "player_report_timezone": "Player Report TZ",
   "transaction_id_placeholder": "Enter transaction ID (optional)",
-  "today_withdraw_count": "Today's Withdrawals"
+  "today_withdraw_count": "Today's Withdrawals",
+  "deduct_transaction_fees": "Deduct Transaction Fees"
 }
