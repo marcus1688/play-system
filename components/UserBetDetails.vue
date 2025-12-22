@@ -319,20 +319,12 @@
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
               >
-                {{
-                  record.beganbalance
-                    ? `${currency} ${formatNumber(record.beganbalance)}`
-                    : "-"
-                }}
+                {{ currency }} {{ formatNumber(record.beganbalance || 0) }}
               </td>
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
               >
-                {{
-                  record.endbalance
-                    ? `${currency} ${formatNumber(record.endbalance)}`
-                    : "-"
-                }}
+                {{ currency }} {{ formatNumber(record.endbalance || 0) }}
               </td>
               <td
                 class="px-6 py-4 text-sm max-md:px-3 max-md:py-2 max-md:text-xs"
