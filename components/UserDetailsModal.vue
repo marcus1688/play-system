@@ -135,6 +135,11 @@
             v-if="activeTab === 'bonus-logs'"
             :userId="userData._id"
           />
+
+          <UserBetDetails
+            v-if="activeTab === 'bet-details'"
+            :userId="userData._id"
+          />
         </div>
       </div></div
   ></Teleport>
@@ -188,6 +193,7 @@ const tabs = [
   { label: "Deposit Logs", labelCN: "存款记录", value: "deposit-logs" },
   { label: "Withdraw Logs", labelCN: "提款记录", value: "withdraw-logs" },
   { label: "Bonus Logs", labelCN: "奖金记录", value: "bonus-logs" },
+  { label: "Bet Details", labelCN: "下注详情", value: "bet-details" },
 ];
 
 const userGames = ref([

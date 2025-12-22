@@ -1679,5 +1679,15 @@
   "player_report_timezone": "玩家报告(时区)",
   "transaction_id_placeholder": "输入交易编号（可选）",
   "today_withdraw_count": "今日提款次数",
-  "deduct_transaction_fees": "扣除手续费"
+  "deduct_transaction_fees": "扣除手续费",
+  "total_bet_amount": "总投注金额",
+  "total_settle_amount": "总结算金额",
+  "total_win_loss": "总输赢",
+  "bet_amount": "投注金额",
+  "settle_amount": "结算金额",
+  "begin_balance": "开始余额",
+  "end_balance": "结束余额",
+  "bet_time": "投注时间",
+  "records": "条记录",
+  "bet_id_copied": "注单号已复制到剪贴板"
 }

@@ -1679,5 +1679,15 @@
   "player_report_timezone": "Player Report TZ",
   "transaction_id_placeholder": "Enter transaction ID (optional)",
   "today_withdraw_count": "Today's Withdrawals",
-  "deduct_transaction_fees": "Deduct Transaction Fees"
+  "deduct_transaction_fees": "Deduct Transaction Fees",
+  "total_bet_amount": "Total Bet Amount",
+  "total_settle_amount": "Total Settle Amount",
+  "total_win_loss": "Total Win/Loss",
+  "bet_amount": "Bet Amount",
+  "settle_amount": "Settle Amount",
+  "begin_balance": "Begin Balance",
+  "end_balance": "End Balance",
+  "bet_time": "Bet Time",
+  "records": "records",
+  "bet_id_copied": "Bet ID copied to clipboard"
 }
