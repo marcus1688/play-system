@@ -1689,5 +1689,6 @@
   "end_balance": "结束余额",
   "bet_time": "投注时间",
   "records": "条记录",
-  "bet_id_copied": "注单号已复制到剪贴板"
+  "bet_id_copied": "注单号已复制到剪贴板",
+  "bet_details": "投注详情"
 }

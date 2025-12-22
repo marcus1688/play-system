@@ -1689,5 +1689,6 @@
   "end_balance": "End Balance",
   "bet_time": "Bet Time",
   "records": "records",
-  "bet_id_copied": "Bet ID copied to clipboard"
+  "bet_id_copied": "Bet ID copied to clipboard",
+  "bet_details": "Bet Details"
 }
