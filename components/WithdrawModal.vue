@@ -1005,7 +1005,28 @@ const handleSubmit = async () => {
     }
 
     isLoading.value = true;
+    const validateResponse = await post("validate-direct-withdraw", {
+      userId: props.userData?._id,
+      username: props.userData?.username,
+      amount: kioskWithdrawAmount,
+      walletAmount: walletWithdrawAmount,
+      bankId: isToWallet ? null : formData.value.bankId,
+      toWallet: isToWallet,
+      deductTransactionFees: formData.value.deductTransactionFees,
+      transactionId: formData.value.transactionId || null,
+    });
 
+    if (!validateResponse.data.success) {
+      await Swal.fire({
+        icon: "error",
+        title: $t("error"),
+        text:
+          validateResponse.data.message?.[$locale.value] ||
+          validateResponse.data.message?.en,
+      });
+      isLoading.value = false;
+      return;
+    }
     // Step 1: Call Kiosk Transfer Out API (只有选了真正的 kiosk 才执行)
     if (hasKiosk && !isWithoutKiosk) {
       const transferResponse = await post(
