@@ -23,6 +23,8 @@
 <script setup>
 import VueDatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import moment from "moment-timezone";
+
 const props = defineProps({
   modelValue: {
     type: Date,
@@ -42,11 +44,14 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(["update:modelValue", "update:otherDate"]);
+const TIMEZONE = "Asia/Kuala_Lumpur";
 const inputValue = ref(props.modelValue);
 const minDate = computed(() => {
   if (props.isStartDate && props.otherDate) {
-    const min = new Date(props.otherDate);
-    min.setFullYear(min.getFullYear() - 1);
+    const min = moment(props.otherDate)
+      .tz(TIMEZONE)
+      .subtract(1, "year")
+      .toDate();
     return min;
   } else if (!props.isStartDate && props.otherDate) {
     return props.otherDate;
@@ -54,13 +59,13 @@ const minDate = computed(() => {
   return undefined;
 });
 const maxDate = computed(() => {
-  const today = new Date();
+  const today = moment().tz(TIMEZONE).endOf("day").toDate();
   if (props.isStartDate && props.otherDate) {
-    return new Date(props.otherDate) > today ? today : props.otherDate;
+    const otherMoment = moment(props.otherDate).tz(TIMEZONE);
+    return otherMoment.isAfter(today) ? today : props.otherDate;
   } else if (!props.isStartDate && props.otherDate) {
-    const max = new Date(props.otherDate);
-    max.setFullYear(max.getFullYear() + 1);
-    return max > today ? today : max;
+    const max = moment(props.otherDate).tz(TIMEZONE).add(1, "year").toDate();
+    return moment(max).isAfter(today) ? today : max;
   }
   return today;
 });
@@ -70,20 +75,11 @@ const handleDateChange = (newDate) => {
     emit("update:modelValue", null);
     return;
   }
-  if (!props.isStartDate) {
-    const adjustedDate = new Date(newDate);
-    adjustedDate.setHours(23, 59, 59, 999);
-    emit("update:modelValue", adjustedDate);
-    if (props.otherDate) {
-      emit("update:otherDate", null);
-    }
+  const m = moment(newDate).tz(TIMEZONE);
+  if (props.isStartDate) {
+    emit("update:modelValue", m.startOf("day").toDate());
   } else {
-    const adjustedDate = new Date(newDate);
-    adjustedDate.setHours(0, 0, 0, 0);
-    emit("update:modelValue", adjustedDate);
-    if (props.otherDate) {
-      emit("update:otherDate", null);
-    }
+    emit("update:modelValue", m.endOf("day").toDate());
   }
 };
 
@@ -96,10 +92,7 @@ watch(
 
 const format = (date) => {
   if (!date) return "";
-  const day = date.getDate().toString().padStart(2, "0");
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
+  return moment(date).tz(TIMEZONE).format("DD/MM/YYYY");
 };
 </script>
 <style scoped>
