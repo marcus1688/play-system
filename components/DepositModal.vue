@@ -897,6 +897,29 @@ const handleSubmit = async () => {
       }
     }
 
+    const validateResponse = await post("validate-direct-deposit", {
+      userId: props.userData?._id,
+      username: props.userData?.username,
+      amount: actualKioskAmount,
+      bankAmount: totalBankAmount,
+      walletSaveAmount: walletSaveAmount,
+      bankId: isFromWallet ? null : formData.value.bankId,
+      fromWallet: isFromWallet,
+      transactionId: formData.value.transactionId || null,
+    });
+
+    if (!validateResponse.data.success) {
+      await Swal.fire({
+        icon: "error",
+        title: $t("error"),
+        text:
+          validateResponse.data.message?.[$locale.value] ||
+          validateResponse.data.message?.en,
+      });
+      isLoading.value = false;
+      return;
+    }
+
     // Step 2: Call Kiosk Transfer In API（用 actualKioskAmount + bonus）
     if (!isWithoutKiosk) {
       const transferAmount =
