@@ -77,7 +77,7 @@
             <option value="cashout">{{ $t("cash_out") }}</option>
             <option value="adjustin">{{ $t("adjust_in") }}</option>
             <option value="adjustout">{{ $t("adjust_out") }}</option>
-            <option value="transaction fees">
+            <option value="transactionfee">
               {{ $t("transaction_fees") }}
             </option>
             <option value="reverted deposit">
@@ -86,7 +86,7 @@
             <option value="reverted withdraw">
               {{ $t("reverted_withdraw") }}
             </option>
-            <option value="reverted transaction fees">
+            <option value="reverted transactionfee">
               {{ $t("reverted_transaction_fees") }}
             </option>
           </CustomSelect>
@@ -407,12 +407,25 @@ const filteredTransactions = computed(() => {
       );
     }
   }
+  const transactionTypeAliases = {
+    transactionfee: ["transactionfee", "transaction fees"],
+    "reverted transactionfee": [
+      "reverted transactionfee",
+      "reverted transaction fees",
+    ],
+  };
   if (filters.value.transactionType) {
-    filtered = filtered.filter(
-      (item) =>
-        item.transactiontype.toLowerCase() ===
-        filters.value.transactionType.toLowerCase()
-    );
+    filtered = filtered.filter((item) => {
+      const itemType = item.transactiontype.toLowerCase();
+      const filterType = filters.value.transactionType.toLowerCase();
+
+      const aliases = transactionTypeAliases[filterType];
+      if (aliases) {
+        return aliases.includes(itemType);
+      }
+
+      return itemType === filterType;
+    });
   }
 
   return filtered;
