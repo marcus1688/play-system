@@ -674,10 +674,27 @@ const onSelectEmoji = (emoji) => {
 const formatTime = (dateStr) => {
   if (!dateStr) return "";
   const date = new Date(dateStr);
-  return date.toLocaleTimeString("en-US", {
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const time = date.toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
   });
+  if (date.toDateString() === today.toDateString()) {
+    return time;
+  }
+  if (date.toDateString() === yesterday.toDateString()) {
+    return `Yesterday ${time}`;
+  }
+  return (
+    date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    }) +
+    " " +
+    time
+  );
 };
 
 const copyPhone = async (phone) => {
