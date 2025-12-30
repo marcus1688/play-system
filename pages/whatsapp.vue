@@ -978,10 +978,13 @@ const cancelReply = () => {
 
 const getReplyPreviewText = (msg) => {
   if (!msg) return "";
+  let text = "";
   if (msg.type === "image") {
-    return msg.content?.image?.caption || "📷 Image";
+    text = msg.content?.image?.caption || "📷 Image";
+  } else {
+    text = msg.content?.text || "";
   }
-  return msg.content?.text || "";
+  return text.length > 30 ? text.slice(0, 100) + "..." : text;
 };
 
 const scrollToMessage = (messageId) => {
