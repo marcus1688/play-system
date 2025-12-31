@@ -1690,5 +1690,11 @@
   "bet_time": "Bet Time",
   "records": "records",
   "bet_id_copied": "Bet ID copied to clipboard",
-  "bet_details": "Bet Details"
+  "bet_details": "Bet Details",
+  "cross_day_reverts": "Cross Day Reverts",
+  "cross_day_reverts_deposit": "Cross Day Reverts (Deposit)",
+  "cross_day_reverts_withdraw": "Cross Day Reverts (Withdraw)",
+  "cross_day_reverts_deposit_note": "These deposits were credited on the day, but reverted the next day",
+  "cross_day_reverts_withdraw_note": "These withdrawals were debited on the day, but reverted the next day",
+  "reverted_at": "Reverted At"
 }

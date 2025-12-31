@@ -5,6 +5,11 @@
       v-model:show="showNewDepositModal"
       :data="selectedNewDepositData"
     />
+    <CrossDayRevertsModal
+      v-model:show="showCrossDayRevertsModal"
+      :type="selectedCrossDayRevertsType"
+      :data="selectedCrossDayRevertsData"
+    />
     <!-- Header Section -->
     <div class="flex items-center justify-between mb-6 max-md:mb-4">
       <div class="flex items-center gap-4 max-md:gap-3">
@@ -140,6 +145,58 @@
                 class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
               >
                 {{ currency }} {{ formatAmount(summary.totalWithdraw) }}
+              </td>
+              <td
+                class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                <div class="flex items-center justify-center gap-2">
+                  <span>
+                    {{ currency }}
+                    {{
+                      formatAmount(
+                        summary.crossDayReverts?.deposits?.total || 0
+                      )
+                    }}
+                  </span>
+                  <button
+                    v-if="summary.crossDayReverts?.deposits?.count > 0"
+                    @click="
+                      openCrossDayRevertsModal(
+                        'deposit',
+                        summary.crossDayReverts.deposits
+                      )
+                    "
+                    class="px-2 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500"
+                  >
+                    {{ $t("view") }}
+                  </button>
+                </div>
+              </td>
+              <td
+                class="px-4 py-4 text-sm text-gray-600 max-md:px-3 max-md:py-3 max-md:text-xs"
+              >
+                <div class="flex items-center justify-center gap-2">
+                  <span>
+                    {{ currency }}
+                    {{
+                      formatAmount(
+                        summary.crossDayReverts?.withdraws?.total || 0
+                      )
+                    }}
+                  </span>
+                  <button
+                    v-if="summary.crossDayReverts?.withdraws?.count > 0"
+                    @click="
+                      openCrossDayRevertsModal(
+                        'withdraw',
+                        summary.crossDayReverts.withdraws
+                      )
+                    "
+                    class="px-2 py-2 text-xs bg-indigo-600 text-white rounded lg:hover:bg-indigo-500"
+                  >
+                    {{ $t("view") }}
+                  </button>
+                </div>
               </td>
               <td
                 v-show="summaries[0] && summaries[0].totalTransactionFees > 0"
@@ -296,6 +353,18 @@ const tableHeaders = [
     sortable: false,
   },
   { key: "totalWithdraw", label: "Withdraw", labelCN: "提款", sortable: false },
+  {
+    key: "crossDayRevertsDeposit",
+    label: "Cross Day Reverts (Deposit)",
+    labelCN: "跨天撤销(存款)",
+    sortable: false,
+  },
+  {
+    key: "crossDayRevertsWithdraw",
+    label: "Cross Day Reverts (Withdraw)",
+    labelCN: "跨天撤销(提款)",
+    sortable: false,
+  },
   {
     key: "totalTransactionFees",
     label: "Transaction Fees",
@@ -496,6 +565,14 @@ const handleExport = async () => {
       totalDeposit: { header: $t("total_deposit"), width: 15 },
       withdrawQty: { header: $t("withdraw_qty"), width: 12 },
       totalWithdraw: { header: $t("total_withdraw"), width: 15 },
+      crossDayRevertsDepositTotal: {
+        header: $t("cross_day_reverts_deposit"),
+        width: 20,
+      },
+      crossDayRevertsWithdrawTotal: {
+        header: $t("cross_day_reverts_withdraw"),
+        width: 20,
+      },
     };
 
     const conditionalColumns = {};
@@ -537,7 +614,7 @@ const handleExport = async () => {
       filename,
       sheetName: "Summary Report",
       columns: exportColumns,
-      formatter: (value, key) => {
+      formatter: (value, key, row) => {
         const moneyFields = [
           "totalDeposit",
           "totalWithdraw",
@@ -557,9 +634,16 @@ const handleExport = async () => {
         if (key === "date") {
           return displayDate.value;
         }
+        if (key === "crossDayRevertsDepositTotal") {
+          return (row.crossDayReverts?.deposits?.total || 0).toFixed(2);
+        }
+        if (key === "crossDayRevertsWithdrawTotal") {
+          return (row.crossDayReverts?.withdraws?.total || 0).toFixed(2);
+        }
 
         return value;
       },
+
       beforeExport: () => {},
       afterExport: (success) => {
         if (success) {
@@ -589,6 +673,16 @@ const visibleColumnsCount = computed(() => {
   }
   return count;
 });
+
+const showCrossDayRevertsModal = ref(false);
+const selectedCrossDayRevertsType = ref("deposit");
+const selectedCrossDayRevertsData = ref(null);
+
+const openCrossDayRevertsModal = (type, data) => {
+  selectedCrossDayRevertsType.value = type;
+  selectedCrossDayRevertsData.value = data;
+  showCrossDayRevertsModal.value = true;
+};
 
 watch(
   [() => dateRange.value.startDate, () => dateRange.value.endDate],

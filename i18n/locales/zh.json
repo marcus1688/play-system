@@ -1690,5 +1690,11 @@
   "bet_time": "投注时间",
   "records": "条记录",
   "bet_id_copied": "注单号已复制到剪贴板",
-  "bet_details": "投注详情"
+  "bet_details": "投注详情",
+  "cross_day_reverts": "跨天撤销",
+  "cross_day_reverts_deposit": "跨天撤销 (存款)",
+  "cross_day_reverts_withdraw": "跨天撤销 (提款)",
+  "cross_day_reverts_deposit_note": "这些存款在当天入账，但撤销在隔天执行",
+  "cross_day_reverts_withdraw_note": "这些提款在当天出账，但撤销在隔天执行",
+  "reverted_at": "撤销时间"
 }
