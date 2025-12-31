@@ -391,7 +391,8 @@ const filteredTransactions = computed(() => {
         `${item.bankaccount || ""}`.includes(searchTerm) ||
         `${item.fastpayment || ""}`.includes(searchTerm) ||
         (item.remark || "").toLowerCase().includes(searchTerm) ||
-        (item.processby || "").toLowerCase().includes(searchTerm)
+        (item.processby || "").toLowerCase().includes(searchTerm) ||
+        `${item.amount || ""}`.includes(searchTerm)
     );
   }
   if (filters.value.bankKey) {

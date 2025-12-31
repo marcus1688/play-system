@@ -533,7 +533,8 @@ const filteredTransactions = computed(() => {
         (item.promotionnameEN &&
           item.promotionnameEN.toLowerCase().includes(searchTerm)) ||
         (item.processBy && item.processBy.toLowerCase().includes(searchTerm)) ||
-        (item.remark && item.remark.toLowerCase().includes(searchTerm))
+        (item.remark && item.remark.toLowerCase().includes(searchTerm)) ||
+        `${item.amount || ""}`.includes(searchTerm)
     );
   }
 
