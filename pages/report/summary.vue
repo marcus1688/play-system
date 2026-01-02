@@ -20,6 +20,17 @@
           </h1>
         </div>
       </div>
+      <button
+        @click="handleSendReport"
+        :disabled="isSendingReport"
+        class="px-6 py-2 bg-indigo-600 text-white rounded-lg lg:hover:bg-indigo-500 flex items-center gap-2 justify-center max-md:px-4 max-md:py-1.5 max-md:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <Icon
+          :icon="isSendingReport ? 'eos-icons:loading' : 'mdi:send'"
+          class="max-md:w-4 max-md:h-4"
+        />
+        {{ $t("send_report") }}
+      </button>
     </div>
 
     <!-- Filter Section -->
@@ -324,6 +335,7 @@ import { formatDate } from "~/utils/dateFormatter";
 import { formatAmount } from "~/utils/amountFormatter";
 import moment from "moment-timezone";
 
+const isSendingReport = ref(false);
 const showNewDepositModal = ref(false);
 const selectedNewDepositData = ref([]);
 const { isExporting, exportToExcel } = useExportExcel();
@@ -682,6 +694,30 @@ const openCrossDayRevertsModal = (type, data) => {
   selectedCrossDayRevertsType.value = type;
   selectedCrossDayRevertsData.value = data;
   showCrossDayRevertsModal.value = true;
+};
+
+const handleSendReport = async () => {
+  try {
+    isSendingReport.value = true;
+    const { data } = await get("trigger-daily-balance-check");
+    if (data.success) {
+      await Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Report sent successfully",
+        timer: 1500,
+      });
+    }
+  } catch (error) {
+    console.error("Error sending report:", error);
+    await Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Failed to send report",
+    });
+  } finally {
+    isSendingReport.value = false;
+  }
 };
 
 watch(

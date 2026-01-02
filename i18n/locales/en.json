@@ -1696,5 +1696,6 @@
   "cross_day_reverts_withdraw": "Cross Day Reverts (Withdraw)",
   "cross_day_reverts_deposit_note": "These deposits were credited on the day, but reverted the next day",
   "cross_day_reverts_withdraw_note": "These withdrawals were debited on the day, but reverted the next day",
-  "reverted_at": "Reverted At"
+  "reverted_at": "Reverted At",
+  "send_report": "Send Report"
 }

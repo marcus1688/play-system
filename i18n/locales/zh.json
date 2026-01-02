@@ -1696,5 +1696,6 @@
   "cross_day_reverts_withdraw": "跨天撤销 (提款)",
   "cross_day_reverts_deposit_note": "这些存款在当天入账，但撤销在隔天执行",
   "cross_day_reverts_withdraw_note": "这些提款在当天出账，但撤销在隔天执行",
-  "reverted_at": "撤销时间"
+  "reverted_at": "撤销时间",
+  "send_report": "发送报告"
 }
