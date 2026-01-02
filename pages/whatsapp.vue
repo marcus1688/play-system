@@ -324,7 +324,7 @@
             >
               <div
                 v-if="msg.replyTo?.messageId"
-                class="mb-1.5 p-2 rounded bg-black/20 border-l-2 border-[#00a884] cursor-pointer"
+                class="mb-1.5 p-2 rounded bg-black/20 border-l-2 border-[#00a884] cursor-pointer overflow-hidden w-full"
                 @click="scrollToMessage(msg.replyTo.messageId)"
               >
                 <p class="text-[10px] text-[#00a884] font-medium">
@@ -332,7 +332,7 @@
                     msg.replyTo.from === myAccount.phone ? "You" : "Customer"
                   }}
                 </p>
-                <p class="text-xs text-gray-300 truncate">
+                <p class="text-xs text-gray-300 break-all">
                   {{
                     msg.replyTo.type === "image"
                       ? "📷 Image"
