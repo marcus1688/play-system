@@ -422,14 +422,15 @@
               </button>
             </div>
             <div class="flex-1">
-              <input
+              <textarea
                 ref="captionInput"
                 v-model="imageCaption"
-                type="text"
                 placeholder="Add a caption..."
-                class="w-full px-2.5 py-1.5 bg-[#202c33] border-none rounded text-sm text-gray-100 placeholder-gray-400 outline-none"
-                @keyup.enter="sendImageWithCaption"
-              />
+                class="w-full px-2.5 py-1.5 bg-[#202c33] border-none rounded text-sm text-gray-100 placeholder-gray-400 outline-none resize-none min-h-[36px] max-h-[80px]"
+                rows="1"
+                @keydown.enter.exact.prevent="sendImageWithCaption"
+                @input="autoResizeCaption"
+              ></textarea>
             </div>
             <button
               @click="sendImageWithCaption"
@@ -511,13 +512,15 @@
               >
                 <Icon icon="mdi:emoticon-outline" class="w-5 h-5" />
               </button>
-              <input
+              <textarea
                 v-model="newMessage"
-                type="text"
                 placeholder="Type a message..."
-                class="flex-1 px-3 py-1.5 bg-[#2a3942] border-none rounded-full text-sm text-gray-100 placeholder-gray-400 outline-none"
+                class="flex-1 px-3 py-2 bg-[#2a3942] border-none rounded-2xl text-sm text-gray-100 placeholder-gray-400 outline-none resize-none min-h-[36px] max-h-[120px]"
+                rows="1"
                 @focus="showEmojiPicker = false"
-              />
+                @keydown.enter.exact.prevent="sendMessage"
+                @input="autoResize"
+              ></textarea>
               <button
                 type="submit"
                 :disabled="!newMessage.trim() || isSending"
@@ -632,6 +635,11 @@ const sendMessage = async () => {
   const replyToMessageId = replyToMessage.value?.messageId || null;
   newMessage.value = "";
   replyToMessage.value = null;
+  const textarea = document.querySelector("textarea");
+  if (textarea) {
+    textarea.style.height = "auto";
+  }
+
   await nextTick();
   if (messagesContainer.value) {
     messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
@@ -786,6 +794,12 @@ const togglePin = async (conv) => {
   }
 };
 
+const autoResizeCaption = (event) => {
+  const textarea = event.target;
+  textarea.style.height = "auto";
+  textarea.style.height = Math.min(textarea.scrollHeight, 80) + "px";
+};
+
 const imagePreview = ref(null);
 const imageFile = ref(null);
 const imageCaption = ref("");
@@ -938,6 +952,12 @@ const togglePinFromMenu = async () => {
     await togglePin(contextMenu.value.conv);
   }
   contextMenu.value.show = false;
+};
+
+const autoResize = (event) => {
+  const textarea = event.target;
+  textarea.style.height = "auto";
+  textarea.style.height = Math.min(textarea.scrollHeight, 120) + "px";
 };
 
 const skipBotFromMenu = async () => {
