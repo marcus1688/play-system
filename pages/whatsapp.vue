@@ -817,6 +817,30 @@ const handleImageSelect = (event) => {
   });
 };
 
+const handlePaste = (event) => {
+  if (!selectedConversation.value) return;
+
+  const items = event.clipboardData?.items;
+  if (!items) return;
+
+  for (const item of items) {
+    if (item.type.startsWith("image/")) {
+      event.preventDefault();
+      const file = item.getAsFile();
+      if (file) {
+        imageFile.value = file;
+        imagePreview.value = URL.createObjectURL(file);
+        nextTick(() => {
+          if (captionInput.value) {
+            captionInput.value.focus();
+          }
+        });
+      }
+      break;
+    }
+  }
+};
+
 const cancelImage = () => {
   imagePreview.value = null;
   imageFile.value = null;
@@ -1021,6 +1045,7 @@ onMounted(() => {
   notificationSound.value.volume = 0.5;
   fetchConversations();
   fetchMyAccount();
+  document.addEventListener("paste", handlePaste);
   refreshInterval = setInterval(() => {
     fetchConversations();
     if (selectedConversation.value) {
@@ -1036,6 +1061,7 @@ onUnmounted(() => {
   if (refreshInterval) {
     clearInterval(refreshInterval);
   }
+  document.removeEventListener("paste", handlePaste);
 });
 
 useHead({
